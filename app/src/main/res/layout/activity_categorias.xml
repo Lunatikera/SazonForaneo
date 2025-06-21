@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Barra de búsqueda y perfil -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/ivPerfil"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/sazon_logo"
+                android:background="@drawable/circle"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/etBuscar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Buscar por nombre"
+                android:background="@drawable/search_background"
+                android:padding="10dp"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <!-- Tabs superiores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCategoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Categoría"
+                android:backgroundTint="#D9C8FF" />
+
+            <Button
+                android:id="@+id/btnEtiquetas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Etiquetas"
+                android:backgroundTint="#EEEEEE"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categorías"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:padding="16dp" />
+
+        <!-- Categorías -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+
+    <!-- boton para agregar receta -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAgregar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="60dp"
+        android:contentDescription="Agregar receta"
+        android:src="@android:drawable/ic_input_add" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_bottom_nav" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
