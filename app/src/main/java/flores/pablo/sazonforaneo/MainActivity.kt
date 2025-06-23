@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var etPassword: EditText
     lateinit var btnEntrar: Button
     lateinit var btnRegistrarme: Button
-    val tvOlvidaste: TextView = findViewById(R.id.tvOlvidaste)
+    lateinit var tvOlvidaste: TextView //solo la declaramos aqui para evitar errores.
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
         btnEntrar = findViewById(R.id.btnEntrar)
         btnRegistrarme = findViewById(R.id.btnRegistrarme)
+        tvOlvidaste = findViewById(R.id.tvOlvidaste) // inicializamos aqui.
 
         btnEntrar.setOnClickListener {
             val correo = etCorreo.text.toString().trim()
