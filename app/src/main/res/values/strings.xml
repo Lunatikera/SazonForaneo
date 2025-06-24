@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">SazonForaneo</string>
+
+    <string name="editarIP">Editar Inf. Personal</string>
+    <string name="misR">Mis recetas</string>
+    <string name="saveR">Recetas guardadas</string>
+    <string name="modeNoche">Modo noche</string>
+    <string name="numeroR">Recetas creadas: </string>
+    <string name="infPersonal">Información Personal</string>
+    <string name="nombreUsuario">Nombre de usuario</string>
+    <string name="fechaNaci">Fecha de nacimiento</string>
+    <string name="numeroTelef">Numero de telefono</string>
+    <string name="save">Guardar</string>
+
 </resources>

@@ -32,6 +32,15 @@
             android:name=".AgregarNombreDescripcion"
             android:exported="false" />
         <activity
+            android:name=".recetas_guardadas_activity"
+            android:exported="false" />
+        <activity
+            android:name=".editar_informacion_perfil_activity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilConfigActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
