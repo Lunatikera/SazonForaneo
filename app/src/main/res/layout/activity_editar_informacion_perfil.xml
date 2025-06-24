@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/baby_orange"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".editar_informacion_perfil_activity">
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="@string/infPersonal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="30dp"
+        android:background="@drawable/cuadro_redondo_gris"
+        android:layout_margin="20dp"
+        android:elevation="5dp">
+
+
+        <TextView
+
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nombreUsuario"/>
+        <EditText
+
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Juana Maria Perez Lopez"
+            android:textColor="@color/baby_gray"
+            android:background="@drawable/edittext_redondo"
+            android:paddingLeft="15dp"
+            android:layout_marginBottom="30dp"
+            />
+
+        <TextView
+
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/numeroTelef"/>
+        <EditText
+
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="+526332526374"
+            android:textColor="@color/baby_gray"
+            android:background="@drawable/edittext_redondo"
+            android:paddingLeft="15dp"
+            android:layout_marginBottom="30dp"
+            />
+
+        <TextView
+
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fechaNaci"/>
+        <EditText
+
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="20 de noviembre de 2000"
+            android:textColor="@color/baby_gray"
+            android:background="@drawable/edittext_redondo"
+            android:paddingLeft="15dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center|bottom"
+            >
+
+            <Button
+                android:layout_width="95dp"
+                android:layout_height="45dp"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/button_wine"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
