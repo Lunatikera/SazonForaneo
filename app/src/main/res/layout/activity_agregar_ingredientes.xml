@@ -83,18 +83,18 @@
                 </LinearLayout>
 
                 <!-- Contenedor scrollable de ingredientes -->
+                <LinearLayout
+                    android:id="@+id/layoutIngredientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="305dp"
                     android:layout_marginBottom="24dp"
                     android:background="#EAE6E6"
                     android:padding="8dp">
-
-                    <LinearLayout
-                        android:id="@+id/layoutIngredientes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
 
                 </ScrollView>
 

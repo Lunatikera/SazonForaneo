@@ -125,7 +125,7 @@
                         android:layout_height="32dp"
                         android:layout_marginStart="4dp"
                         android:contentDescription="Favorito"
-                        android:src="@drawable/favHeart" />
+                        android:src="@drawable/favheart" />
                 </LinearLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
