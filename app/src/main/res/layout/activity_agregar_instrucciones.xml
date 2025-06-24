@@ -65,15 +65,19 @@
                     android:padding="16dp"
                     android:scrollbars="vertical">
 
-                    <TextView
-                        android:id="@+id/tvInstrucciones"
+                    <EditText
+                        android:id="@+id/etInstrucciones"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="6dp"
-                        android:text="1. 𝐇𝐢𝐝𝐫𝐚𝐭𝐚 𝐥𝐨𝐬 𝐜𝐡𝐢𝐥𝐞𝐬 (𝐬𝐢 𝐮𝐬𝐚𝐬 𝐠𝐮𝐚𝐣𝐢𝐥𝐥𝐨): quítales las semillas y hierve en agua caliente durante 5–10 minutos.\n\n2. 𝐋𝐢𝐜ú𝐚 𝐥𝐚 𝐬𝐚𝐥𝐬𝐚: coloca en la licuadora los jitomates, chiles (si usas), ajo, cebolla y ½ taza de agua. Agrega sal al gusto.\n\n3. 𝐅𝐫í𝐞 𝐥𝐚 𝐬𝐚𝐥𝐬𝐚: en una sartén con un poco de aceite caliente, vierte la salsa y deja hervir 5–7 minutos hasta que espese ligeramente.\n\n4. 𝐀𝐠𝐫𝐞𝐠𝐚 𝐥𝐨𝐬 𝐭𝐨𝐭𝐨𝐩𝐨𝐬: incorpora los totopos a la salsa y revuelve para que se cubran bien. Cocina solo 1–2 minutos si quieres que queden crujientes por fuera.\n\n5. 𝐒𝐢𝐫𝐯𝐞: coloca en platos, añade crema, queso desmoronado, cebolla, y si deseas, huevo estrellado o pollo deshebrado.\n\n6. 𝐃𝐢𝐬𝐟𝐫𝐮𝐭𝐚 𝐜𝐚𝐥𝐢𝐞𝐧𝐭𝐞."
+                        android:hint="Escribe las instrucciones aquí..."
                         android:textColor="#333333"
-                        android:textIsSelectable="false"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:inputType="textMultiLine"
+                        android:minLines="6"
+                        android:gravity="top"
+                        android:background="@drawable/rounded_edittext" />
+
                 </ScrollView>
 
                 <!-- Botón continuar -->

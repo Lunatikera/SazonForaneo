@@ -85,12 +85,12 @@
                 <ListView
                     android:id="@+id/listViewIngredientes"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="305dp"
                     android:background="#EAE6E6"
-                    android:divider="@null"
-                    android:dividerHeight="0dp"
-                    android:layout_marginBottom="24dp"
-                    android:scrollbars="vertical" />
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="12dp"
+                    android:padding="8dp"
+                    android:layout_marginBottom="24dp"/>
 
                 <!-- Botón continuar -->
                 <Button

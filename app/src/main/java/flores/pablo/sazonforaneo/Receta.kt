@@ -1,12 +1,18 @@
 package flores.pablo.sazonforaneo
 
+import android.net.Uri
 import java.io.Serializable
 
 data class Receta(
-    var nombre: String,
-    var descripcion: String,
-    var categorias: List<String>,
-    var etiquetas: List<String>,
-    var visibilidad: String,
-    var ingredientes: MutableList<String> = mutableListOf()
-) : java.io.Serializable
+    var nombre: String = "",
+    var descripcion: String = "",
+    var categorias: List<String> = emptyList(),
+    var etiquetas: List<String> = emptyList(),
+    var visibilidad: String = "",
+    var ingredientes: List<String> = emptyList(),
+    var instrucciones: String = "",
+    var fuente: String = "",
+    var imagenUri: Uri? = null
+) : Serializable
+
+
