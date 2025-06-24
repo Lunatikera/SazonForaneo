@@ -14,6 +14,24 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".DetalleReceta"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarImagenFuente"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarInstrucciones"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarIngredientes"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarVisibilidad"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarNombreDescripcion"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
