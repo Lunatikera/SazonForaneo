@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/nombreUsuario"/>
         <EditText
-
+            android:id="@+id/nombreUsuario"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="Juana Maria Perez Lopez"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="@string/numeroTelef"/>
         <EditText
-
+            android:id="@+id/numeroTelefono"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="+526332526374"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="@string/fechaNaci"/>
         <EditText
-
+            android:id="@+id/fechaNacimiento"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="20 de noviembre de 2000"
@@ -91,6 +91,7 @@
             >
 
             <Button
+                android:id="@+id/btnGuardar"
                 android:layout_width="95dp"
                 android:layout_height="45dp"
                 android:text="@string/save"

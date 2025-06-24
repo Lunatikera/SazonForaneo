@@ -99,6 +99,7 @@
         >
 
         <TextView
+            android:id="@+id/infoPersonal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -116,6 +117,7 @@
             android:layout_marginBottom="25dp"
             android:layout_marginRight="25dp"/>
         <TextView
+            android:id="@+id/misRecetas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -133,6 +135,7 @@
             android:layout_marginBottom="25dp"
             android:layout_marginRight="25dp"/>
         <TextView
+            android:id="@+id/recetasGuardadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -171,6 +174,7 @@
                 android:layout_weight="1" />
 
             <Switch
+                android:id="@+id/modoNoche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

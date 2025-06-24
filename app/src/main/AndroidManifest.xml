@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SazonForaneo"
         tools:targetApi="31">
         <activity
+            android:name=".recetas_guardadas_activity"
+            android:exported="false" />
+        <activity
             android:name=".editar_informacion_perfil_activity"
             android:exported="false" />
         <activity
