@@ -7,6 +7,10 @@ android {
     namespace = "flores.pablo.sazonforaneo"
     compileSdk = 35
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "flores.pablo.sazonforaneo"
         minSdk = 21
@@ -45,4 +49,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 }

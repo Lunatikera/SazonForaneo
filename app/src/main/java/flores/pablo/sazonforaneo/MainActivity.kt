@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
                 etPassword.error = "La contraseña no puede estar vacía"
             } else {
                 //Meter la base de dato aqui si dio quiere
-                val intent = Intent(this, InicioActivity::class.java)
-                startActivity(intent)
+                val intent = Intent(this, CategoriasActivity::class.java)
+                startActivity(intent)               // DIRECCIONO A LA PANTALLA CATEGORIAS PORQUE AUN NO ESTA LA DE EXPLORAR
             }
         }
 

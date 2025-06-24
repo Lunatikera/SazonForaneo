@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_explorar"
-        android:title="Explorar"
-        android:icon="@android:drawable/ic_menu_compass" />
+
     <item
         android:id="@+id/nav_mis_recetas"
         android:title="Mis Recetas"
-        android:icon="@android:drawable/ic_menu_agenda" />
+        android:icon="@android:drawable/ic_menu_myplaces"/>
+<!--        PONER EL ICONO DE MISRECETAS-->
+
     <item
-        android:id="@+id/nav_perfil"
-        android:title="Perfil"
-        android:icon="@android:drawable/ic_menu_myplaces" />
+        android:id="@+id/nav_explorar"
+        android:title="Explorar"
+        android:icon="@android:drawable/ic_menu_compass"/>
+    <!--       PONER EL ICONO DE EXPLORAR-->
+
+    <item
+        android:id="@+id/nav_categorias"
+        android:title="Categorias"
+        android:icon="@android:drawable/ic_menu_myplaces"/>
+    <!--        PONER EL ICONO DE CATEGORIAS-->
 </menu>

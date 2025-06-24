@@ -2,101 +2,111 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".CategoriasActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"> <LinearLayout
+        android:id="@+id/top_search_bar_layout"
+        android:background="@color/searchBarZone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Barra de búsqueda y perfil -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivPerfil"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle"
+            android:contentDescription="Imagen de perfil"
+            android:scaleType="centerCrop"
+            android:src="@drawable/imagen_perfil" />
+
+        <EditText
+            android:id="@+id/etBuscar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:hint="Buscar por nombre"
+            android:background="@drawable/search_background"
+            android:padding="10dp"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:inputType="text" />
 
-            <ImageView
-                android:id="@+id/ivPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/sazon_logo"
-                android:background="@drawable/circle"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="8dp" />
-
-            <EditText
-                android:id="@+id/etBuscar"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:hint="Buscar por nombre"
-                android:background="@drawable/search_background"
-                android:padding="10dp"
-                android:drawableStart="@android:drawable/ic_menu_search"
-                android:inputType="text" />
-        </LinearLayout>
-
-        <!-- Tabs superiores -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/tags_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:text="Etiquetas"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="8dp"
+            android:layout_marginStart="8dp" />
 
-            <Button
-                android:id="@+id/btnCategoria"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Categoría"
-                android:backgroundTint="#D9C8FF" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/btnEtiquetas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Etiquetas"
-                android:backgroundTint="#EEEEEE"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <!-- título -->
         <TextView
+            android:id="@+id/categories_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Categorías"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:padding="16dp" />
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Categorías -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCategorias"
-            android:layout_width="match_parent"
+            android:id="@+id/categories_grid_recyclerview"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:clipToPadding="false" />
-    </LinearLayout>
+            android:layout_marginTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/categories_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+            app:layout_constraintVertical_bias="0.0"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/item_categoria" />
 
-    <!-- boton para agregar receta -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAgregar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="60dp"
-        android:contentDescription="Agregar receta"
-        android:src="@android:drawable/ic_input_add" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_recipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_gravity="bottom"
-        app:menu="@menu/menu_bottom_nav" />
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/baseline_add_24" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+            android:contentDescription="Añadir nueva receta" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/bottomNavigation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/menu_bottom_nav" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

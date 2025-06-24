@@ -9,35 +9,29 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoriaAdapter(
-    private var lista: List<Categoria>,
-    private val onClick: (Categoria) -> Unit
-) : RecyclerView.Adapter<CategoriaAdapter.ViewHolder>() {
+    private val categorias: List<Categoria>,
+    private val clickListener: (Categoria) -> Unit
+) : RecyclerView.Adapter<CategoriaAdapter.CategoriaViewHolder>() {
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val img = view.findViewById<ImageView>(R.id.imgCategoria)
-        val txt = view.findViewById<TextView>(R.id.txtCategoria)
-
-        fun bind(categoria: Categoria) {
-            img.setImageResource(categoria.imagenRes)
-            txt.text = categoria.nombre
-            itemView.setOnClickListener { onClick(categoria) }
-        }
+    class CategoriaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imageView: ImageView = itemView.findViewById(R.id.category_image)
+        val nameView: TextView = itemView.findViewById(R.id.category_name)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriaViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_categoria, parent, false)
-        return ViewHolder(view)
+        return CategoriaViewHolder(view)
     }
 
-    override fun getItemCount(): Int = lista.size
+    override fun onBindViewHolder(holder: CategoriaViewHolder, position: Int) {
+        val categoria = categorias[position]
+        holder.nameView.text = categoria.nombre
+        holder.imageView.setImageResource(categoria.idImagenRes)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(lista[position])
+        // esto configura el clic para cada elemento
+        holder.itemView.setOnClickListener { clickListener(categoria) }
     }
 
-    fun actualizarLista(nueva: List<Categoria>) {
-        lista = nueva
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = categorias.size
 }

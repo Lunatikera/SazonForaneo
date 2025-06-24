@@ -12,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SazonForaneo"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,7 +36,9 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
 
-
+        <activity
+            android:name=".CategoriasActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
