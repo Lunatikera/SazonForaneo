@@ -29,7 +29,6 @@
             app:cardCornerRadius="32dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#F4F4F4"
-
             android:layout_marginBottom="24dp">
 
             <LinearLayout
@@ -82,21 +81,16 @@
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
-                <!-- Contenedor scrollable de ingredientes -->
-                <LinearLayout
-                    android:id="@+id/layoutIngredientes"
+                <!-- Lista de ingredientes scrollable -->
+                <ListView
+                    android:id="@+id/listViewIngredientes"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="305dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_height="300dp"
                     android:background="#EAE6E6"
-                    android:padding="8dp">
-
-                </ScrollView>
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:layout_marginBottom="24dp"
+                    android:scrollbars="vertical" />
 
                 <!-- Botón continuar -->
                 <Button
