@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:flexbox="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF6F00">
+
+    <TextView
+        android:id="@+id/tvTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pizza estilo italiana"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_alignParentTop="true"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardContenedor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/ivReceta"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pizza"
+                    android:background="#F0F0F0"
+                    android:layout_marginBottom="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/ivPerfil"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/perfil"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/circle_mask"
+                        android:layout_marginEnd="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="1dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvAutor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Juana Maria Perez Lopez"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/star_outline" />
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/star_outline" />
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/star_outline" />
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/star_outline" />
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/star_outline" />
+
+                            <TextView
+                                android:id="@+id/tvCalificacion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="3.2"
+                                android:textColor="#333333"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivFav"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="4dp"
+                        android:contentDescription="Favorito"
+                        android:src="@drawable/favHeart" />
+                </LinearLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/layoutTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    app:alignItems="center"
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/tag_green_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="italiana"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/tag_green_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="fácil"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/tag_green_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="rápida"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <TextView
+                    android:id="@+id/tvDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sumérgete en los sabores auténticos de Italia con esta clásica pizza italiana, elaborada con una base fina y crujiente, salsa de tomate natural, queso mozzarella derretido y el toque perfecto de albahaca fresca. Esta receta combina ingredientes sencillos pero de alta calidad..."
+                    android:textColor="#333333"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:id="@+id/tvFuente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fuente de la Receta"
+                    android:textColor="#2196F3"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginBottom="16dp"/>
+
+                <LinearLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tabIngredientes"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ingredientes"
+                        android:textAlignment="center"
+                        android:padding="12dp"
+                        android:textColor="#000000"
+                        android:background="@drawable/tab_unselected"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tabInstrucciones"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Instrucciones"
+                        android:textAlignment="center"
+                        android:padding="12dp"
+                        android:textColor="#333333"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#FCF0EA">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:fillViewport="true">
+
+                        <TextView
+                            android:id="@+id/tvContenidoReceta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:lineSpacingExtra="4dp"
+                            android:padding="12dp"
+                            android:text="• 500 g de harina de trigo (tipo 00)\n• 325 ml de agua tibia\n• 10 g de sal\n• 5 g de azúcar\n\n1. Mezcla los ingredientes secos en un bol.\n2. Agrega el agua tibia y la levadura.\n3. Amasa hasta obtener una masa suave." />
+                    </ScrollView>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

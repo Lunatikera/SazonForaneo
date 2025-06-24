@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ChipCategoria">
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">@drawable/chip_categoria</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ChipEtiquetaDinamica">
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:background">@drawable/chip_etiqueta_predefinida_background</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TagStyle">
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">2dp</item>
+        <item name="android:background">#C8E6C9</item>
+        <item name="android:textColor">#2E7D32</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TabItemSelected">
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/tab_selected</item>
+    </style>
+
+    <style name="TabItemUnselected">
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/tab_unselected</item>
+    </style>
+
+    <style name="StarButton">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:background">@drawable/star_selector</item>
+        <item name="android:text">★</item>
+        <item name="android:textColor">#FFD700</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+</resources>
