@@ -14,7 +14,6 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/ivFoto"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:src="@drawable/pizza_italiana"
@@ -28,7 +27,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tvTituloReceta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pizza italiana"
@@ -66,7 +64,6 @@
                 android:layout_marginLeft="20dp"
                 />
             <TextView
-                android:id="@+id/tvAutor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" Amos Heli Olguin Quiroz"
@@ -79,13 +76,17 @@
 
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            >
 
             <GridView
-                android:id="@+id/gvEtiquetas"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:numColumns="4"/>
+                android:layout_height="wrap_content"
+                android:numColumns="auto_fit"/>
 
+        </ScrollView>
 
 
     </LinearLayout>

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import flores.pablo.sazonforaneo.ui.Categoria
+import flores.pablo.sazonforaneo.Categoria
 import flores.pablo.sazonforaneo.R
 
 class CategoriaAdapter(

@@ -1,4 +1,4 @@
-package flores.pablo.sazonforaneo.ui
+package flores.pablo.sazonforaneo
 
 data class Categoria(
     val nombre: String,
