@@ -30,7 +30,6 @@ class CategoriaAdapter(
         holder.nameView.text = categoria.nombre
         holder.imageView.setImageResource(categoria.idImagenRes)
 
-        // esto configura el clic para cada elemento
         holder.itemView.setOnClickListener { clickListener(categoria) }
     }
 

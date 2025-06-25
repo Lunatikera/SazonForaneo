@@ -31,22 +31,33 @@ class ExplorarAdapter(
         private val tvNombre: TextView = itemView.findViewById(R.id.tvNombreReceta)
         private val tvAutor: TextView = itemView.findViewById(R.id.tvAutor)
         private val tagsLayout: LinearLayout = itemView.findViewById(R.id.tagsLayout)
+        private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+        private val tvRating: TextView = itemView.findViewById(R.id.tvRating)
 
         fun bind(receta: Receta) {
             tvNombre.text = receta.nombre
-            tvAutor.text = "Fuente: ${receta.fuente}"
+            tvAutor.text = "Autor: ${receta.autor}"
 
-            val uriString = receta.imagenUriString
-            val uri = uriString?.let { Uri.parse(it) }
-            if (uri != null) {
+            val imagenUrl = receta.imagenUriString
+
+            if (imagenUrl != null && (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://"))) {
                 Glide.with(itemView.context)
-                    .load(uri)
+                    .load(imagenUrl)
                     .placeholder(R.drawable.pizza)
                     .into(ivReceta)
             } else {
-                ivReceta.setImageResource(R.drawable.pizza)
+                val uri = imagenUrl?.let { Uri.parse(it) }
+                if (uri != null) {
+                    Glide.with(itemView.context)
+                        .load(uri)
+                        .placeholder(R.drawable.pizza)
+                        .into(ivReceta)
+                } else {
+                    ivReceta.setImageResource(R.drawable.pizza)
+                }
             }
-
+            ratingBar.rating = receta.rating.coerceIn(0f, 5f)  // Asegura que esté entre 0 y 5
+            tvRating.text = String.format("%.1f", receta.rating)
             tagsLayout.removeAllViews()
             val allTags = receta.categorias + receta.etiquetas
             for (tag in allTags) {

@@ -49,14 +49,13 @@ class AgregarImagenFuente : AppCompatActivity() {
             }
 
             receta.fuente = fuente
-            // Guardar la URI como string, no como Uri
             receta.imagenUriString = imagenUri?.toString()
 
             Toast.makeText(this, "Receta completada con éxito", Toast.LENGTH_LONG).show()
 
-            val intent = Intent(this, ExplorarActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            val intent = Intent()
+            intent.putExtra("receta", receta)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
