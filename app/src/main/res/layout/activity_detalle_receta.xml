@@ -10,13 +10,14 @@
         android:id="@+id/tvTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-2dp"
+        android:gravity="center"
+        android:padding="16dp"
         android:text="Pizza estilo italiana"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="16dp"
-        android:layout_alignParentTop="true"/>
+        android:textStyle="bold" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContenedor"

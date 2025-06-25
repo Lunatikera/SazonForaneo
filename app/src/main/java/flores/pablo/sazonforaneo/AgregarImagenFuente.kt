@@ -48,9 +48,8 @@ class AgregarImagenFuente : AppCompatActivity() {
             }
 
             receta.fuente = fuente
-            receta.imagenUri = imagenUri // o puedes guardar el path si prefieres
+            receta.imagenUri = imagenUri
 
-            // Aquí puedes mandar a una actividad de resumen, subir a servidor, guardar en BD, etc.
             Toast.makeText(this, "Receta completada con éxito 🎉", Toast.LENGTH_LONG).show()
             finish()
         }

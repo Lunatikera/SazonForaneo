@@ -24,20 +24,16 @@ class AgregarIngredientes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_ingredientes)
 
-        // Recibir receta
         receta = intent.getSerializableExtra("receta") as Receta
 
-        // Referencias UI
         etIngrediente = findViewById(R.id.etIngrediente)
         btnAgregar = findViewById(R.id.btnAgregarIngrediente)
         listView = findViewById(R.id.listViewIngredientes)
         btnContinuar = findViewById(R.id.btnContinuar)
 
-        // Adaptador
         adapter = IngredientesAdapter(this, ingredientes)
         listView.adapter = adapter
 
-        // Agregar ingrediente
         btnAgregar.setOnClickListener {
             val texto = etIngrediente.text.toString().trim()
             if (texto.isNotEmpty()) {
@@ -47,7 +43,6 @@ class AgregarIngredientes : AppCompatActivity() {
             }
         }
 
-        // Continuar a instrucciones
         btnContinuar.setOnClickListener {
             receta.ingredientes = ingredientes
             val intent = Intent(this, AgregarInstrucciones::class.java)

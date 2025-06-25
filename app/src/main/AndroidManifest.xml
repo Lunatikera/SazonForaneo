@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SazonForaneo"
         tools:targetApi="31">
-
+        <activity
+            android:name=".MainNavigation"
+            android:exported="false"
+            android:label="@string/title_activity_main_navigation" />
         <activity
             android:name=".DetalleReceta"
             android:exported="false" />
@@ -45,24 +48,21 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".InicioActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <activity
             android:name=".RegistroActivity"
             android:exported="false" />
-
         <activity
             android:name=".RecuperarPasswordActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <activity
             android:name=".CategoriasActivity"
             android:exported="false" />
