@@ -13,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import flores.pablo.sazonforaneo.ui.ExplorarActivity
 
 class AgregarImagenFuente : AppCompatActivity() {
     private lateinit var receta: Receta
@@ -48,9 +49,14 @@ class AgregarImagenFuente : AppCompatActivity() {
             }
 
             receta.fuente = fuente
-            receta.imagenUri = imagenUri
+            // Guardar la URI como string, no como Uri
+            receta.imagenUriString = imagenUri?.toString()
 
-            Toast.makeText(this, "Receta completada con éxito 🎉", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Receta completada con éxito", Toast.LENGTH_LONG).show()
+
+            val intent = Intent(this, ExplorarActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
             finish()
         }
     }

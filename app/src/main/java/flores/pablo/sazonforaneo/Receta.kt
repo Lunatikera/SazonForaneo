@@ -12,7 +12,8 @@ data class Receta(
     var ingredientes: List<String> = emptyList(),
     var instrucciones: String = "",
     var fuente: String = "",
-    var imagenUri: Uri? = null
-) : Serializable
+    var imagenUriString: String? = null
+) : Serializable {
 
-
+    fun getImagenUri(): Uri? = imagenUriString?.let { Uri.parse(it) }
+}

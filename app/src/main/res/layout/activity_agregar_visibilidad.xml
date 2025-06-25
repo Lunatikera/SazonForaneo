@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F56A0D">
@@ -59,20 +60,7 @@
                     android:layout_height="wrap_content"
                     app:flexWrap="wrap"
                     app:justifyContent="flex_start"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView style="@style/ChipCategoria" android:text="Entradas" />
-                    <TextView style="@style/ChipCategoria" android:text="Sopas" />
-                    <TextView style="@style/ChipCategoria" android:text="Ensaladas" />
-                    <TextView style="@style/ChipCategoria" android:text="Postres" />
-                    <TextView style="@style/ChipCategoria" android:text="Snacks" />
-                    <TextView style="@style/ChipCategoria" android:text="Picante" />
-                    <TextView style="@style/ChipCategoria" android:text="Dulce" />
-                    <TextView style="@style/ChipCategoria" android:text="Salado" />
-                    <TextView style="@style/ChipCategoria" android:text="Salsa" />
-                    <TextView style="@style/ChipCategoria" android:text="Mexicano" />
-                    <TextView style="@style/ChipCategoria" android:text="Italiano" />
-                </com.google.android.flexbox.FlexboxLayout>
+                    android:layout_marginBottom="16dp" />
 
                 <!-- Etiquetas -->
                 <TextView
@@ -108,28 +96,19 @@
                         android:textColor="#FFFFFF" />
                 </LinearLayout>
 
-                <!-- Scroll horizontal con etiquetas simuladas para preview -->
-                <HorizontalScrollView
+                <!-- RecyclerView horizontal para etiquetas -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerEtiquetas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:clipToPadding="false"
+                    android:paddingVertical="8dp"
                     android:background="#D9D9D9"
-                    android:padding="8dp">
+                    tools:listitem="@layout/item_etiqueta" />
 
-                    <LinearLayout
-                        android:id="@+id/layoutEtiquetas"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <!-- Etiquetas fijas solo para ver el diseño -->
-                        <TextView style="@style/ChipEtiquetaDinamica" android:text="Vegano" />
-                        <TextView style="@style/ChipEtiquetaDinamica" android:text="Rápido" />
-                        <TextView style="@style/ChipEtiquetaDinamica" android:text="Fácil" />
-                        <TextView style="@style/ChipEtiquetaDinamica" android:text="Tradicional" />
-                        <TextView style="@style/ChipEtiquetaDinamica" android:text="Rico" />
-                    </LinearLayout>
-                </HorizontalScrollView>
 
                 <!-- Visibilidad -->
                 <TextView

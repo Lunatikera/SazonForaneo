@@ -1,5 +1,6 @@
 package flores.pablo.sazonforaneo.ui.categorias
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.Categoria
+import flores.pablo.sazonforaneo.PerfilConfigActivity
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
 
@@ -40,12 +43,20 @@ class CategoriasFragment : Fragment() {
             Categoria("Guarniciones", R.drawable.imagen_guarniciones),
             Categoria("Postres", R.drawable.imagen_postres),
             Categoria("Snacks", R.drawable.imagen_snacks),
-            Categoria("Salsas", R.drawable.imagen_salsas)
+            Categoria("Salsas", R.drawable.imagen_salsas),
+                    Categoria("Entradas", R.drawable.imagen_entradas),
+        Categoria("Sopas", R.drawable.imagen_sopas),
+        Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
+        Categoria("Ensaladas", R.drawable.imagen_ensaladas),
+        Categoria("Guarniciones", R.drawable.imagen_guarniciones),
+        Categoria("Postres", R.drawable.imagen_postres),
+        Categoria("Snacks", R.drawable.imagen_snacks),
+        Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
         val adaptadorCategorias = CategoriaAdapter(categorias) { categoria ->
             Toast.makeText(requireContext(), "Categoría: ${categoria.nombre}", Toast.LENGTH_SHORT).show()
-            // Aquí puedes hacer la navegación a otro fragment si lo deseas
+            // Aquí puedes hacer la navegación a otro fragment o actividad si lo deseas
         }
 
         binding.categoriesGridRecyclerview.apply {
@@ -56,11 +67,13 @@ class CategoriasFragment : Fragment() {
 
     private fun configurarListenersDeClic() {
         binding.ivPerfil.setOnClickListener {
-            Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), PerfilConfigActivity::class.java)
+            startActivity(intent)
         }
 
         binding.fabAddRecipe.setOnClickListener {
-            Toast.makeText(requireContext(), "Añadir nueva receta", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), AgregarNombreDescripcion::class.java)
+            startActivity(intent)
         }
 
         binding.tagsButton.setOnClickListener {

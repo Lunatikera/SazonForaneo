@@ -1,6 +1,7 @@
 package flores.pablo.sazonforaneo
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -11,15 +12,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
 
 class AgregarVisibilidad : AppCompatActivity() {
-
     private lateinit var receta: Receta
-    private lateinit var layoutEtiquetas: LinearLayout
     private lateinit var layoutCategorias: FlexboxLayout
     private lateinit var etEtiqueta: EditText
     private lateinit var radioGroupPrivacidad: RadioGroup
+    private lateinit var recyclerEtiquetas: RecyclerView
+    private lateinit var etiquetaAdapter: EtiquetaAdapter
+
     private val etiquetas = mutableListOf<String>()
     private val categoriasSeleccionadas = mutableSetOf<String>()
 
@@ -29,10 +33,19 @@ class AgregarVisibilidad : AppCompatActivity() {
 
         receta = intent.getSerializableExtra("receta") as? Receta ?: Receta("", "")
 
-        layoutEtiquetas = findViewById(R.id.layoutEtiquetas)
         layoutCategorias = findViewById(R.id.layoutCategorias)
         etEtiqueta = findViewById(R.id.etEtiqueta)
         radioGroupPrivacidad = findViewById(R.id.radioGroupPrivacidad)
+        recyclerEtiquetas = findViewById(R.id.recyclerEtiquetas)
+
+        // Inicializar adapter con callback para eliminar etiqueta
+        etiquetaAdapter = EtiquetaAdapter(etiquetas) { etiquetaEliminada ->
+            etiquetas.remove(etiquetaEliminada)
+            etiquetaAdapter.notifyDataSetChanged()
+        }
+
+        recyclerEtiquetas.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerEtiquetas.adapter = etiquetaAdapter
 
         val btnAgregarEtiqueta = findViewById<Button>(R.id.btnAgregarEtiqueta)
         val btnContinuar = findViewById<Button>(R.id.btnContinuar)
@@ -41,7 +54,7 @@ class AgregarVisibilidad : AppCompatActivity() {
 
         btnAgregarEtiqueta.setOnClickListener {
             val etiqueta = etEtiqueta.text.toString().trim()
-            if (etiqueta.isNotEmpty()) {
+            if (etiqueta.isNotEmpty() && !etiquetas.contains(etiqueta)) {
                 agregarEtiqueta(etiqueta)
                 etEtiqueta.text.clear()
             }
@@ -55,7 +68,7 @@ class AgregarVisibilidad : AppCompatActivity() {
             }
 
             receta.visibilidad = visibilidad
-            receta.etiquetas = etiquetas
+            receta.etiquetas = etiquetas.toList()
             receta.categorias = categoriasSeleccionadas.toList()
 
             val intent = Intent(this, AgregarIngredientes::class.java)
@@ -73,9 +86,9 @@ class AgregarVisibilidad : AppCompatActivity() {
             val chip = TextView(this).apply {
                 text = categoria
                 setPadding(32, 16, 32, 16)
-                setTextColor(resources.getColor(android.R.color.white))
-                setBackgroundResource(R.drawable.tag_green_background)
-                setTextSize(14f)
+                setTextColor(Color.parseColor("#44291D")) // Marrón oscuro para no seleccionado
+                setBackgroundResource(R.drawable.chip_categoria)
+                textSize = 14f
                 setOnClickListener {
                     toggleCategoria(categoria, this)
                 }
@@ -94,31 +107,17 @@ class AgregarVisibilidad : AppCompatActivity() {
     private fun toggleCategoria(categoria: String, view: TextView) {
         if (categoriasSeleccionadas.contains(categoria)) {
             categoriasSeleccionadas.remove(categoria)
-            view.alpha = 0.5f
+            view.setBackgroundResource(R.drawable.chip_categoria)
+            view.setTextColor(Color.parseColor("#44291D")) // Marrón oscuro para no seleccionado
         } else {
             categoriasSeleccionadas.add(categoria)
-            view.alpha = 1.0f
+            view.setBackgroundResource(R.drawable.chip_categoria_selected)
+            view.setTextColor(Color.parseColor("#FFFFFF")) // Blanco para seleccionado
         }
     }
 
     private fun agregarEtiqueta(etiqueta: String) {
-        if (!etiquetas.contains(etiqueta)) {
-            etiquetas.add(etiqueta)
-            val chip = TextView(this).apply {
-                text = etiqueta
-                setPadding(32, 16, 32, 16)
-                setTextColor(resources.getColor(android.R.color.white))
-                setBackgroundResource(R.drawable.tag_green_background)
-                setTextSize(14f)
-            }
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(8, 0, 8, 0)
-            chip.layoutParams = params
-
-            layoutEtiquetas.addView(chip)
-        }
+        etiquetas.add(etiqueta)
+        etiquetaAdapter.notifyItemInserted(etiquetas.size - 1)
     }
 }
