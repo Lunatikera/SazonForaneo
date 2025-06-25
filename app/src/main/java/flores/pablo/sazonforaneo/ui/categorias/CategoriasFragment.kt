@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import flores.pablo.sazonforaneo.AgregarNombreDescripcion
-import flores.pablo.sazonforaneo.Categoria
-import flores.pablo.sazonforaneo.PerfilConfigActivity
+import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
+import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 
 class CategoriasFragment : Fragment() {
 
@@ -54,7 +53,7 @@ class CategoriasFragment : Fragment() {
         Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
-        val adaptadorCategorias = CategoriaAdapter(categorias) { categoria ->
+        val adaptadorCategorias = CategoriaAdapter(categorias) { categoria: Categoria ->
             Toast.makeText(requireContext(), "Categoría: ${categoria.nombre}", Toast.LENGTH_SHORT).show()
             // Aquí puedes hacer la navegación a otro fragment o actividad si lo deseas
         }
@@ -67,8 +66,9 @@ class CategoriasFragment : Fragment() {
 
     private fun configurarListenersDeClic() {
         binding.ivPerfil.setOnClickListener {
-            val intent = Intent(requireContext(), PerfilConfigActivity::class.java)
-            startActivity(intent)
+            Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
+            val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
+            startActivity(intento)
         }
 
         binding.fabAddRecipe.setOnClickListener {
