@@ -1,25 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_categorias">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="flores.pablo.sazonforaneo.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_mis_recetas"
+        android:name="flores.pablo.sazonforaneo.ui.recetas.MisRecetasFragment"
+        android:label="Mis Recetas"
+        tools:layout="@layout/fragment_misrecetas" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="flores.pablo.sazonforaneo.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/nav_explorar"
+        android:name="flores.pablo.sazonforaneo.ui.explorar.ExplorarFragment"
+        android:label="Explorar"
+        tools:layout="@layout/fragment_explorar" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="flores.pablo.sazonforaneo.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/nav_categorias"
+        android:name="flores.pablo.sazonforaneo.ui.categorias.CategoriasFragment"
+        android:label="Categorías"
+        tools:layout="@layout/fragment_categorias" />
 </navigation>

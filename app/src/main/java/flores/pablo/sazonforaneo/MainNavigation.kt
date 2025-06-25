@@ -1,12 +1,13 @@
-package flores.pablo.sazonforaneo
+package flores.pablo.sazonforaneo.ui
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.databinding.ActivityMainNavigationBinding
 
 class MainNavigation : AppCompatActivity() {
@@ -22,13 +23,11 @@ class MainNavigation : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main_navigation)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
+            setOf(R.id.nav_categorias, R.id.nav_explorar, R.id.nav_mis_recetas)
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }

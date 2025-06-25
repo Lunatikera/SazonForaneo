@@ -4,18 +4,18 @@
     <item
         android:id="@+id/nav_mis_recetas"
         android:title="Mis Recetas"
-        android:icon="@android:drawable/ic_menu_myplaces"/>
+        android:icon="@drawable/ic_recetas"/>
 <!--        PONER EL ICONO DE MISRECETAS-->
 
     <item
         android:id="@+id/nav_explorar"
         android:title="Explorar"
-        android:icon="@android:drawable/ic_menu_compass"/>
+        android:icon="@drawable/ic_explorar"/>
     <!--       PONER EL ICONO DE EXPLORAR-->
 
     <item
         android:id="@+id/nav_categorias"
         android:title="Categorias"
-        android:icon="@android:drawable/ic_menu_myplaces"/>
+        android:icon="@drawable/ic_categorias"/>
     <!--        PONER EL ICONO DE CATEGORIAS-->
 </menu>

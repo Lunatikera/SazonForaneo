@@ -1,12 +1,13 @@
-package flores.pablo.sazonforaneo
+package flores.pablo.sazonforaneo.ui.categorias
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import flores.pablo.sazonforaneo.Categoria
+import flores.pablo.sazonforaneo.R
 
 class CategoriaAdapter(
     private val categorias: List<Categoria>,
