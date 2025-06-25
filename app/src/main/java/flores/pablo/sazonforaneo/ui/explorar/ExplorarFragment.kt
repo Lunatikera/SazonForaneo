@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.DetalleReceta
-import flores.pablo.sazonforaneo.PerfilConfigActivity
+import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.databinding.FragmentExplorarBinding
 import flores.pablo.sazonforaneo.Receta
 

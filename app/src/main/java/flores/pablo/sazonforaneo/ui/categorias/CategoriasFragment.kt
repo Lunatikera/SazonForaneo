@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
