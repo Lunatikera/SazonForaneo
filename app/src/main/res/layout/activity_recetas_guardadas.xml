@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/baby_orange"
     android:gravity="center"
-    tools:context=".recetas_guardadas_activity">
+    tools:context=".ui.recetas_guardadas_activity">
 
     <TextView
         android:layout_marginTop="30dp"
@@ -20,23 +20,20 @@
         android:textStyle="bold"
         android:text="@string/saveR"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:background="@drawable/cuadro_redondo_gris"
-        android:layout_margin="20dp"
-        android:elevation="5dp">
-
-        <GridView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="1"
-            android:layout_weight="1"
-            />
-
-
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/misRecetas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:overScrollMode="always"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recipes_title"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_receta" />
 
 </LinearLayout>

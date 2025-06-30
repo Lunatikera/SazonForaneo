@@ -44,14 +44,14 @@ class CategoriasFragment : Fragment() {
             Categoria("Postres", R.drawable.imagen_postres),
             Categoria("Snacks", R.drawable.imagen_snacks),
             Categoria("Salsas", R.drawable.imagen_salsas),
-                    Categoria("Entradas", R.drawable.imagen_entradas),
-        Categoria("Sopas", R.drawable.imagen_sopas),
-        Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
-        Categoria("Ensaladas", R.drawable.imagen_ensaladas),
-        Categoria("Guarniciones", R.drawable.imagen_guarniciones),
-        Categoria("Postres", R.drawable.imagen_postres),
-        Categoria("Snacks", R.drawable.imagen_snacks),
-        Categoria("Salsas", R.drawable.imagen_salsas)
+            Categoria("Entradas", R.drawable.imagen_entradas),
+            Categoria("Sopas", R.drawable.imagen_sopas),
+            Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
+            Categoria("Ensaladas", R.drawable.imagen_ensaladas),
+            Categoria("Guarniciones", R.drawable.imagen_guarniciones),
+            Categoria("Postres", R.drawable.imagen_postres),
+            Categoria("Snacks", R.drawable.imagen_snacks),
+            Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
         val adaptadorCategorias = CategoriaAdapter(categorias) { categoria: Categoria ->

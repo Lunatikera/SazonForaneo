@@ -10,9 +10,12 @@ import flores.pablo.sazonforaneo.ui.explorar.ExplorarFragment
 import flores.pablo.sazonforaneo.ui.recetas.MisRecetasFragment
 
 class ExplorarActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explorar)
+
+
 
         val fragmentToShow = intent.getStringExtra("fragment_to_show")
 

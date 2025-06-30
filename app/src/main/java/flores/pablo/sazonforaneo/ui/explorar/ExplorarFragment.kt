@@ -1,7 +1,6 @@
 package flores.pablo.sazonforaneo.ui.explorar
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,8 @@ import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.DetalleReceta
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.databinding.FragmentExplorarBinding
-import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.ui.Receta
+import flores.pablo.sazonforaneo.ui.ExplorarAdapter
 
 class ExplorarFragment : Fragment() {
 

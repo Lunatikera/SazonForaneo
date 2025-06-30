@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import flores.pablo.sazonforaneo.ui.Receta
 
 class AgregarVisibilidad : AppCompatActivity() {
     private lateinit var receta: Receta

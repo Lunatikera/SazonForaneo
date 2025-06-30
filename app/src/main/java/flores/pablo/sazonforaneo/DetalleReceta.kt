@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayout
+import flores.pablo.sazonforaneo.ui.Receta
 
 class DetalleReceta : AppCompatActivity() {
 

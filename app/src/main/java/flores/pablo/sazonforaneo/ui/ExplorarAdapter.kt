@@ -1,4 +1,4 @@
-package flores.pablo.sazonforaneo.ui.explorar
+package flores.pablo.sazonforaneo.ui
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.ui.Receta
 
 class ExplorarAdapter(
     private val recetas: List<Receta>,
