@@ -1,61 +1,71 @@
 package flores.pablo.sazonforaneo.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.ui.categorias.CategoriasFragment
-import flores.pablo.sazonforaneo.ui.explorar.ExplorarFragment
-import flores.pablo.sazonforaneo.ui.recetas.MisRecetasFragment
 
 class ExplorarActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explorar)
 
-        val fragmentToShow = intent.getStringExtra("fragment_to_show")
+        // Obtener el NavController desde el NavHostFragment
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
+        val fabAddRecipe= findViewById<FloatingActionButton>(R.id.fab_add_recipe)
 
-        when(fragmentToShow) {
+        // Navegación inicial según el intent
+        val fragmentToShow = intent.getStringExtra("fragment_to_show")
+        when (fragmentToShow) {
             "mis_recetas" -> {
-                replaceFragment(MisRecetasFragment())
+                navController.navigate(R.id.nav_mis_recetas)
                 bottomNav.selectedItemId = R.id.nav_mis_recetas
             }
             "explorar" -> {
-                replaceFragment(ExplorarFragment())
+                navController.navigate(R.id.nav_explorar)
                 bottomNav.selectedItemId = R.id.nav_explorar
             }
             else -> {
-                replaceFragment(CategoriasFragment())
+                navController.navigate(R.id.nav_categorias)
                 bottomNav.selectedItemId = R.id.nav_categorias
             }
         }
 
+        // Escuchar selección del BottomNavigationView
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_categorias -> {
-                    replaceFragment(CategoriasFragment())
+                    navController.navigate(R.id.nav_categorias)
                     true
                 }
                 R.id.nav_explorar -> {
-                    replaceFragment(ExplorarFragment())
+                    navController.navigate(R.id.nav_explorar)
                     true
                 }
                 R.id.nav_mis_recetas -> {
-                    replaceFragment(MisRecetasFragment())
+                    navController.navigate(R.id.nav_mis_recetas)
                     true
                 }
                 else -> false
             }
         }
-    }
 
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, fragment)
-            .commit()
+        fabAddRecipe.setOnClickListener {
+            val intent = Intent(this, AgregarNombreDescripcion::class.java)
+            startActivity(intent)
+        }
     }
 }

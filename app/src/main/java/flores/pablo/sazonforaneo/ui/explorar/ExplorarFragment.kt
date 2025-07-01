@@ -46,10 +46,7 @@ class ExplorarFragment : Fragment() {
             val intent = Intent(requireContext(), PerfilConfigActivity::class.java)
             startActivity(intent)
         }
-        binding.fabAddRecipe.setOnClickListener {
-            val intent = Intent(requireContext(), AgregarNombreDescripcion::class.java)
-            startActivity(intent)
-        }
+
     }
 
     private fun obtenerRecetasEjemplo(): List<Receta> {

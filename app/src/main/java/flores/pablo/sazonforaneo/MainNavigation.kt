@@ -22,7 +22,7 @@ class MainNavigation : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main_navigation)
+        val navController = findNavController(R.id.nav_host_fragment)
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.nav_categorias, R.id.nav_explorar, R.id.nav_mis_recetas)

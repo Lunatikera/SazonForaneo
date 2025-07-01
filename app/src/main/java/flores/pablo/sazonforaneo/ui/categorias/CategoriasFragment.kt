@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
@@ -19,12 +21,14 @@ class CategoriasFragment : Fragment() {
     private var _binding: FragmentCategoriasBinding? = null
     private val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoriasBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,8 +54,7 @@ class CategoriasFragment : Fragment() {
             // Navegar usando Safe Args
             val action = CategoriasFragmentDirections
                 .actionNavCategoriasToRecetasPorCategoriaFragment(categoria.nombre)
-
-            requireView().findNavController().navigate(action)
+            findNavController().navigate(action)
         }
 
         binding.categoriesGridRecyclerview.apply {
@@ -60,17 +63,11 @@ class CategoriasFragment : Fragment() {
         }
     }
 
-
     private fun configurarListenersDeClic() {
         binding.ivPerfil.setOnClickListener {
             Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
             val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
             startActivity(intento)
-        }
-
-        binding.fabAddRecipe.setOnClickListener {
-            val intent = Intent(requireContext(), AgregarNombreDescripcion::class.java)
-            startActivity(intent)
         }
 
         binding.tagsButton.setOnClickListener {

@@ -40,10 +40,7 @@ class MisRecetasFragment : Fragment() {
         binding.rvMisRecetas.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMisRecetas.adapter = adapter
 
-        binding.fabAddRecipe.setOnClickListener {
-            val intent = Intent(requireContext(), AgregarNombreDescripcion::class.java)
-            startActivity(intent)
-        }
+
 
     }
 
