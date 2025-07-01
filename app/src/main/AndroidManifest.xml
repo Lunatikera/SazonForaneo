@@ -41,10 +41,10 @@
             android:name=".recetas_guardadas_activity"
             android:exported="false" />
         <activity
-            android:name=".editar_informacion_perfil_activity"
+            android:name=".ui.editar_informacion_perfil_activity"
             android:exported="false" />
         <activity
-            android:name=".PerfilConfigActivity"
+            android:name=".ui.PerfilConfigActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -70,5 +70,6 @@
             android:name=".CategoriasActivity"
             android:exported="false" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

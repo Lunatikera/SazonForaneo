@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:layout_marginEnd="8dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/chip_etiqueta">
+
+    <TextView
+        android:id="@+id/tvEtiqueta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ejemplo 1"
+        android:textColor="#44291D"
+        android:textSize="14sp"
+        android:maxLines="1" />
+
+    <ImageView
+        android:id="@+id/btnEliminar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/eliminaringrediente"
+        android:contentDescription="Eliminar" />
+</LinearLayout>

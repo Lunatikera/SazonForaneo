@@ -1,4 +1,4 @@
-package flores.pablo.sazonforaneo
+package flores.pablo.sazonforaneo.ui
 
 import android.net.Uri
 import java.io.Serializable
@@ -12,7 +12,10 @@ data class Receta(
     var ingredientes: List<String> = emptyList(),
     var instrucciones: String = "",
     var fuente: String = "",
-    var imagenUri: Uri? = null
-) : Serializable
+    var autor: String = "",
+    var rating: Float = 0.0f,
+    var imagenUriString: String? = null
+) : Serializable{
 
-
+fun getImagenUri(): Uri? = imagenUriString?.let { Uri.parse(it) }
+}

@@ -10,15 +10,31 @@ import flores.pablo.sazonforaneo.ui.explorar.ExplorarFragment
 import flores.pablo.sazonforaneo.ui.recetas.MisRecetasFragment
 
 class ExplorarActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explorar)
 
-        replaceFragment(CategoriasFragment())
+
+
+        val fragmentToShow = intent.getStringExtra("fragment_to_show")
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
 
-        bottomNav.selectedItemId = R.id.nav_categorias
+        when(fragmentToShow) {
+            "mis_recetas" -> {
+                replaceFragment(MisRecetasFragment())
+                bottomNav.selectedItemId = R.id.nav_mis_recetas
+            }
+            "explorar" -> {
+                replaceFragment(ExplorarFragment())
+                bottomNav.selectedItemId = R.id.nav_explorar
+            }
+            else -> {
+                replaceFragment(CategoriasFragment())
+                bottomNav.selectedItemId = R.id.nav_categorias
+            }
+        }
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -38,6 +54,7 @@ class ExplorarActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
