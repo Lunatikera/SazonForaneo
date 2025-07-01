@@ -11,9 +11,11 @@ import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
 
 class ExplorarAdapter(
-    private val recetas: List<Receta>,
+    recetasIniciales: List<Receta>,
     private val onItemClick: (Receta) -> Unit
 ) : RecyclerView.Adapter<ExplorarAdapter.RecetaViewHolder>() {
+
+    private var recetas: MutableList<Receta> = recetasIniciales.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecetaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_receta, parent, false)
@@ -25,6 +27,12 @@ class ExplorarAdapter(
     }
 
     override fun getItemCount(): Int = recetas.size
+
+    fun actualizarLista(nuevaLista: List<Receta>) {
+        recetas.clear()
+        recetas.addAll(nuevaLista)
+        notifyDataSetChanged()
+    }
 
     inner class RecetaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivReceta: ImageView = itemView.findViewById(R.id.ivReceta)
@@ -56,10 +64,12 @@ class ExplorarAdapter(
                     ivReceta.setImageResource(R.drawable.pizza)
                 }
             }
+
             ratingBar.rating = receta.rating.coerceIn(0f, 5f)  // Asegura que esté entre 0 y 5
             tvRating.text = String.format("%.1f", receta.rating)
+
             tagsLayout.removeAllViews()
-            val allTags =  receta.etiquetas
+            val allTags = receta.etiquetas
             for (tag in allTags) {
                 val tagView = TextView(itemView.context).apply {
                     text = tag
@@ -81,6 +91,5 @@ class ExplorarAdapter(
                 onItemClick(receta)
             }
         }
-
     }
 }
