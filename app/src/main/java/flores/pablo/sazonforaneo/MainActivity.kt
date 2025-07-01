@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         private lateinit var etCorreo: EditText
         private lateinit var etPassword: EditText
         private lateinit var btnEntrar: Button
-        private lateinit var btnRegistrarme: Button
+        private lateinit var tvRegistrarme: TextView
         private lateinit var tvOlvidaste: TextView
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             etCorreo = findViewById(R.id.etCorreo)
             etPassword = findViewById(R.id.etPassword)
             btnEntrar = findViewById(R.id.btnEntrar)
-            btnRegistrarme = findViewById(R.id.btnRegistrarme)
+            tvRegistrarme = findViewById(R.id.tvNoCuentaParte2)
             tvOlvidaste = findViewById(R.id.tvOlvidaste)
 
             btnEntrar.setOnClickListener {
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            btnRegistrarme.setOnClickListener {
+            tvRegistrarme.setOnClickListener {
                 val intent = Intent(this, RegistroActivity::class.java)
                 startActivity(intent)
             }
