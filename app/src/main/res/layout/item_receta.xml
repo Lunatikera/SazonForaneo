@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Imagen de receta -->
         <ImageView
             android:id="@+id/ivReceta"
             android:layout_width="match_parent"
@@ -22,14 +21,12 @@
             android:scaleType="centerCrop"
             android:src="@drawable/pizza" />
 
-        <!-- Info de receta -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Nombre -->
             <TextView
                 android:id="@+id/tvNombreReceta"
                 android:layout_width="wrap_content"
@@ -39,7 +36,6 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
-            <!-- Autor y estrellas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

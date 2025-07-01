@@ -103,8 +103,8 @@ class RecetasPorCategoriaFragment : Fragment() {
 
             Receta(
                 nombre = "Ensalada César",
-                descripcion = "Clásica ensalada con lechuga romana, aderezo césar y crutones.",
-                categorias = listOf("Guarniciones", "Snacks"),
+                descripcion = "Clásica ensalada con lechuga romana, aderezo césar y crutones.Clásica ensalada con lechuga romana, aderezo césar y crutones",
+                categorias = listOf("Guarniciones", "Snacks","Ensaladas"),
                 etiquetas = listOf("Ensalada", "César", "Lechuga"),
                 visibilidad = "Privada",
                 ingredientes = listOf("Lechuga", "Pollo", "Crutones", "Aderezo César", "Queso parmesano"),
