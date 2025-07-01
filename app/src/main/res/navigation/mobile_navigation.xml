@@ -21,5 +21,18 @@
         android:id="@+id/nav_categorias"
         android:name="flores.pablo.sazonforaneo.ui.categorias.CategoriasFragment"
         android:label="Categorías"
-        tools:layout="@layout/fragment_categorias" />
+        tools:layout="@layout/fragment_categorias">
+
+    <action
+        android:id="@+id/action_nav_categorias_to_recetasPorCategoriaFragment"
+        app:destination="@id/recetasPorCategoriaFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/recetasPorCategoriaFragment"
+        android:name="flores.pablo.sazonforaneo.ui.categorias.RecetasPorCategoriaFragment"
+        android:label="Recetas por categoría"
+        tools:layout="@layout/fragment_recetas_por_categoria" />
+
 </navigation>

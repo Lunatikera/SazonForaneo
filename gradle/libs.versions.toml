@@ -36,4 +36,5 @@ glide_compiler = { module = "com.github.bumptech.glide:compiler", version.ref = 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+navigation-safe-args = { id = "androidx.navigation.safeargs.kotlin", version = "2.5.3" }
 
