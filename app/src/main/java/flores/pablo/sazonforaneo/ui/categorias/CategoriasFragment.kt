@@ -43,15 +43,20 @@ class CategoriasFragment : Fragment() {
             Categoria("Guarniciones", R.drawable.imagen_guarniciones),
             Categoria("Postres", R.drawable.imagen_postres),
             Categoria("Snacks", R.drawable.imagen_snacks),
+            Categoria("Salsas", R.drawable.imagen_salsas),
+            Categoria("Entradas", R.drawable.imagen_entradas),
+            Categoria("Sopas", R.drawable.imagen_sopas),
+            Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
+            Categoria("Ensaladas", R.drawable.imagen_ensaladas),
+            Categoria("Guarniciones", R.drawable.imagen_guarniciones),
+            Categoria("Postres", R.drawable.imagen_postres),
+            Categoria("Snacks", R.drawable.imagen_snacks),
             Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
         val adaptadorCategorias = CategoriaAdapter(categorias) { categoria: Categoria ->
-            // Navegar usando Safe Args
-            val action = CategoriasFragmentDirections
-                .actionNavCategoriasToRecetasPorCategoriaFragment(categoria.nombre)
-
-            requireView().findNavController().navigate(action)
+            Toast.makeText(requireContext(), "Categoría: ${categoria.nombre}", Toast.LENGTH_SHORT).show()
+            // Aquí puedes hacer la navegación a otro fragment o actividad si lo deseas
         }
 
         binding.categoriesGridRecyclerview.apply {
@@ -59,7 +64,6 @@ class CategoriasFragment : Fragment() {
             adapter = adaptadorCategorias
         }
     }
-
 
     private fun configurarListenersDeClic() {
         binding.ivPerfil.setOnClickListener {

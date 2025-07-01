@@ -7,6 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.GridView
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.helper.widget.Grid
+import androidx.core.graphics.drawable.toIcon
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -26,11 +32,14 @@ class MisRecetasFragment : Fragment() {
 
     private var adapter: ExplorarAdapter? = null
     private var _binding: FragmentMisrecetasBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var adapter: MisRecetasAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 

@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-
 
 class RegistroActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
 
-        auth = FirebaseAuth.getInstance()
         val etNombre = findViewById<EditText>(R.id.etNombre)
         val etCorreo = findViewById<EditText>(R.id.etCorreo)
         val etFecha = findViewById<EditText>(R.id.etFecha)
@@ -67,27 +64,17 @@ class RegistroActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(correo, pass)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT)
-                            .show()
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+            Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT).show()
 
-                    } else {
-                        Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
-                }
-
-            tvIniciarSesion.setOnClickListener {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+        tvIniciarSesion.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
+}

@@ -57,4 +57,5 @@
         <item name="android:textColor">#FFD700</item>
         <item name="android:textSize">14sp</item>
     </style>
+
 </resources>
