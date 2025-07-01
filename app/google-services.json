@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849883466213",
+    "project_id": "sazonforaneo",
+    "storage_bucket": "sazonforaneo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849883466213:android:bee21914d4ec2ae4f2470c",
+        "android_client_info": {
+          "package_name": "flores.pablo.sazonforaneo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-lssnHIdrES873QMiGz04dOpk1j1fCyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

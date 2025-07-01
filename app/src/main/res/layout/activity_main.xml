@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
+    android:background="#F7F4ED">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:src="@drawable/sazon_logo"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,7 +24,8 @@
             android:text="Inicia sesión"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textColor="#222222"
+            android:layout_marginBottom="20dp" />
 
         <EditText
             android:id="@+id/etCorreo"
@@ -36,44 +37,66 @@
             android:padding="12dp"
             android:layout_marginBottom="12dp" />
 
+
+
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#AAAAAA"
             android:hint="Contraseña"
             android:inputType="textPassword"
-            android:backgroundTint="#AAAAAA"
-            android:padding="12dp"
-            android:layout_marginBottom="20dp" />
+            android:padding="12dp" />
 
-        <Button
-            android:id="@+id/btnEntrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Entrar"
-            android:backgroundTint="#5D2A1C"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="20dp" />
-
-        <Button
-            android:id="@+id/btnRegistrarme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Registrarme"
-            android:backgroundTint="#5D2A1C"
-            android:textColor="#FFFFFF" />
         <TextView
             android:id="@+id/tvOlvidaste"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¿Olvidaste tu contraseña? Haz click aquí"
-            android:textColor="#5D2A1C"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginTop="20dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:gravity="start"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="#5D2A1C"
+            android:textSize="14sp" />
 
+        <Button
+            android:id="@+id/btnEntrar"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/rounded_button_brown"
+            android:text="Entrar"
+            android:layout_marginTop="25dp"
+            android:textColor="#FFFFFF" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/tvNoCuentaParte1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿No tienes una cuenta? "
+                android:textColor="#5D2A1C"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvNoCuentaParte2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Haz click aquí."
+                android:textColor="#EF7520"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

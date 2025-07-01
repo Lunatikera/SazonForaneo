@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/baby_orange"
-    tools:context=".ui.explorar.ExplorarFragment">
+    tools:context=".ui.categorias.RecetasPorCategoriaFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,72 +43,34 @@
                 android:padding="10dp"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:inputType="text" />
-
-            <Button
-                android:id="@+id/tags_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Etiquetas"
-                android:layout_marginStart="8dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="8dp" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/recipes_title"
+            android:id="@+id/tvTituloCategoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:textColor="@color/white"
-            android:textSize="25sp"
+            android:text="Recetas de Categoría"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:text="@string/saveR"
+            android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recipesRecyclerview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:overScrollMode="always"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="40dp"
-            tools:listitem="@layout/item_receta"
-            app:layout_constraintTop_toBottomOf="@id/recipes_title"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recipes_recyclerview"
+            android:id="@+id/recyclerview_recetas_categoria"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:clipToPadding="false"
             android:overScrollMode="always"
-            app:layout_constraintTop_toBottomOf="@id/recipes_title"
+            app:layout_constraintTop_toBottomOf="@id/tvTituloCategoria"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_receta" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:src="@drawable/baseline_add_24"
-            app:backgroundTint="#F36B1C"
-            app:tint="@color/white"
-            android:translationY="-40dp"
-            android:contentDescription="Añadir nueva receta"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout >
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
