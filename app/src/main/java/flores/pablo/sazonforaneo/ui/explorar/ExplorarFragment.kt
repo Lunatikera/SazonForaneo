@@ -65,17 +65,17 @@ class ExplorarFragment : Fragment() {
             ),
 
             Receta(nombre = "Tacos al Pastor",
-        descripcion = "Tacos tradicionales mexicanos con carne marinada y piña.",
-        categorias = listOf("Mexicana", "Callejera"),
-        etiquetas = listOf("Tacos", "Pastor", "Cena"),
-        visibilidad = "Pública",
-        ingredientes = listOf("Carne de cerdo", "Piña", "Tortillas", "Achiote", "Cebolla", "Cilantro"),
-        instrucciones = "Marinar la carne, cocinar en trompo, servir en tortilla con piña, cebolla y cilantro.",
-        fuente = "Recetario Popular",
-        autor = "Chef Luis Hernández",
-        rating = 4.5f,
-        imagenUriString = "https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/C07AE049-11C3-4672-A96A-A547C15F0116/Derivates/FE1D05A4-0A44-4007-9A42-5CAFD9F8F798.jpg"
-        ),
+                descripcion = "Tacos tradicionales mexicanos con carne marinada y piña.",
+                categorias = listOf("Mexicana", "Callejera"),
+                etiquetas = listOf("Tacos", "Pastor", "Cena"),
+                visibilidad = "Pública",
+                ingredientes = listOf("Carne de cerdo", "Piña", "Tortillas", "Achiote", "Cebolla", "Cilantro"),
+                instrucciones = "Marinar la carne, cocinar en trompo, servir en tortilla con piña, cebolla y cilantro.",
+                fuente = "Recetario Popular",
+                autor = "Chef Luis Hernández",
+                rating = 4.5f,
+                imagenUriString = "https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/C07AE049-11C3-4672-A96A-A547C15F0116/Derivates/FE1D05A4-0A44-4007-9A42-5CAFD9F8F798.jpg"
+                ),
 
         Receta(
             nombre = "Spaghetti Carbonara",

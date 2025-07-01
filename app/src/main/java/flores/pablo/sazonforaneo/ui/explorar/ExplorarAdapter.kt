@@ -59,7 +59,7 @@ class ExplorarAdapter(
             ratingBar.rating = receta.rating.coerceIn(0f, 5f)  // Asegura que esté entre 0 y 5
             tvRating.text = String.format("%.1f", receta.rating)
             tagsLayout.removeAllViews()
-            val allTags = receta.categorias + receta.etiquetas
+            val allTags =  receta.etiquetas
             for (tag in allTags) {
                 val tagView = TextView(itemView.context).apply {
                     text = tag
