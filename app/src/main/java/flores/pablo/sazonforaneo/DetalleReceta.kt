@@ -1,5 +1,7 @@
 package flores.pablo.sazonforaneo
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -25,7 +27,6 @@ class DetalleReceta : AppCompatActivity() {
     private lateinit var btnCalificar: Button
 
     private lateinit var receta: Receta
-
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,31 +67,38 @@ class DetalleReceta : AppCompatActivity() {
         tvAutor.text = receta.autor
         tvCalificacion.text = String.format("%.1f", receta.rating)
         tvDescripcion.text = receta.descripcion
-        tvFuente.text = receta.fuente
-        ratingBar.rating = receta.rating
 
+        tvFuente.text = "Fuente de la Receta"
+        tvFuente.setOnClickListener {
+            val url = receta.fuente
+            if (!url.isNullOrEmpty()) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No hay una fuente disponible", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        ratingBar.rating = receta.rating
         isFavorite = false
         ivFav.setImageResource(R.drawable.favheart)
 
         layoutTags.removeAllViews()
-        val allTags = receta.etiquetas
-        for (tag in allTags) {
+        for (tag in receta.etiquetas) {
             val tagView = TextView(this).apply {
                 text = tag
                 setPadding(24, 12, 24, 12)
                 setTextColor(android.graphics.Color.WHITE)
                 setBackgroundResource(R.drawable.tag_green_background)
-                val params = FlexboxLayout.LayoutParams(
+                layoutParams = FlexboxLayout.LayoutParams(
                     FlexboxLayout.LayoutParams.WRAP_CONTENT,
                     FlexboxLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(0, 0, 16, 16)
-                layoutParams = params
+                ).apply { setMargins(0, 0, 16, 16) }
             }
             layoutTags.addView(tagView)
         }
 
-        tvContenidoReceta.text = receta.ingredientes.joinToString(separator = "\n") { "• $it" }
+        tvContenidoReceta.text = receta.ingredientes.joinToString("\n") { "• $it" }
     }
 
     private fun configurarTabs() {
@@ -101,7 +109,7 @@ class DetalleReceta : AppCompatActivity() {
             tabInstrucciones.setBackgroundResource(R.drawable.tab_unselected)
             tabInstrucciones.setTextColor(resources.getColor(android.R.color.darker_gray))
 
-            tvContenidoReceta.text = receta.ingredientes.joinToString(separator = "\n") { "• $it" }
+            tvContenidoReceta.text = receta.ingredientes.joinToString("\n") { "• $it" }
         }
 
         tabInstrucciones.setOnClickListener {
@@ -133,7 +141,7 @@ class DetalleReceta : AppCompatActivity() {
             val dialogView = layoutInflater.inflate(R.layout.dialog_rating, null)
             val ratingBarDialog = dialogView.findViewById<RatingBar>(R.id.ratingBarDialog)
 
-            val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            AlertDialog.Builder(this)
                 .setTitle("Calificar receta")
                 .setView(dialogView)
                 .setPositiveButton("Enviar") { _, _ ->
@@ -141,12 +149,10 @@ class DetalleReceta : AppCompatActivity() {
                     ratingBar.rating = rating
                     tvCalificacion.text = String.format("%.1f", rating)
                     Toast.makeText(this, "Gracias por tu calificación: $rating", Toast.LENGTH_SHORT).show()
-
                 }
                 .setNegativeButton("Cancelar", null)
                 .create()
-
-            dialog.show()
+                .show()
         }
     }
 }

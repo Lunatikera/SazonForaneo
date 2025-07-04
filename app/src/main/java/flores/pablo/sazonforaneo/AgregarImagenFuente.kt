@@ -12,6 +12,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import android.app.Activity
 import flores.pablo.sazonforaneo.ui.ExplorarActivity
+import java.io.File
+import java.io.FileOutputStream
 
 class AgregarImagenFuente : AppCompatActivity() {
 
@@ -76,8 +78,21 @@ class AgregarImagenFuente : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            imagenUri = data.data
+            val sourceUri = data.data ?: return
+            val inputStream = contentResolver.openInputStream(sourceUri)
+            val fileName = "receta_${System.currentTimeMillis()}.jpg"
+            val outputFile = File(cacheDir, fileName)
+            val outputStream = FileOutputStream(outputFile)
+
+            inputStream?.copyTo(outputStream)
+
+            inputStream?.close()
+            outputStream.close()
+
+            val copiedUri = Uri.fromFile(outputFile)
+            imagenUri = copiedUri
             imageView.setImageURI(imagenUri)
         }
     }
+
 }
