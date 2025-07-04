@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import flores.pablo.sazonforaneo.ui.ExplorarActivity
+import flores.pablo.sazonforaneo.MisRecetasActivity
+
 
 class AgregarImagenFuente : AppCompatActivity() {
     private lateinit var receta: Receta
@@ -53,10 +55,10 @@ class AgregarImagenFuente : AppCompatActivity() {
 
             Toast.makeText(this, "Receta completada con éxito", Toast.LENGTH_LONG).show()
 
-            val intent = Intent()
-            intent.putExtra("receta", receta)
-            setResult(Activity.RESULT_OK, intent)
+            val intent = Intent(this, ExplorarActivity::class.java)
+            startActivity(intent)
             finish()
+
         }
     }
 

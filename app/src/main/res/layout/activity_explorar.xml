@@ -16,17 +16,18 @@
         app:defaultNavHost="true" />
 
     <!-- Bottom Navigation siempre pegado al fondo -->
+
+    <!-- Floating Action Button anclado sobre la barra inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="#F7F4ED"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
-        android:background="#F7F4ED"
         app:menu="@menu/menu_bottom_nav" />
 
-    <!-- Floating Action Button anclado sobre la barra inferior -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_recipe"
         android:layout_width="wrap_content"
