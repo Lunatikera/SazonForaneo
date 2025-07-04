@@ -50,11 +50,14 @@ class ExplorarFragment : Fragment() {
         }
 
         binding.tagsButton.setOnClickListener {
-            val dialog = TagsDialogFragment(selectedTags) { tags ->
+            val dialog = TagsDialogFragment(
+                initialTags = selectedTags,
+                initialCategories = emptyList()
+            ) { tags, _ ->
                 selectedTags = tags.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             }
-            dialog.show(childFragmentManager, "TagsDialog")
+            dialog.show(childFragmentManager, "TagsDialogRecetasCategoria")
         }
     }
 

@@ -66,14 +66,16 @@ class RecetasPorCategoriaFragment : Fragment() {
         }
 
         tagsButton.setOnClickListener {
-            val dialog = TagsDialogFragment(selectedTags) { tags ->
+            val dialog = TagsDialogFragment(
+                initialTags = selectedTags,          
+                initialCategories = emptyList()
+            ) { tags, _ ->
                 selectedTags = tags.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             }
             dialog.show(childFragmentManager, "TagsDialogRecetasCategoria")
         }
 
-       //AQUI SE PUEDE PONER LA LOGICA PARA LA BARR ADE BUSQUEDA
 
         return view
     }

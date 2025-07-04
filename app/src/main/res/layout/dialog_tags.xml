@@ -1,10 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialogRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
     android:orientation="vertical"
+    android:padding="20dp"
     android:background="@drawable/dialog_tag_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Categorías:"
+        android:textSize="16sp"
+        android:textColor="#444444"
+        android:layout_marginBottom="8dp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexCategoriesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Agregar etiqueta"
-            android:inputType="text" />
+            android:inputType="text"
+            android:background="@drawable/rounded_edittext" />
 
         <Button
             android:id="@+id/btnAddTag"
@@ -35,14 +54,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:flexWrap="wrap" />
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start" />
 
     <Button
         android:id="@+id/btnApplyTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Aplicar filtro"
+        android:layout_marginTop="24dp"
         android:background="@drawable/rounded_button_brown"
-        android:textColor="@color/white"
-        android:layout_marginTop="24dp" />
+        android:text="Aplicar filtro"
+        android:textColor="@color/white" />
 </LinearLayout>
