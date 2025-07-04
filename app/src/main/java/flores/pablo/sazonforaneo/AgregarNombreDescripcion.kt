@@ -18,8 +18,7 @@ class AgregarNombreDescripcion : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_agregar_nombre_descripcion) // Asegúrate de usar el ID correcto
-
+        setContentView(R.layout.activity_agregar_nombre_descripcion)
         etNombre = findViewById(R.id.etNombre)
         etDescripcion = findViewById(R.id.etDescripcion)
         btnContinuar = findViewById(R.id.btnContinuar)
@@ -33,7 +32,7 @@ class AgregarNombreDescripcion : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val receta = Receta(nombre, descripcion)
+            val receta = Receta(nombre = nombre, descripcion = descripcion, autor = "Tu")
 
             val intent = Intent(this, AgregarVisibilidad::class.java)
             intent.putExtra("receta", receta)

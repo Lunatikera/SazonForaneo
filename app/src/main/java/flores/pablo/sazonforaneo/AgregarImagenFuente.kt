@@ -1,6 +1,5 @@
 package flores.pablo.sazonforaneo
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,20 +8,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.app.Activity
 import flores.pablo.sazonforaneo.ui.ExplorarActivity
 
 class AgregarImagenFuente : AppCompatActivity() {
+
     private lateinit var receta: Receta
     private lateinit var imageView: ImageView
     private lateinit var etFuente: EditText
     private lateinit var btnFinalizar: Button
-
     private var imagenUri: Uri? = null
     private val SELECT_IMAGE_REQUEST = 1
+
+    private val recetaViewModel: RecetaViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,6 @@ class AgregarImagenFuente : AppCompatActivity() {
 
         btnFinalizar.setOnClickListener {
             val fuente = etFuente.text.toString().trim()
-
             if (fuente.isEmpty()) {
                 etFuente.error = "Por favor indica la fuente"
                 etFuente.requestFocus()
@@ -51,12 +50,25 @@ class AgregarImagenFuente : AppCompatActivity() {
             receta.fuente = fuente
             receta.imagenUriString = imagenUri?.toString()
 
-            Toast.makeText(this, "Receta completada con éxito", Toast.LENGTH_LONG).show()
+            recetaViewModel.guardarReceta(receta)
+        }
 
-            val intent = Intent()
-            intent.putExtra("receta", receta)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+        recetaViewModel.guardadoExitoso.observe(this) { exito ->
+            if (exito) {
+                Toast.makeText(this, "Receta guardada con éxito", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, ExplorarActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    putExtra("mostrarFragmento", "explorar")
+                }
+                startActivity(intent)
+                finish()
+            }
+        }
+
+        recetaViewModel.error.observe(this) { error ->
+            error?.let {
+                Toast.makeText(this, "Error al guardar: ${it.message}", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
