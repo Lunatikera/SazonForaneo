@@ -45,11 +45,11 @@
             android:id="@+id/etFecha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha de nacimiento (dd/mm/aaaa)"
-            android:inputType="text"
-            android:layout_marginBottom="12dp"/>
+            android:hint="Fecha de nacimiento"
+            android:focusable="false"
+            android:clickable="true" />
 
-        <!-- Ni me pregunten como se hace porque solo dios y el vato del yt saben -->
+        <!-- Ni me pregunten como se hace porque solo dios y el vato del yt saben xdd -->
         <Spinner
             android:id="@+id/spinnerGenero"
             android:layout_width="match_parent"

@@ -13,26 +13,31 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:paddingTop="8dp"
             android:id="@+id/ivPerfil"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/circle"
             android:contentDescription="Imagen de perfil"
+            android:paddingTop="8dp"
             android:scaleType="centerCrop"
             android:src="@drawable/imagen_perfil"
+            app:layout_constraintBottom_toBottomOf="@+id/categories_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/categories_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="40dp"
             android:text="Categorías"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
