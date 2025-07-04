@@ -15,13 +15,15 @@
             android:id="@+id/top_search_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:background="@color/searchBarZone"
-            android:padding="16dp"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivPerfil"
@@ -29,20 +31,32 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/circle"
+                android:contentDescription="Imagen de perfil"
                 android:scaleType="centerCrop"
-                android:src="@drawable/imagen_perfil"
-                android:contentDescription="Imagen de perfil" />
+                android:src="@drawable/imagen_perfil" />
 
             <EditText
                 android:id="@+id/etBuscar"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="Buscar receta"
+                android:layout_weight="1"
                 android:background="@drawable/search_background"
-                android:padding="10dp"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:inputType="text" />
+                android:hint="Buscar receta"
+                android:inputType="text"
+                android:padding="10dp" />
+
+            <Button
+                android:id="@+id/tags_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/button_round_orange"
+                android:minWidth="72dp"
+                android:minHeight="36dp"
+                android:paddingHorizontal="12dp"
+                android:text="Etiquetas"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <TextView

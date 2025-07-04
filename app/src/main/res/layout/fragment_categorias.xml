@@ -8,88 +8,51 @@
     tools:context=".ui.categorias.CategoriasFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Barra superior -->
-        <LinearLayout
-            android:id="@+id/top_search_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/searchBarZone"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+            android:paddingTop="8dp"
+            android:id="@+id/ivPerfil"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle"
+            android:contentDescription="Imagen de perfil"
+            android:scaleType="centerCrop"
+            android:src="@drawable/imagen_perfil"
+            tools:ignore="MissingConstraints" />
 
-            <ImageView
-                android:id="@+id/ivPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/circle"
-                android:scaleType="centerCrop"
-                android:src="@drawable/imagen_perfil"
-                android:contentDescription="Imagen de perfil" />
-
-            <EditText
-                android:id="@+id/etBuscar"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:hint="Buscar por nombre"
-                android:background="@drawable/search_background"
-                android:padding="10dp"
-                android:drawableStart="@android:drawable/ic_menu_search"
-                android:inputType="text" />
-
-            <Button
-                android:id="@+id/tags_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Etiquetas"
-                android:layout_marginStart="8dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="8dp" />
-        </LinearLayout>
-
-        <!-- Título -->
         <TextView
             android:id="@+id/categories_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="Categorías"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- RecyclerView de categorías -->
-
-        <!-- Floating Action Button -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/categories_grid_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:clipToPadding="false"
             android:overScrollMode="always"
-            app:layout_constraintTop_toBottomOf="@id/categories_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/categories_title"
+            app:layout_constraintVertical_bias="1.0"
             app:spanCount="2"
             tools:listitem="@layout/item_categoria" />
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

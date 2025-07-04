@@ -64,15 +64,16 @@ class CategoriasFragment : Fragment() {
     }
 
     private fun configurarListenersDeClic() {
-        binding.ivPerfil.setOnClickListener {
-            Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
-            val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
-            startActivity(intento)
-        }
+        // Estas líneas ahora son innecesarias porque los elementos fueron eliminados del layout
+        // binding.ivPerfil.setOnClickListener {
+        //     Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
+        //     val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
+        //     startActivity(intento)
+        // }
 
-        binding.tagsButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Botón Etiquetas (funcionalidad pendiente)", Toast.LENGTH_SHORT).show()
-        }
+        // binding.tagsButton.setOnClickListener {
+        //     Toast.makeText(requireContext(), "Botón Etiquetas (funcionalidad pendiente)", Toast.LENGTH_SHORT).show()
+        // }
     }
 
     override fun onDestroyView() {
