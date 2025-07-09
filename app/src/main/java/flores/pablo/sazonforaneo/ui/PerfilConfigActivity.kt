@@ -1,67 +1,114 @@
 package flores.pablo.sazonforaneo.ui
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.bumptech.glide.Glide
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import flores.pablo.sazonforaneo.MainActivity
 import flores.pablo.sazonforaneo.R
+import flores.pablo.sazonforaneo.ui.UsuarioViewModel
+import androidx.activity.viewModels
 
 class PerfilConfigActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    companion object {
+        private const val REQUEST_IMAGE_PICK = 1001
+        private const val CLOUD_NAME = "dx8nxf9xf"
+        private const val UPLOAD_PRESET = "usuarios-preset"
+    }
 
     private lateinit var tvNombre: TextView
     private lateinit var tvCorreo: TextView
     private lateinit var tvRecetasCreadas: TextView
+    private lateinit var ivFotoPerfil: ImageView
+    private lateinit var ivEditarFoto: ImageView
+
+    private val viewModel: UsuarioViewModel by viewModels()
+
+    private var imagenUriTemporal: Uri? = null
+    private var imagenUriOriginal: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_perfil_config)
 
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
+        try {
+            val config = hashMapOf("cloud_name" to CLOUD_NAME)
+            MediaManager.init(this, config)
+        } catch (e: IllegalStateException) {
+        }
 
-        // Referencias
         tvNombre = findViewById(R.id.nombreTextView)
         tvCorreo = findViewById(R.id.correoTextView)
         tvRecetasCreadas = findViewById(R.id.recetasCreadasTextView)
+        ivFotoPerfil = findViewById(R.id.ivFotoPerfil)
+        ivEditarFoto = findViewById(R.id.ivEditarFoto)
 
-        cargarDatosUsuario()
+        observarViewModel()
+        configurarListeners()
 
-        // Editar perfil
-        val editarInfo: TextView = findViewById(R.id.infoPersonal)
-        editarInfo.setOnClickListener {
-            val intento = Intent(this, editar_informacion_perfil_activity::class.java)
-            startActivity(intento)
+        viewModel.cargarDatosUsuario()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.cargarDatosUsuario()
+    }
+
+    private fun observarViewModel() {
+        viewModel.nombre.observe(this) { tvNombre.text = it }
+        viewModel.correo.observe(this) { tvCorreo.text = it }
+        viewModel.recetasCreadas.observe(this) { tvRecetasCreadas.text = it.toString() }
+
+        viewModel.imagenPerfilUrl.observe(this) { url ->
+            if (!url.isNullOrEmpty()) {
+                Glide.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.imagen_predeterminada)
+                    .circleCrop()
+                    .into(ivFotoPerfil)
+                imagenUriOriginal = null
+            } else {
+                ivFotoPerfil.setImageResource(R.drawable.imagen_predeterminada)
+            }
+        }
+    }
+
+    private fun configurarListeners() {
+        findViewById<TextView>(R.id.infoPersonal).setOnClickListener {
+            startActivity(Intent(this, editar_informacion_perfil_activity::class.java))
         }
 
-        // Mis recetas
-        val misRecetas: TextView = findViewById(R.id.misRecetas)
-        misRecetas.setOnClickListener {
+        ivEditarFoto.setOnClickListener {
+            abrirSelectorImagen()
+        }
+
+        findViewById<TextView>(R.id.misRecetas).setOnClickListener {
             val intent = Intent(this, ExplorarActivity::class.java)
             intent.putExtra("fragment_to_show", "mis_recetas")
             startActivity(intent)
         }
 
-        // Recetas guardadas
-        val recetasGuardadas: TextView = findViewById(R.id.recetasGuardadas)
-        recetasGuardadas.setOnClickListener {
+        findViewById<TextView>(R.id.recetasGuardadas).setOnClickListener {
             val intent = Intent(this, ExplorarActivity::class.java)
             intent.putExtra("fragment_to_show", "recetas_guardadas")
             startActivity(intent)
         }
 
-        // Cerrar sesión
-        val btnCerrarSesion: TextView = findViewById(R.id.btnCerrarSesion)
-        btnCerrarSesion.setOnClickListener {
-            auth.signOut()
+        findViewById<TextView>(R.id.btnCerrarSesion).setOnClickListener {
+            viewModel.cerrarSesion()
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -69,37 +116,79 @@ class PerfilConfigActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        cargarDatosUsuario()
+    private fun abrirSelectorImagen() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_IMAGE_PICK)
     }
 
-    private fun cargarDatosUsuario() {
-        val uid = auth.currentUser?.uid
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-        if (uid != null) {
-            db.collection("usuarios").document(uid).get()
-                .addOnSuccessListener { doc ->
-                    val nombre = doc.getString("nombre") ?: "Nombre desconocido"
-                    tvNombre.text = nombre
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "No se pudo cargar el nombre", Toast.LENGTH_SHORT).show()
-                }
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
+            val uriSeleccionada = data?.data ?: return
 
-            val correo = auth.currentUser?.email
-            tvCorreo.text = correo ?: "Correo no disponible"
+            // Guardamos URI original por si cancela
+            imagenUriTemporal = uriSeleccionada
 
-            db.collection("recetas")
-                .whereEqualTo("autor", uid)
-                .get()
-                .addOnSuccessListener { docs ->
-                    val cantidad = docs.size()
-                    tvRecetasCreadas.text = cantidad.toString()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "No se pudieron contar las recetas", Toast.LENGTH_SHORT).show()
-                }
+            // Mostrar preview temporal
+            ivFotoPerfil.setImageURI(imagenUriTemporal)
+
+            // Preguntar si confirma
+            mostrarDialogoConfirmacion()
         }
+    }
+
+    private fun mostrarDialogoConfirmacion() {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar cambio")
+            .setMessage("¿Quieres cambiar la foto de perfil?")
+            .setPositiveButton("Sí") { _, _ -> subirImagenCloudinary() }
+            .setNegativeButton("No") { _, _ ->
+                // Volver a la imagen original
+                if (viewModel.imagenPerfilUrl.value.isNullOrEmpty()) {
+                    ivFotoPerfil.setImageResource(R.drawable.imagen_predeterminada)
+                } else {
+                    Glide.with(this)
+                        .load(viewModel.imagenPerfilUrl.value)
+                        .circleCrop()
+                        .into(ivFotoPerfil)
+                }
+                imagenUriTemporal = null
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun subirImagenCloudinary() {
+        val uri = imagenUriTemporal ?: return
+
+        MediaManager.get().upload(uri)
+            .unsigned(UPLOAD_PRESET)
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String?) {}
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val url = resultData?.get("secure_url") as? String
+                    if (url != null) {
+                        viewModel.actualizarImagenPerfil(url)
+                        Toast.makeText(this@PerfilConfigActivity, "Foto actualizada", Toast.LENGTH_SHORT).show()
+                    }
+                    imagenUriTemporal = null
+                }
+                override fun onError(requestId: String?, error: ErrorInfo?) {
+                    Toast.makeText(this@PerfilConfigActivity, "Error al subir imagen: ${error?.description}", Toast.LENGTH_LONG).show()
+                    // Revertir imagen a original
+                    if (viewModel.imagenPerfilUrl.value.isNullOrEmpty()) {
+                        ivFotoPerfil.setImageResource(R.drawable.imagen_predeterminada)
+                    } else {
+                        Glide.with(this@PerfilConfigActivity)
+                            .load(viewModel.imagenPerfilUrl.value)
+                            .circleCrop()
+                            .into(ivFotoPerfil)
+                    }
+                    imagenUriTemporal = null
+                }
+                override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
+            }).dispatch()
     }
 }

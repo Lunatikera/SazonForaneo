@@ -9,11 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.UsuarioRepository
 
 class MisRecetasAdapter(
     private val recetas: List<Receta>,
+    private val usuarioRepo: UsuarioRepository,
     private val onItemClick: (Receta) -> Unit
 ) : RecyclerView.Adapter<MisRecetasAdapter.RecetaViewHolder>() {
+
+    // Cache local para nombres ya consultados
+    private val nombreCache = mutableMapOf<String, String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecetaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_receta, parent, false)
@@ -36,25 +41,45 @@ class MisRecetasAdapter(
 
         fun bind(receta: Receta) {
             tvNombre.text = receta.nombre
-            tvAutor.text = "Autor: ${receta.autor}"
 
-            val imagenUrl = receta.imagenUriString
-
-            if (imagenUrl != null && (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://"))) {
-                Glide.with(itemView.context)
-                    .load(imagenUrl)
-                    .placeholder(R.drawable.pizza)
-                    .into(ivReceta)
+            val autorId = receta.autorId
+            if (autorId.isNotEmpty()) {
+                val cachedNombre = nombreCache[autorId]
+                if (cachedNombre != null) {
+                    tvAutor.text = "Autor: $cachedNombre"
+                } else {
+                    tvAutor.text = "Autor: cargando..."
+                    usuarioRepo.obtenerNombrePorId(autorId,
+                        onSuccess = { nombreActualizado ->
+                            nombreCache[autorId] = nombreActualizado
+                            tvAutor.text = "Autor: $nombreActualizado"
+                        },
+                        onError = {
+                            tvAutor.text = "Autor: Desconocido"
+                        }
+                    )
+                }
             } else {
-                val uri = imagenUrl?.let { Uri.parse(it) }
-                if (uri != null) {
+                tvAutor.text = "Autor: Desconocido"
+            }
+
+            // Cargar imagen
+            val imagenUrl = receta.imagenUriString
+            if (!imagenUrl.isNullOrEmpty()) {
+                if (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://")) {
+                    Glide.with(itemView.context)
+                        .load(imagenUrl)
+                        .placeholder(R.drawable.pizza)
+                        .into(ivReceta)
+                } else {
+                    val uri = Uri.parse(imagenUrl)
                     Glide.with(itemView.context)
                         .load(uri)
                         .placeholder(R.drawable.pizza)
                         .into(ivReceta)
-                } else {
-                    ivReceta.setImageResource(R.drawable.pizza)
                 }
+            } else {
+                ivReceta.setImageResource(R.drawable.pizza)
             }
 
             ratingBar.rating = receta.rating.coerceIn(0f, 5f)
@@ -66,7 +91,7 @@ class MisRecetasAdapter(
                 val tagView = TextView(itemView.context).apply {
                     text = tag
                     setPadding(16, 4, 16, 4)
-                    setTextSize(12f)
+                    textSize = 12f
                     setTextColor(android.graphics.Color.WHITE)
                     setBackgroundResource(R.drawable.tag_green_background)
                     val params = LinearLayout.LayoutParams(

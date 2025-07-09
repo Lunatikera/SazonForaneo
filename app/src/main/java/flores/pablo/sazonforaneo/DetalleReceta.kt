@@ -29,6 +29,9 @@ class DetalleReceta : AppCompatActivity() {
     private lateinit var receta: Receta
     private var isFavorite = false
 
+    // Instancia de UsuarioRepository para obtener el nombre actualizado
+    private val usuarioRepo = UsuarioRepository()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_receta)
@@ -64,7 +67,22 @@ class DetalleReceta : AppCompatActivity() {
             .placeholder(R.drawable.pizza)
             .into(ivReceta)
 
-        tvAutor.text = receta.autor
+        // Mostrar nombre actualizado del autor
+        if (receta.autorId.isNullOrEmpty()) {
+            // Si no hay autorId, mostrar el autor que viene en la receta (fallback)
+            tvAutor.text = "Anonimo"
+        } else {
+            usuarioRepo.obtenerNombrePorId(
+                receta.autorId,
+                onSuccess = { nombreAutor ->
+                    tvAutor.text = nombreAutor
+                },
+                onError = {
+                    tvAutor.text = "Anonimo"
+                }
+            )
+        }
+
         tvCalificacion.text = String.format("%.1f", receta.rating)
         tvDescripcion.text = receta.descripcion
 

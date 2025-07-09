@@ -1,48 +1,50 @@
 package flores.pablo.sazonforaneo
+
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import java.text.SimpleDateFormat // pa las fechas
-import java.util.Calendar // pa las fechas
-import com.google.firebase.firestore.FirebaseFirestore
-
+import androidx.lifecycle.Observer
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class RegistroActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    private val viewModel: RegistroViewModel by viewModels()
+
+    private lateinit var etNombre: EditText
+    private lateinit var etCorreo: EditText
     private lateinit var etFecha: EditText
+    private lateinit var spinnerGenero: Spinner
+    private lateinit var etPassword: EditText
+    private lateinit var etConfirmar: EditText
+    private lateinit var btnContinuar: Button
+    private lateinit var tvIniciarSesion: TextView
+
     private val calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
 
-        // Inicialización
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
-
-        val etNombre = findViewById<EditText>(R.id.etNombre)
-        val etCorreo = findViewById<EditText>(R.id.etCorreo)
+        etNombre = findViewById(R.id.etNombre)
+        etCorreo = findViewById(R.id.etCorreo)
         etFecha = findViewById(R.id.etFecha)
-        val spinnerGenero = findViewById<Spinner>(R.id.spinnerGenero)
-        val etPassword = findViewById<EditText>(R.id.etPassword)
-        val etConfirmar = findViewById<EditText>(R.id.etConfirmar)
-        val btnContinuar = findViewById<Button>(R.id.btnContinuar)
-        val tvIniciarSesion = findViewById<TextView>(R.id.tvIniciarSesion)
+        spinnerGenero = findViewById(R.id.spinnerGenero)
+        etPassword = findViewById(R.id.etPassword)
+        etConfirmar = findViewById(R.id.etConfirmar)
+        btnContinuar = findViewById(R.id.btnContinuar)
+        tvIniciarSesion = findViewById(R.id.tvIniciarSesion)
 
-        val opcionesGenero = arrayOf("Selecciona", "Hombre", "Mujer")
+        val opcionesGenero = arrayOf("Selecciona un Genero", "Hombre", "Mujer")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesGenero)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGenero.adapter = adapter
 
-        etFecha.setOnClickListener {
-            showDatePickerDialog()
-        }
+        etFecha.setOnClickListener { showDatePickerDialog() }
 
         btnContinuar.setOnClickListener {
             val nombre = etNombre.text.toString().trim()
@@ -52,73 +54,31 @@ class RegistroActivity : AppCompatActivity() {
             val pass = etPassword.text.toString().trim()
             val confirmar = etConfirmar.text.toString().trim()
 
-            // Validaciones
-            if (nombre.isEmpty()) {
-                etNombre.error = "Campo obligatorio"
-                return@setOnClickListener
-            }
-
-            if (correo.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-                etCorreo.error = "Correo inválido"
-                return@setOnClickListener
-            }
-
-            if (fecha.isEmpty()) {
-                etFecha.error = "Selecciona tu fecha de nacimiento"
-                return@setOnClickListener
-            }
-
-            if (genero == "Selecciona") {
-                Toast.makeText(this, "Selecciona un género", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (pass.length < 6) {
-                etPassword.error = "Mínimo 6 caracteres"
-                return@setOnClickListener
-            }
-
-            if (pass != confirmar) {
-                etConfirmar.error = "Las contraseñas no coinciden"
-                return@setOnClickListener
-            }
-
-            // Registro con Firebase Auth
-            auth.createUserWithEmailAndPassword(correo, pass)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
-
-                        val userMap = hashMapOf(
-                            "nombre" to nombre,
-                            "correo" to correo,
-                            "fechaNacimiento" to fecha,
-                            "genero" to genero
-                        )
-
-                        // Guardar en Firestore
-                        db.collection("usuarios").document(uid).set(userMap)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Error al guardar los datos: ${it.message}", Toast.LENGTH_LONG).show()
-                            }
-
-                    } else {
-                        Toast.makeText(this, "Error al registrar: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                    }
-                }
+            viewModel.registrarUsuario(
+                nombre, correo, fecha, genero, pass
+            )
         }
 
         tvIniciarSesion.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            // Por ejemplo volver al login o MainActivity
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+
+        // Observadores LiveData para mostrar mensajes o navegar
+        viewModel.error.observe(this, Observer { errorMsg ->
+            errorMsg?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            }
+        })
+
+        viewModel.registroExitoso.observe(this, Observer { exito ->
+            if (exito) {
+                Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        })
     }
 
     private fun showDatePickerDialog() {
@@ -131,8 +91,7 @@ class RegistroActivity : AppCompatActivity() {
             { _, selectedYear, selectedMonth, selectedDayOfMonth ->
                 calendar.set(selectedYear, selectedMonth, selectedDayOfMonth)
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-                val formattedDate = dateFormat.format(calendar.time)
-                etFecha.setText(formattedDate)
+                etFecha.setText(dateFormat.format(calendar.time))
             },
             year, month, day
         )

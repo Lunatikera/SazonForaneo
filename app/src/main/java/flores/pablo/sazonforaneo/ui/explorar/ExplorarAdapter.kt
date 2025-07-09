@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.UsuarioRepository
 
 class ExplorarAdapter(
     recetasIniciales: List<Receta>,
+    private val usuarioRepo: UsuarioRepository,
     private val onItemClick: (Receta) -> Unit
 ) : RecyclerView.Adapter<ExplorarAdapter.RecetaViewHolder>() {
 
@@ -45,7 +47,21 @@ class ExplorarAdapter(
 
         fun bind(receta: Receta) {
             tvNombre.text = receta.nombre
-            tvAutor.text = "Autor: ${receta.autor}"
+
+            // Carga dinámica del nombre del autor por autorId
+            if (receta.autorId.isNullOrEmpty()) {
+                tvAutor.text = ""
+            } else {
+                usuarioRepo.obtenerNombrePorId(
+                    receta.autorId,
+                    onSuccess = { nombreActualizado ->
+                        tvAutor.text = "Autor: $nombreActualizado"
+                    },
+                    onError = {
+                        tvAutor.text = "Autor: Desconocido"
+                    }
+                )
+            }
 
             cargarImagenReceta(receta.imagenUriString)
 
@@ -88,10 +104,8 @@ class ExplorarAdapter(
             val uri = Uri.parse(uriString)
 
             try {
-                // Glide con content/file uri
                 Glide.with(context).load(uri).placeholder(placeholder).into(ivReceta)
             } catch (e: Exception) {
-                // Fallback: abrir stream por ContentResolver y decodificar Bitmap
                 try {
                     context.contentResolver.openInputStream(uri)?.use { stream ->
                         val bmp = BitmapFactory.decodeStream(stream)

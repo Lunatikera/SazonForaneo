@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.DetalleReceta
+import flores.pablo.sazonforaneo.UsuarioRepository
 import flores.pablo.sazonforaneo.databinding.FragmentMisrecetasBinding
 import flores.pablo.sazonforaneo.Receta
 
@@ -17,6 +18,7 @@ class MisRecetasFragment : Fragment() {
     private var _binding: FragmentMisrecetasBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: MisRecetasAdapter
+    private val usuarioRepo = UsuarioRepository()  // Instancia para pasar al adapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +33,7 @@ class MisRecetasFragment : Fragment() {
 
         val misRecetas = obtenerMisRecetasEjemplo()
 
-        adapter = MisRecetasAdapter(misRecetas) { recetaSeleccionada ->
+        adapter = MisRecetasAdapter(misRecetas, usuarioRepo) { recetaSeleccionada ->
             val intent = Intent(requireContext(), DetalleReceta::class.java)
             intent.putExtra("receta", recetaSeleccionada)
             startActivity(intent)
@@ -39,9 +41,6 @@ class MisRecetasFragment : Fragment() {
 
         binding.rvMisRecetas.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMisRecetas.adapter = adapter
-
-
-
     }
 
     private fun obtenerMisRecetasEjemplo(): List<Receta> {
@@ -55,7 +54,7 @@ class MisRecetasFragment : Fragment() {
                 ingredientes = listOf("Pasta", "Huevo", "Queso parmesano", "Pimienta", "Tocino"),
                 instrucciones = "Cocer la pasta, mezclar con huevos y queso, añadir el tocino dorado.",
                 fuente = "Cocina Italiana",
-                autor = "Giovanna Rossi",
+                autorId = "uid_de_giovanna",  // Pon aquí el uid correcto si tienes
                 rating = 4.8f,
                 imagenUriString = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTocnT-UeCFm5CnI92RPn7zFsCJMH2AEW60vA&s"
             ),
@@ -69,7 +68,7 @@ class MisRecetasFragment : Fragment() {
                 ingredientes = listOf("Lechuga", "Pollo", "Crutones", "Aderezo César", "Queso parmesano"),
                 instrucciones = "Mezclar ingredientes frescos y servir con aderezo.",
                 fuente = "Blog de Cocina Saludable",
-                autor = "Ana Gómez",
+                autorId = "uid_de_ana",  // Pon aquí el uid correcto si tienes
                 rating = 3.9f,
                 imagenUriString = "https://www.gourmet.cl/wp-content/uploads/2016/09/EnsaladaCesar2.webp"
             )
