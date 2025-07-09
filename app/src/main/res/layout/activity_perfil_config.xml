@@ -8,19 +8,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.PerfilConfigActivity">
 
+    <!-- Encabezado: Fondo naranja con foto, nombre, correo, número de recetas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical"
         android:background="@color/baby_orange"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <FrameLayout
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:background="@drawable/foto_perfil"
-            >
+            android:background="@drawable/foto_perfil">
 
             <FrameLayout
                 android:layout_width="20dp"
@@ -28,39 +27,39 @@
                 android:background="@drawable/circulo_blanco"
                 android:elevation="5dp"
                 android:layout_margin="5dp"
-                android:layout_gravity="bottom|right"
-                >
+                android:layout_gravity="bottom|right">
 
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/lapiz_editar"/>
-
+                    android:src="@drawable/lapiz_editar" />
             </FrameLayout>
-
         </FrameLayout>
 
+        <!-- Nombre dinámico -->
         <TextView
+            android:id="@+id/nombreTextView"
             android:textStyle="bold"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Juana Maria Perez Lopez"
+            android:text="Nombre del usuario"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            />
+            android:textSize="15sp" />
 
+        <!-- Correo dinámico -->
         <TextView
+            android:id="@+id/correoTextView"
             android:textStyle="bold"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="juana.lopez234465@gmail.com"
+            android:text="correo@usuario.com"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            />
+            android:textSize="15sp" />
 
+        <!-- Conteo de recetas dinámico -->
         <LinearLayout
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
@@ -73,21 +72,20 @@
                 android:layout_height="wrap_content"
                 android:text="@string/numeroR"
                 android:textColor="@color/white"
-                android:textSize="15sp"
-                />
+                android:textSize="15sp" />
+
             <TextView
+                android:id="@+id/recetasCreadasTextView"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" 20"
+                android:text="0"
                 android:textColor="@color/white"
-                android:textSize="15sp"/>
-
+                android:textSize="15sp" />
         </LinearLayout>
-
     </LinearLayout>
 
-
+    <!-- Menú inferior gris con opciones -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -95,9 +93,9 @@
         android:layout_margin="20dp"
         android:gravity="center_vertical"
         android:background="@drawable/cuadro_redondo_gris"
-        android:elevation="5dp"
-        >
+        android:elevation="5dp">
 
+        <!-- Editar información personal -->
         <TextView
             android:id="@+id/infoPersonal"
             android:layout_width="wrap_content"
@@ -106,7 +104,7 @@
             android:textSize="25sp"
             android:textStyle="bold"
             android:layout_marginLeft="30dp"
-            android:text="@string/editarIP"/>
+            android:text="@string/editarIP" />
 
         <View
             android:layout_width="match_parent"
@@ -115,7 +113,9 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
+
+        <!-- Ver recetas del usuario -->
         <TextView
             android:id="@+id/misRecetas"
             android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
             android:textSize="25sp"
             android:textStyle="bold"
             android:layout_marginLeft="30dp"
-            android:text="@string/misR"/>
+            android:text="@string/misR" />
 
         <View
             android:layout_width="match_parent"
@@ -133,7 +133,9 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
+
+        <!-- Recetas guardadas -->
         <TextView
             android:id="@+id/recetasGuardadas"
             android:layout_width="wrap_content"
@@ -142,7 +144,7 @@
             android:textSize="25sp"
             android:textStyle="bold"
             android:layout_marginLeft="30dp"
-            android:text="@string/saveR"/>
+            android:text="@string/saveR" />
 
         <View
             android:layout_width="match_parent"
@@ -151,7 +153,9 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
+
+        <!-- Modo noche (switch) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -177,7 +181,6 @@
                 android:id="@+id/modoNoche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
 
         <View
@@ -187,11 +190,17 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp" />
 
-
+        <!-- Botón Cerrar sesión -->
+        <TextView
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp" />
     </LinearLayout>
-
-
-
 </LinearLayout>
