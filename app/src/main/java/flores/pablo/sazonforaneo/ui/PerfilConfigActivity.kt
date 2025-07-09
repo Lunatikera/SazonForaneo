@@ -17,7 +17,6 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import flores.pablo.sazonforaneo.MainActivity
 import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.ui.UsuarioViewModel
 import androidx.activity.viewModels
 
 class PerfilConfigActivity : AppCompatActivity() {

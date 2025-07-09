@@ -10,51 +10,59 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"> <!-- ← CORREGIDO -->
+
 
         <!-- Barra de búsqueda -->
         <LinearLayout
             android:id="@+id/top_search_bar_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:background="@color/searchBarZone"
-            android:padding="16dp"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/circle"
+                android:contentDescription="Imagen de perfil"
+                android:padding="1dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/imagen_perfil"
-                android:contentDescription="Imagen de perfil" />
+                android:src="@drawable/imagen_perfil" />
 
             <EditText
-                android:id="@+id/etBuscarMisRecetas"
+                android:id="@+id/etBuscar"
                 android:layout_width="0dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:hint="Buscar mis recetas"
                 android:background="@drawable/search_background"
-                android:padding="10dp"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:inputType="text" />
+                android:hint="Buscar receta"
+                android:inputType="text"
+                android:paddingHorizontal="12dp" />
 
             <Button
-                android:id="@+id/btnFiltrarEtiquetas"
+                android:id="@+id/tags_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/button_round_orange"
+                android:minWidth="72dp"
+                android:minHeight="36dp"
+                android:paddingHorizontal="12dp"
                 android:text="Etiquetas"
-                android:layout_marginStart="8dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="8dp" />
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!-- Título -->
@@ -62,23 +70,23 @@
             android:id="@+id/titleMisRecetas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="Mis Recetas"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout" />
 
-        <!-- RecyclerView para mostrar las recetas -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMisRecetas"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:clipToPadding="false"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:clipToPadding="false"
-            android:overScrollMode="always"
+            android:paddingBottom="16dp"
             app:layout_constraintTop_toBottomOf="@id/titleMisRecetas"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

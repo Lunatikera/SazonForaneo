@@ -31,11 +31,11 @@ class UsuarioViewModel : ViewModel() {
             db.collection("usuarios").document(uid).get()
                 .addOnSuccessListener { doc ->
                     _nombre.value = doc.getString("nombre") ?: "Nombre desconocido"
-                    _imagenPerfilUrl.value = doc.getString("imagenPerfil") // <- Aquí va la imagen
+                    _imagenPerfilUrl.value = doc.getString("imagenPerfil")
                 }
 
             db.collection("recetas")
-                .whereEqualTo("autor", uid)
+                .whereEqualTo("autorId", uid)
                 .get()
                 .addOnSuccessListener { docs ->
                     _recetasCreadas.value = docs.size()
@@ -46,15 +46,12 @@ class UsuarioViewModel : ViewModel() {
         val user = auth.currentUser ?: return
         val uid = user.uid
 
-        // Actualiza en Firestore
         db.collection("usuarios").document(uid)
             .update("imagenPerfil", url)
             .addOnSuccessListener {
-                // Actualiza el LiveData para reflejar el cambio en la UI
                 _imagenPerfilUrl.value = url
             }
             .addOnFailureListener {
-                // Opcional: maneja error
             }
     }
 

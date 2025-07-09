@@ -12,7 +12,7 @@ import flores.pablo.sazonforaneo.Receta
 import flores.pablo.sazonforaneo.UsuarioRepository
 
 class MisRecetasAdapter(
-    private val recetas: List<Receta>,
+     var recetas: List<Receta>,
     private val usuarioRepo: UsuarioRepository,
     private val onItemClick: (Receta) -> Unit
 ) : RecyclerView.Adapter<MisRecetasAdapter.RecetaViewHolder>() {
@@ -21,7 +21,7 @@ class MisRecetasAdapter(
     private val nombreCache = mutableMapOf<String, String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecetaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_receta, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_misreceta, parent, false)
         return RecetaViewHolder(view)
     }
 
@@ -48,7 +48,6 @@ class MisRecetasAdapter(
                 if (cachedNombre != null) {
                     tvAutor.text = "Autor: $cachedNombre"
                 } else {
-                    tvAutor.text = "Autor: cargando..."
                     usuarioRepo.obtenerNombrePorId(autorId,
                         onSuccess = { nombreActualizado ->
                             nombreCache[autorId] = nombreActualizado
@@ -86,7 +85,7 @@ class MisRecetasAdapter(
             tvRating.text = String.format("%.1f", receta.rating)
 
             tagsLayout.removeAllViews()
-            val allTags = receta.categorias + receta.etiquetas
+            val allTags =receta.etiquetas
             for (tag in allTags) {
                 val tagView = TextView(itemView.context).apply {
                     text = tag
