@@ -8,10 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat // pa las fechas
 import java.util.Calendar // pa las fechas
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class RegistroActivity : AppCompatActivity() {
+
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private lateinit var etFecha: EditText
     private val calendar = Calendar.getInstance()
 
@@ -19,7 +22,10 @@ class RegistroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
 
+        // Inicialización
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
         val etNombre = findViewById<EditText>(R.id.etNombre)
         val etCorreo = findViewById<EditText>(R.id.etCorreo)
         etFecha = findViewById(R.id.etFecha)
@@ -34,7 +40,6 @@ class RegistroActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGenero.adapter = adapter
 
-        // listener para abrir el DatePicker
         etFecha.setOnClickListener {
             showDatePickerDialog()
         }
@@ -47,6 +52,7 @@ class RegistroActivity : AppCompatActivity() {
             val pass = etPassword.text.toString().trim()
             val confirmar = etConfirmar.text.toString().trim()
 
+            // Validaciones
             if (nombre.isEmpty()) {
                 etNombre.error = "Campo obligatorio"
                 return@setOnClickListener
@@ -77,25 +83,37 @@ class RegistroActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Aquí se realiza el registro con Firebase
+            // Registro con Firebase Auth
             auth.createUserWithEmailAndPassword(correo, pass)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT)
-                            .show()
-                        // Redirigir a MainActivity SOLO si el registro es exitoso
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                        val userMap = hashMapOf(
+                            "nombre" to nombre,
+                            "correo" to correo,
+                            "fechaNacimiento" to fecha,
+                            "genero" to genero
+                        )
+
+                        // Guardar en Firestore
+                        db.collection("usuarios").document(uid).set(userMap)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Tu cuenta ha sido registrada", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al guardar los datos: ${it.message}", Toast.LENGTH_LONG).show()
+                            }
+
                     } else {
-                        // Mostrar error específico de Firebase
-                        Toast.makeText(this, "Error al registrar: ${task.exception?.message}", Toast.LENGTH_LONG)
-                            .show()
+                        Toast.makeText(this, "Error al registrar: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
         }
 
-        // listener para el  "Iniciar Sesión"
         tvIniciarSesion.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -103,7 +121,6 @@ class RegistroActivity : AppCompatActivity() {
         }
     }
 
-    // funcioon para mostrar el datePicker
     private fun showDatePickerDialog() {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -117,11 +134,9 @@ class RegistroActivity : AppCompatActivity() {
                 val formattedDate = dateFormat.format(calendar.time)
                 etFecha.setText(formattedDate)
             },
-            year,
-            month,
-            day
+            year, month, day
         )
-        datePickerDialog.datePicker.maxDate = System.currentTimeMillis() // esto hace que no permita fechas futuras
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
         datePickerDialog.show()
     }
 }
