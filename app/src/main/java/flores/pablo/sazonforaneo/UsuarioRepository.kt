@@ -116,5 +116,22 @@ class UsuarioRepository {
             }
     }
 
+    fun obtenerDatosUsuarioPorId(
+        uid: String,
+        onSuccess: (nombre: String, fotoPerfilUrl: String?) -> Unit,
+        onError: () -> Unit
+    ) {
+        db.collection("usuarios").document(uid).get()
+            .addOnSuccessListener { snapshot ->
+                val nombre = snapshot.getString("nombre") ?: "Anonimo"
+                val fotoPerfilUrl = snapshot.getString("imagenPerfil")
+                onSuccess(nombre, fotoPerfilUrl)
+            }
+            .addOnFailureListener {
+                onError()
+            }
+    }
+
+
 
 }

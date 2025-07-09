@@ -29,8 +29,8 @@ class DetalleReceta : AppCompatActivity() {
     private lateinit var receta: Receta
     private var isFavorite = false
 
-    // Instancia de UsuarioRepository para obtener el nombre actualizado
     private val usuarioRepo = UsuarioRepository()
+    private val calificacionRepo = CalificacionRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +57,7 @@ class DetalleReceta : AppCompatActivity() {
         configurarTabs()
         configurarFavorito()
         configurarBotonCalificar()
+        cargarCalificacionPromedio()
     }
 
     private fun mostrarDatos(receta: Receta) {
@@ -67,18 +68,27 @@ class DetalleReceta : AppCompatActivity() {
             .placeholder(R.drawable.pizza)
             .into(ivReceta)
 
-        // Mostrar nombre actualizado del autor
+        // Obtener nombre y foto perfil del autor usando UsuarioRepository
         if (receta.autorId.isNullOrEmpty()) {
-            // Si no hay autorId, mostrar el autor que viene en la receta (fallback)
             tvAutor.text = "Anonimo"
+            ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
         } else {
-            usuarioRepo.obtenerNombrePorId(
+            usuarioRepo.obtenerDatosUsuarioPorId(
                 receta.autorId,
-                onSuccess = { nombreAutor ->
+                onSuccess = { nombreAutor, fotoPerfilUrl ->
                     tvAutor.text = nombreAutor
+                    if (!fotoPerfilUrl.isNullOrEmpty()) {
+                        Glide.with(this)
+                            .load(fotoPerfilUrl)
+                            .circleCrop()
+                            .into(ivPerfil)
+                    } else {
+                        ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
+                    }
                 },
                 onError = {
                     tvAutor.text = "Anonimo"
+                    ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
                 }
             )
         }
@@ -121,21 +131,21 @@ class DetalleReceta : AppCompatActivity() {
 
     private fun configurarTabs() {
         tabIngredientes.setOnClickListener {
-            tabIngredientes.setBackgroundResource(R.drawable.tab_selected)
-            tabIngredientes.setTextColor(resources.getColor(android.R.color.black))
+            tabIngredientes.setBackgroundResource(R.drawable.tab_unselected)
+            tabIngredientes.setTextColor(resources.getColor(R.color.black))
 
-            tabInstrucciones.setBackgroundResource(R.drawable.tab_unselected)
-            tabInstrucciones.setTextColor(resources.getColor(android.R.color.darker_gray))
+            tabInstrucciones.setBackgroundResource(R.drawable.tab_selected)
+            tabInstrucciones.setTextColor(resources.getColor(R.color.medium_gray))
 
             tvContenidoReceta.text = receta.ingredientes.joinToString("\n") { "• $it" }
         }
 
         tabInstrucciones.setOnClickListener {
-            tabInstrucciones.setBackgroundResource(R.drawable.tab_selected)
-            tabInstrucciones.setTextColor(resources.getColor(android.R.color.black))
+            tabInstrucciones.setBackgroundResource(R.drawable.tab_unselected)
+            tabInstrucciones.setTextColor(resources.getColor(R.color.black))
 
-            tabIngredientes.setBackgroundResource(R.drawable.tab_unselected)
-            tabIngredientes.setTextColor(resources.getColor(android.R.color.darker_gray))
+            tabIngredientes.setBackgroundResource(R.drawable.tab_selected)
+            tabIngredientes.setTextColor(resources.getColor(R.color.medium_gray))
 
             tvContenidoReceta.text = receta.instrucciones
         }
@@ -164,13 +174,30 @@ class DetalleReceta : AppCompatActivity() {
                 .setView(dialogView)
                 .setPositiveButton("Enviar") { _, _ ->
                     val rating = ratingBarDialog.rating
-                    ratingBar.rating = rating
-                    tvCalificacion.text = String.format("%.1f", rating)
-                    Toast.makeText(this, "Gracias por tu calificación: $rating", Toast.LENGTH_SHORT).show()
+                    if (receta.id == null) {
+                        Toast.makeText(this, "Receta inválida", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+                    calificacionRepo.guardarCalificacion(receta.id!!, rating, {
+                        cargarCalificacionPromedio()
+                        Toast.makeText(this, "Gracias por tu calificación", Toast.LENGTH_SHORT).show()
+                    }, { errorMsg ->
+                        Toast.makeText(this, "Error al guardar calificación: $errorMsg", Toast.LENGTH_SHORT).show()
+                    })
                 }
                 .setNegativeButton("Cancelar", null)
-                .create()
                 .show()
         }
+    }
+
+    private fun cargarCalificacionPromedio() {
+        if (receta.id == null) return
+
+        calificacionRepo.obtenerPromedioCalificacion(receta.id!!, { promedio ->
+            ratingBar.rating = promedio
+            tvCalificacion.text = String.format("%.1f", promedio)
+        }, { errorMsg ->
+            Toast.makeText(this, "Error al cargar calificación: $errorMsg", Toast.LENGTH_SHORT).show()
+        })
     }
 }
