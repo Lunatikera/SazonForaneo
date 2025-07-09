@@ -8,6 +8,7 @@
     tools:context=".ui.explorar.ExplorarFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,16 +17,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:background="@color/searchBarZone"
-            android:padding="12dp"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivPerfil"
@@ -33,32 +34,32 @@
                 android:layout_height="44dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/circle"
+                android:contentDescription="Imagen de perfil"
                 android:scaleType="centerCrop"
-                android:src="@drawable/imagen_perfil"
-                android:contentDescription="Imagen de perfil" />
+                android:src="@drawable/imagen_perfil" />
 
             <EditText
                 android:id="@+id/etBuscar"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="40dp"
-                android:hint="Buscar receta"
+                android:layout_weight="1"
                 android:background="@drawable/search_background"
-                android:paddingHorizontal="12dp"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:inputType="text" />
+                android:hint="Buscar receta"
+                android:inputType="text"
+                android:paddingHorizontal="12dp" />
 
             <Button
                 android:id="@+id/tags_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_round_orange"
-                android:textColor="@color/white"
-                android:text="Etiquetas"
                 android:layout_marginStart="12dp"
-                android:minHeight="36dp"
+                android:background="@drawable/button_round_orange"
                 android:minWidth="72dp"
-                android:paddingHorizontal="12dp" />
+                android:minHeight="36dp"
+                android:paddingHorizontal="12dp"
+                android:text="Etiquetas"
+                android:textColor="@color/white" />
         </LinearLayout>
 
 
@@ -66,27 +67,29 @@
             android:id="@+id/recipes_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:text="Explorar Recetas"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipes_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:clipToPadding="false"
             android:overScrollMode="always"
-            app:layout_constraintTop_toBottomOf="@id/recipes_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recipes_title"
             tools:listitem="@layout/item_receta" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
