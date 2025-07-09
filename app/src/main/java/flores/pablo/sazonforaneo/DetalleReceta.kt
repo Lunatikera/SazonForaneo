@@ -31,6 +31,7 @@ class DetalleReceta : AppCompatActivity() {
 
     private val usuarioRepo = UsuarioRepository()
     private val calificacionRepo = CalificacionRepository()
+    private val favoritosRepo = FavoritosRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +56,11 @@ class DetalleReceta : AppCompatActivity() {
 
         mostrarDatos(receta)
         configurarTabs()
-        configurarFavorito()
         configurarBotonCalificar()
+
         cargarCalificacionPromedio()
+        cargarEstadoFavorito()
+        configurarFavorito()
     }
 
     private fun mostrarDatos(receta: Receta) {
@@ -68,7 +71,6 @@ class DetalleReceta : AppCompatActivity() {
             .placeholder(R.drawable.pizza)
             .into(ivReceta)
 
-        // Obtener nombre y foto perfil del autor usando UsuarioRepository
         if (receta.autorId.isNullOrEmpty()) {
             tvAutor.text = "Anonimo"
             ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
@@ -108,8 +110,6 @@ class DetalleReceta : AppCompatActivity() {
         }
 
         ratingBar.rating = receta.rating
-        isFavorite = false
-        ivFav.setImageResource(R.drawable.favheart)
 
         layoutTags.removeAllViews()
         for (tag in receta.etiquetas) {
@@ -151,15 +151,52 @@ class DetalleReceta : AppCompatActivity() {
         }
     }
 
+    private fun cargarCalificacionPromedio() {
+        if (receta.id == null) return
+
+        calificacionRepo.obtenerPromedioCalificacion(receta.id!!, { promedio ->
+            ratingBar.rating = promedio
+            tvCalificacion.text = String.format("%.1f", promedio)
+        }, { errorMsg ->
+            Toast.makeText(this, "Error al cargar calificación: $errorMsg", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun cargarEstadoFavorito() {
+        if (receta.id == null) return
+
+        favoritosRepo.esFavorito(receta.id!!, { esFav ->
+            isFavorite = esFav
+            actualizarIconoFavorito()
+        }, { errorMsg ->
+        })
+    }
+
+    private fun actualizarIconoFavorito() {
+        val icono = if (isFavorite) R.drawable.favheart_filled else R.drawable.favheart
+        ivFav.setImageResource(icono)
+    }
+
     private fun configurarFavorito() {
         ivFav.setOnClickListener {
-            isFavorite = !isFavorite
+            if (receta.id == null) return@setOnClickListener
+
             if (isFavorite) {
-                ivFav.setImageResource(R.drawable.favheart_filled)
-                Toast.makeText(this, "Agregado a favoritos", Toast.LENGTH_SHORT).show()
+                favoritosRepo.eliminarFavorito(receta.id!!, {
+                    isFavorite = false
+                    actualizarIconoFavorito()
+                    Toast.makeText(this, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                }, { errorMsg ->
+                    Toast.makeText(this, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
+                })
             } else {
-                ivFav.setImageResource(R.drawable.favheart)
-                Toast.makeText(this, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                favoritosRepo.agregarFavorito(receta.id!!, {
+                    isFavorite = true
+                    actualizarIconoFavorito()
+                    Toast.makeText(this, "Agregado a favoritos", Toast.LENGTH_SHORT).show()
+                }, { errorMsg ->
+                    Toast.makeText(this, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
+                })
             }
         }
     }
@@ -188,16 +225,5 @@ class DetalleReceta : AppCompatActivity() {
                 .setNegativeButton("Cancelar", null)
                 .show()
         }
-    }
-
-    private fun cargarCalificacionPromedio() {
-        if (receta.id == null) return
-
-        calificacionRepo.obtenerPromedioCalificacion(receta.id!!, { promedio ->
-            ratingBar.rating = promedio
-            tvCalificacion.text = String.format("%.1f", promedio)
-        }, { errorMsg ->
-            Toast.makeText(this, "Error al cargar calificación: $errorMsg", Toast.LENGTH_SHORT).show()
-        })
     }
 }
