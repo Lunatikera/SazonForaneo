@@ -139,4 +139,36 @@ class RecetaRepository {
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener recetas del autor") }
     }
+
+    fun eliminarReceta(
+        recetaId: String?,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        if (recetaId.isNullOrEmpty()) {
+            onFailure(Exception("ID de receta inválido"))
+            return
+        }
+
+        collection.document(recetaId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun actualizarCampoVisibilidad(
+        recetaId: String,
+        nuevaVisibilidad: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val recetaRef = collection.document(recetaId)
+        recetaRef.update("visibilidad", nuevaVisibilidad)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+
+
+
 }

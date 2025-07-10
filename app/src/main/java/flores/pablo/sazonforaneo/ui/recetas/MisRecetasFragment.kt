@@ -6,12 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -19,12 +16,12 @@ import com.google.firebase.auth.FirebaseAuth
 import flores.pablo.sazonforaneo.DetalleReceta
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
-import flores.pablo.sazonforaneo.RecetaRepository
 import flores.pablo.sazonforaneo.UsuarioRepository
 import flores.pablo.sazonforaneo.databinding.FragmentMisrecetasBinding
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.ui.TagsDialogFragment
-import flores.pablo.sazonforaneo.ui.explorar.ExplorarAdapter
+import flores.pablo.sazonforaneo.ui.UsuarioViewModel
+import flores.pablo.sazonforaneo.RecetaViewModel
 import java.util.ArrayList
 
 class MisRecetasFragment : Fragment() {
@@ -33,13 +30,13 @@ class MisRecetasFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: MisRecetasAdapter
-    private val recetaRepo = RecetaRepository()
     private val usuarioRepo = UsuarioRepository()
 
-    private var allRecetas = listOf<Receta>()
-    private var selectedTags = mutableListOf<String>()
-
+    private lateinit var usuarioViewModel: UsuarioViewModel
+    private lateinit var recetaViewModel: RecetaViewModel
     private lateinit var usuarioId: String
+
+    private var selectedTags = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,41 +49,29 @@ class MisRecetasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
+        recetaViewModel = ViewModelProvider(this)[RecetaViewModel::class.java]
 
         usuarioId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-
         if (usuarioId.isEmpty()) {
             mostrarError("No se pudo obtener el ID del usuario.")
             return
         }
 
-        Log.d("MisRecetasFragment", "Usuario ID: $usuarioId")
-
-        var where_from = arguments?.getBoolean("where_from")?: true
-
-        adapter = MisRecetasAdapter(where_from, emptyList(), usuarioRepo) { recetaSeleccionada ->
-            val intent = Intent(requireContext(), DetalleReceta::class.java)
-            intent.putExtra("receta", recetaSeleccionada)
-            startActivity(intent)
-        }
-
-        binding.rvMisRecetas.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvMisRecetas.adapter = adapter
-
-
-        usuarioRepo.obtenerUsuarioActual { usuario ->
-            val imagenPerfilUrl = usuario?.imagenPerfil
-            if (!imagenPerfilUrl.isNullOrEmpty()) {
+        // Avatar
+        usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
+            if (!url.isNullOrEmpty()) {
                 Glide.with(this)
-                    .load(imagenPerfilUrl)
-                    .placeholder(flores.pablo.sazonforaneo.R.drawable.imagen_predeterminada)
+                    .load(url)
+                    .placeholder(R.drawable.imagen_predeterminada)
                     .circleCrop()
-                    .error(flores.pablo.sazonforaneo.R.drawable.imagen_predeterminada)
+                    .error(R.drawable.imagen_predeterminada)
                     .into(binding.ivPerfil)
             } else {
-                binding.ivPerfil.setImageResource(flores.pablo.sazonforaneo.R.drawable.imagen_predeterminada)
+                binding.ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
             }
         }
+        usuarioViewModel.cargarDatosUsuario()
 
         binding.ivPerfil.setOnClickListener {
             startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
@@ -98,7 +83,6 @@ class MisRecetasFragment : Fragment() {
                 initialCategories = emptyList()
             ) { tags, _ ->
                 selectedTags = tags.toMutableList()
-                filtrarRecetasPorTags(selectedTags)
                 val bundle = Bundle().apply {
                     putStringArrayList("filtro", ArrayList(selectedTags))
                 }
@@ -106,74 +90,81 @@ class MisRecetasFragment : Fragment() {
             }.show(childFragmentManager, "TagsDialogExplorar")
         }
 
-        if(where_from){
+        val whereFrom = arguments?.getBoolean("where_from") ?: true
 
-            cargarRecetasCreadasPorMi()
+        adapter = MisRecetasAdapter(
+            where_from = whereFrom,
+            recetas = emptyList(),
+            usuarioRepo = usuarioRepo,
+            onItemClick = { receta ->
+                val intent = Intent(requireContext(), DetalleReceta::class.java)
+                intent.putExtra("receta", receta)
+                startActivity(intent)
+            },
+            onEliminarClick = { receta ->
+                mostrarDialogoConfirmacionEliminar(receta)
+            },
+            onEditarClick = { receta ->
+                editarReceta(receta)
+            },
+            onCambiarVisibilidadClick = { receta ->
+                cambiarVisibilidad(receta)
+            }
+        )
 
-        }else{
+        binding.rvMisRecetas.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvMisRecetas.adapter = adapter
 
-            val title: TextView = binding.titleMisRecetas
-            title.setText("Recetas Guardadas")
-
-            cargarRecetasGuardadas()
-
+        recetaViewModel.recetas.observe(viewLifecycleOwner) { recetas ->
+            adapter.recetas = recetas
+            adapter.notifyDataSetChanged()
         }
 
+        recetaViewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let { mostrarError(it.message ?: "Error desconocido") }
+        }
+
+        recetaViewModel.guardadoExitoso.observe(viewLifecycleOwner) { exito ->
+            if (exito) {
+                Toast.makeText(requireContext(), "Operación exitosa", Toast.LENGTH_SHORT).show()
+                cargarRecetasCreadasPorMi()
+            }
+        }
+
+        if (whereFrom) {
+            cargarRecetasCreadasPorMi()
+        } else {
+            binding.titleMisRecetas.text = "Recetas Guardadas"
+            cargarRecetasGuardadas()
+        }
     }
 
-    private fun filtrarRecetasPorTags(tags: List<String>) {
-        val listaFiltrada = if (tags.isEmpty()) {
-            allRecetas
-        } else {
-            allRecetas.filter { receta -> tags.all { tag -> receta.etiquetas.contains(tag) } }
-        }
+    private fun eliminarReceta(receta: Receta) {
+        recetaViewModel.eliminarReceta(receta)
+    }
 
+    private fun editarReceta(receta: Receta) {
+        Toast.makeText(requireContext(), "Editar receta: ${receta.nombre}", Toast.LENGTH_SHORT).show()
+        // TODO: Navegar a la pantalla de edición con la receta
+    }
+
+    private fun cambiarVisibilidad(receta: Receta) {
+        // Cambiar visibilidad localmente (toggle)
+        receta.visibilidad = if (receta.visibilidad == "publico") "privado" else "publico"
+
+        // Actualizar en Firestore vía ViewModel
+        recetaViewModel.actualizarReceta(receta)
+
+        // Opcional: para que se vea cambio inmediato
+        adapter.notifyDataSetChanged()
     }
 
     private fun cargarRecetasCreadasPorMi() {
-        recetaRepo.obtenerRecetasPorAutor(usuarioId,
-            onSuccess = { recetas ->
-                Log.d("MisRecetasFragment", "Recetas encontradas: ${recetas.size}")
-                recetas.forEach {
-                    Log.d("MisRecetasFragment", "Receta: ${it.nombre}")
-                }
-                actualizarLista(recetas)
-            },
-            onError = { errorMsg ->
-                mostrarError(errorMsg)
-            }
-        )
+        recetaViewModel.cargarRecetasPorAutor(usuarioId)
     }
 
-    private fun cargarRecetasGuardadas(){
-
-        recetaRepo.obtenerRecetasFavoritasPor(usuarioId,
-
-            onSuccess = {
-
-                recetas ->
-                Log.d("MisRecetasFragment", "Recetas encontradas: ${recetas.size}")
-                recetas.forEach{
-
-                    Log.d("MisRecetasFragment", "Receta: ${it.nombre}")
-
-                }
-                actualizarLista(recetas)
-
-            },
-            onError = {
-
-                errorMsg ->
-                mostrarError(errorMsg)
-
-            }
-            )
-
-    }
-
-    private fun actualizarLista(recetas: List<Receta>) {
-        adapter.recetas = recetas
-        adapter.notifyDataSetChanged()
+    private fun cargarRecetasGuardadas() {
+        recetaViewModel.cargarRecetasFavoritasPor(usuarioId)
     }
 
     private fun mostrarError(mensaje: String) {
@@ -185,4 +176,19 @@ class MisRecetasFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun mostrarDialogoConfirmacionEliminar(receta: Receta) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirmar eliminación")
+        builder.setMessage("¿Estás seguro de que quieres eliminar la receta \"${receta.nombre}\"?")
+        builder.setPositiveButton("Eliminar") { dialog, _ ->
+            eliminarReceta(receta)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
 }

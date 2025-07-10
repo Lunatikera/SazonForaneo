@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
@@ -20,13 +21,14 @@ import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.ui.TagsDialogFragment
 import java.util.ArrayList
+import flores.pablo.sazonforaneo.ui.UsuarioViewModel
 
 class CategoriasFragment : Fragment() {
 
     private var _binding: FragmentCategoriasBinding? = null
     private val binding get() = _binding!!
 
-    private val usuarioRepo = UsuarioRepository()
+    private lateinit var usuarioViewModel: UsuarioViewModel
 
     private var allRecetas = listOf<Receta>()
     private var selectedTags = mutableListOf<String>()
@@ -37,31 +39,27 @@ class CategoriasFragment : Fragment() {
     ): View {
         _binding = FragmentCategoriasBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configurarRecyclerView()
-        configurarListenersDeClic()
+        usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
 
-        usuarioRepo.obtenerUsuarioActual { usuario ->
-            _binding?.let { safeBinding ->
-                val imagenPerfilUrl = usuario?.imagenPerfil
-                if (!imagenPerfilUrl.isNullOrEmpty()) {
-                    Glide.with(this)
-                        .load(imagenPerfilUrl)
-                        .placeholder(R.drawable.imagen_predeterminada)
-                        .circleCrop()
-                        .error(R.drawable.imagen_predeterminada)
-                        .into(safeBinding.ivPerfil)
-                } else {
-                    safeBinding.ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
-                }
+        // Avatar
+        usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
+            if (!url.isNullOrEmpty()) {
+                Glide.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.imagen_predeterminada)
+                    .circleCrop()
+                    .error(R.drawable.imagen_predeterminada)
+                    .into(binding.ivPerfil)
+            } else {
+                binding.ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
             }
         }
-
+        usuarioViewModel.cargarDatosUsuario()
 
         binding.ivPerfil.setOnClickListener {
             startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
@@ -73,7 +71,6 @@ class CategoriasFragment : Fragment() {
                 initialCategories = emptyList()
             ) { tags, _ ->
                 selectedTags = tags.toMutableList()
-                filtrarRecetasPorTags(selectedTags)
                 val bundle = Bundle().apply {
                     putStringArrayList("filtro", ArrayList(selectedTags))
                 }
@@ -81,16 +78,7 @@ class CategoriasFragment : Fragment() {
             }.show(childFragmentManager, "TagsDialogExplorar")
         }
 
-
-    }
-
-    private fun filtrarRecetasPorTags(tags: List<String>) {
-        val listaFiltrada = if (tags.isEmpty()) {
-            allRecetas
-        } else {
-            allRecetas.filter { receta -> tags.all { tag -> receta.etiquetas.contains(tag) } }
-        }
-
+        configurarRecyclerView()
     }
 
     private fun configurarRecyclerView() {
@@ -105,8 +93,7 @@ class CategoriasFragment : Fragment() {
             Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
-        val adaptadorCategorias = CategoriaAdapter(categorias) { categoria: Categoria ->
-            // Navegar usando Safe Args
+        val adaptadorCategorias = CategoriaAdapter(categorias) { categoria ->
             val action = CategoriasFragmentDirections
                 .actionNavCategoriasToRecetasPorCategoriaFragment(categoria.nombre)
             findNavController().navigate(action)
@@ -116,21 +103,6 @@ class CategoriasFragment : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             adapter = adaptadorCategorias
         }
-    }
-
-
-
-    private fun configurarListenersDeClic() {
-        // Estas líneas ahora son innecesarias porque los elementos fueron eliminados del layout
-        // binding.ivPerfil.setOnClickListener {
-        //     Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
-        //     val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
-        //     startActivity(intento)
-        // }
-
-        // binding.tagsButton.setOnClickListener {
-        //     Toast.makeText(requireContext(), "Botón Etiquetas (funcionalidad pendiente)", Toast.LENGTH_SHORT).show()
-        // }
     }
 
     override fun onDestroyView() {
