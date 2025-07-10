@@ -97,12 +97,14 @@ class PerfilConfigActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.misRecetas).setOnClickListener {
             val intent = Intent(this, ExplorarActivity::class.java)
             intent.putExtra("fragment_to_show", "mis_recetas")
+            intent.putExtra("where_from", true)
             startActivity(intent)
         }
 
         findViewById<TextView>(R.id.recetasGuardadas).setOnClickListener {
             val intent = Intent(this, ExplorarActivity::class.java)
-            intent.putExtra("fragment_to_show", "recetas_guardadas")
+            intent.putExtra("fragment_to_show", "mis_recetas")
+            intent.putExtra("where_from", false)
             startActivity(intent)
         }
 

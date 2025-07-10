@@ -47,6 +47,9 @@ class ExplorarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+
         usuarioId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         adapter = ExplorarAdapter(emptyList(), usuarioRepo) { receta ->
@@ -61,6 +64,14 @@ class ExplorarFragment : Fragment() {
         configurarSpinnerFiltros()
 
         cargarTodas()
+
+        val selectedTagsOtherNav = arguments?.getStringArrayList("selectedTags") ?: arrayListOf()
+        if (selectedTagsOtherNav != null){
+
+            val tags: MutableList<String> = selectedTagsOtherNav.toMutableList()
+            filtrarRecetasPorTags(tags)
+
+        }
 
         usuarioRepo.obtenerUsuarioActual { usuario ->
             val imagenPerfilUrl = usuario?.imagenPerfil

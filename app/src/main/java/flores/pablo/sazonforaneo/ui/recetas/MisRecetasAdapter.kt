@@ -12,6 +12,8 @@ import flores.pablo.sazonforaneo.Receta
 import flores.pablo.sazonforaneo.UsuarioRepository
 
 class MisRecetasAdapter(
+
+    var where_from: Boolean,
      var recetas: List<Receta>,
     private val usuarioRepo: UsuarioRepository,
     private val onItemClick: (Receta) -> Unit
@@ -39,7 +41,22 @@ class MisRecetasAdapter(
         private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
         private val tvRating: TextView = itemView.findViewById(R.id.tvRating)
 
+
+
         fun bind(receta: Receta) {
+
+            val btnEliminar: ImageButton = itemView.findViewById(R.id.btnEliminar)
+            val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
+            val btnVisibility: ImageButton = itemView.findViewById(R.id.btnVisibilidad)
+
+            if(!where_from){
+
+                btnEliminar.visibility = View.INVISIBLE
+                btnEditar.visibility = View.INVISIBLE
+                btnVisibility.visibility = View.INVISIBLE
+
+            }
+
             tvNombre.text = receta.nombre
 
             val autorId = receta.autorId

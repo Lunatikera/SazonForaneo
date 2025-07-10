@@ -27,15 +27,21 @@ class ExplorarActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
         val fabAddRecipe= findViewById<FloatingActionButton>(R.id.fab_add_recipe)
 
+
+        //variable para diferenciar creadas o guardadas
+        var where_from = intent.getBooleanExtra("where_from", true)
+        val args = Bundle().apply {
+            putBoolean("mostrarCreadas", where_from)
+        }
         // Navegación inicial según el intent
         val fragmentToShow = intent.getStringExtra("fragment_to_show")
         when (fragmentToShow) {
             "mis_recetas" -> {
-                navController.navigate(R.id.nav_mis_recetas)
+                navController.navigate(R.id.nav_mis_recetas, args)
                 bottomNav.selectedItemId = R.id.nav_mis_recetas
             }
             "explorar" -> {
-                navController.navigate(R.id.nav_explorar)
+                navController.navigate(R.id.nav_explorar, args)
                 bottomNav.selectedItemId = R.id.nav_explorar
             }
             else -> {

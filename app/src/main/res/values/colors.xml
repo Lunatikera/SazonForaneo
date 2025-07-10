@@ -6,6 +6,11 @@
     <color name="searchBarZone">#F7F4ED</color>
     
     <color name="baby_orange">#F36B1C</color>
+    <color name="orange_nigth">#A96843</color>
+
+    <color name="gray_nigth">#535353</color>
+    <color name="black_nigth">#464646</color>
+
     <color name="baby_gray">#F6F6F6</color>
     <color name="medium_gray">#CFCFCF</color>
     <color name="wine">#44291D</color>

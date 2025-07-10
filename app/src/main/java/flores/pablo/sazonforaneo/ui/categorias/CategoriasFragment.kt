@@ -9,18 +9,27 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
+import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.UsuarioRepository
 import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
+import flores.pablo.sazonforaneo.ui.TagsDialogFragment
+import java.util.ArrayList
 
 class CategoriasFragment : Fragment() {
 
     private var _binding: FragmentCategoriasBinding? = null
     private val binding get() = _binding!!
 
+    private val usuarioRepo = UsuarioRepository()
+
+    private var allRecetas = listOf<Receta>()
+    private var selectedTags = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +45,52 @@ class CategoriasFragment : Fragment() {
 
         configurarRecyclerView()
         configurarListenersDeClic()
+
+        usuarioRepo.obtenerUsuarioActual { usuario ->
+            _binding?.let { safeBinding ->
+                val imagenPerfilUrl = usuario?.imagenPerfil
+                if (!imagenPerfilUrl.isNullOrEmpty()) {
+                    Glide.with(this)
+                        .load(imagenPerfilUrl)
+                        .placeholder(R.drawable.imagen_predeterminada)
+                        .circleCrop()
+                        .error(R.drawable.imagen_predeterminada)
+                        .into(safeBinding.ivPerfil)
+                } else {
+                    safeBinding.ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
+                }
+            }
+        }
+
+
+        binding.ivPerfil.setOnClickListener {
+            startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
+        }
+
+        binding.tagsButton.setOnClickListener {
+            TagsDialogFragment(
+                initialTags = selectedTags,
+                initialCategories = emptyList()
+            ) { tags, _ ->
+                selectedTags = tags.toMutableList()
+                filtrarRecetasPorTags(selectedTags)
+                val bundle = Bundle().apply {
+                    putStringArrayList("filtro", ArrayList(selectedTags))
+                }
+                findNavController().navigate(R.id.nav_explorar, bundle)
+            }.show(childFragmentManager, "TagsDialogExplorar")
+        }
+
+
+    }
+
+    private fun filtrarRecetasPorTags(tags: List<String>) {
+        val listaFiltrada = if (tags.isEmpty()) {
+            allRecetas
+        } else {
+            allRecetas.filter { receta -> tags.all { tag -> receta.etiquetas.contains(tag) } }
+        }
+
     }
 
     private fun configurarRecyclerView() {
@@ -62,6 +117,8 @@ class CategoriasFragment : Fragment() {
             adapter = adaptadorCategorias
         }
     }
+
+
 
     private fun configurarListenersDeClic() {
         // Estas líneas ahora son innecesarias porque los elementos fueron eliminados del layout
