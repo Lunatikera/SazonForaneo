@@ -9,48 +9,48 @@
     tools:context=".ui.recetas.MisRecetasFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"> <!-- ← CORREGIDO -->
+
 
         <!-- Barra de búsqueda -->
-
-        <!-- Título -->
-
         <LinearLayout
             android:id="@+id/top_search_bar_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:background="@color/searchBarZone"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
+            android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivPerfil"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/circle"
                 android:contentDescription="Imagen de perfil"
+                android:padding="1dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/imagen_perfil" />
 
             <EditText
                 android:id="@+id/etBuscar"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/search_background"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:hint="Buscar receta"
                 android:inputType="text"
-                android:padding="10dp" />
+                android:paddingHorizontal="12dp" />
 
             <Button
                 android:id="@+id/tags_button"
@@ -65,6 +65,7 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
+        <!-- Título -->
         <TextView
             android:id="@+id/titleMisRecetas"
             android:layout_width="wrap_content"
@@ -77,20 +78,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_search_bar_layout" />
 
-        <!-- RecyclerView para mostrar las recetas -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMisRecetas"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:overScrollMode="always"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="16dp"
             app:layout_constraintTop_toBottomOf="@id/titleMisRecetas"
-            tools:listitem="@layout/item_receta" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_misreceta" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

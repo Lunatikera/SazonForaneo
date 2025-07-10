@@ -13,71 +13,61 @@
 
         <ImageView
             android:id="@+id/logoImageView"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:src="@drawable/sazon_logo"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="20dp"
+            android:contentDescription="Logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inicia sesión"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#222222"
-            android:layout_marginBottom="20dp" />
+            android:textColor="#5D2A1C"
+            android:layout_marginBottom="24dp" />
 
         <EditText
             android:id="@+id/etCorreo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
-            android:backgroundTint="#AAAAAA"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp" />
-
-
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#AAAAAA"
+            style="@style/StyledEditText"
             android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:padding="12dp" />
+            android:inputType="textPassword" />
 
         <TextView
             android:id="@+id/tvOlvidaste"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textSize="14sp"
+            android:textColor="#EF7520"
+            android:gravity="start"
             android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:focusable="true"
-            android:gravity="start"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textColor="#5D2A1C"
-            android:textSize="14sp" />
+            android:focusable="true" />
 
         <Button
             android:id="@+id/btnEntrar"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/rounded_button_brown"
             android:text="Entrar"
-            android:layout_marginTop="25dp"
-            android:textColor="#FFFFFF" />
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#EF7520"
+            android:elevation="4dp"
+            android:layout_marginBottom="32dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingBottom="24dp">
+            android:gravity="center_horizontal">
 
             <TextView
                 android:id="@+id/tvNoCuentaParte1"
@@ -91,12 +81,13 @@
                 android:id="@+id/tvNoCuentaParte2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Haz click aquí."
+                android:text="Regístrate aquí"
                 android:textColor="#EF7520"
+                android:textStyle="bold"
                 android:textSize="14sp"
                 android:clickable="true"
-                android:focusable="true"
-                android:textStyle="bold" />
+                android:focusable="true" />
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

@@ -9,14 +9,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.UsuarioRepository
 
 class MisRecetasAdapter(
-    private val recetas: List<Receta>,
-    private val onItemClick: (Receta) -> Unit
+
+    var where_from: Boolean,
+    var recetas: List<Receta>,
+    private val usuarioRepo: UsuarioRepository,
+    private val onItemClick: (Receta) -> Unit,
+    private val onEliminarClick: (Receta) -> Unit,
+    private val onEditarClick: (Receta) -> Unit,
+    private val onCambiarVisibilidadClick: (Receta) -> Unit
+
 ) : RecyclerView.Adapter<MisRecetasAdapter.RecetaViewHolder>() {
 
+    private val nombreCache = mutableMapOf<String, String>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecetaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_receta, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_misreceta, parent, false)
         return RecetaViewHolder(view)
     }
 
@@ -34,47 +44,75 @@ class MisRecetasAdapter(
         private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
         private val tvRating: TextView = itemView.findViewById(R.id.tvRating)
 
+        private val btnEliminar: ImageButton = itemView.findViewById(R.id.btnEliminar)
+        private val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
+        private val btnVisibility: ImageButton = itemView.findViewById(R.id.btnVisibilidad)
+
         fun bind(receta: Receta) {
+            if (!where_from) {
+                btnEliminar.visibility = View.INVISIBLE
+                btnEditar.visibility = View.INVISIBLE
+                btnVisibility.visibility = View.INVISIBLE
+            } else {
+                btnEliminar.visibility = View.VISIBLE
+                btnEditar.visibility = View.VISIBLE
+                btnVisibility.visibility = View.VISIBLE
+            }
+
             tvNombre.text = receta.nombre
-            tvAutor.text = "Autor: ${receta.autor}"
 
+            val autorId = receta.autorId
+            if (autorId.isNotEmpty()) {
+                val cachedNombre = nombreCache[autorId]
+                if (cachedNombre != null) {
+                    tvAutor.text = "Autor: $cachedNombre"
+                } else {
+                    usuarioRepo.obtenerNombrePorId(
+                        autorId,
+                        onSuccess = { nombreActualizado ->
+                            nombreCache[autorId] = nombreActualizado
+                            tvAutor.text = "Autor: $nombreActualizado"
+                        },
+                        onError = {
+                            tvAutor.text = "Autor: Desconocido"
+                        }
+                    )
+                }
+            } else {
+                tvAutor.text = "Autor: Desconocido"
+            }
+
+            // Cargar imagen
             val imagenUrl = receta.imagenUriString
-
-            if (imagenUrl != null && (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://"))) {
+            if (!imagenUrl.isNullOrEmpty()) {
+                val uri = Uri.parse(imagenUrl)
                 Glide.with(itemView.context)
-                    .load(imagenUrl)
+                    .load(uri)
                     .placeholder(R.drawable.pizza)
                     .into(ivReceta)
             } else {
-                val uri = imagenUrl?.let { Uri.parse(it) }
-                if (uri != null) {
-                    Glide.with(itemView.context)
-                        .load(uri)
-                        .placeholder(R.drawable.pizza)
-                        .into(ivReceta)
-                } else {
-                    ivReceta.setImageResource(R.drawable.pizza)
-                }
+                ivReceta.setImageResource(R.drawable.pizza)
             }
 
             ratingBar.rating = receta.rating.coerceIn(0f, 5f)
             tvRating.text = String.format("%.1f", receta.rating)
 
+            // Etiquetas
             tagsLayout.removeAllViews()
-            val allTags = receta.categorias + receta.etiquetas
+            val allTags = receta.etiquetas
             for (tag in allTags) {
                 val tagView = TextView(itemView.context).apply {
                     text = tag
                     setPadding(16, 4, 16, 4)
-                    setTextSize(12f)
+                    textSize = 12f
                     setTextColor(android.graphics.Color.WHITE)
                     setBackgroundResource(R.drawable.tag_green_background)
-                    val params = LinearLayout.LayoutParams(
+                    layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(8, 0, 0, 0)
-                    layoutParams = params
+                    ).apply {
+                        setMargins(8, 0, 0, 0)
+                    }
                 }
                 tagsLayout.addView(tagView)
             }
@@ -82,6 +120,31 @@ class MisRecetasAdapter(
             itemView.setOnClickListener {
                 onItemClick(receta)
             }
+
+            btnEliminar.setOnClickListener {
+                onEliminarClick(receta)
+            }
+
+            btnEditar.setOnClickListener {
+                onEditarClick(receta)
+            }
+
+            // Ícono de visibilidad basado en String
+            actualizarIconoVisibilidad(receta.visibilidad)
+
+            btnVisibility.setOnClickListener {
+                // Aquí NO cambiamos visibilidad localmente, solo avisamos al fragmento
+                onCambiarVisibilidadClick(receta)
+            }
+        }
+
+        private fun actualizarIconoVisibilidad(visibilidad: String) {
+            val iconRes = if (visibilidad == "publico") {
+                R.drawable.ic_visible
+            } else {
+                R.drawable.ic_visible_off
+            }
+            btnVisibility.setImageResource(iconRes)
         }
     }
 }

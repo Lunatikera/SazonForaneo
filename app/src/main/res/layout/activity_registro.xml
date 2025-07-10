@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF8F0">
+    android:background="#F7F4ED">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,81 +15,79 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/sazon_logo"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Registro"
-            android:textSize="20sp"
+            android:text="Crear cuenta"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textColor="#5D2A1C"
+            android:layout_marginBottom="24dp" />
 
+        <!-- Campo reutilizable -->
         <EditText
             android:id="@+id/etNombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre completo"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="12dp"/>
+            style="@style/StyledEditText"
+            android:hint="Nombre completo" />
+
 
         <EditText
             android:id="@+id/etCorreo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="12dp"/>
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/etFecha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Fecha de nacimiento"
             android:focusable="false"
             android:clickable="true" />
 
-        <!-- Ni me pregunten como se hace porque solo dios y el vato del yt saben xdd -->
         <Spinner
             android:id="@+id/spinnerGenero"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            android:layout_height="48dp"
+            android:background="@drawable/edittext_background"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="16dp" />
 
         <EditText
             android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:layout_marginBottom="12dp"/>
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/etConfirmar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Confirmar contraseña"
-            android:inputType="textPassword"
-            android:layout_marginBottom="24dp"/>
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnContinuar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Continuar"
-            android:backgroundTint="#5D2A1C"
+            android:text="Crear cuenta"
+            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:layout_marginBottom="20dp" />
+            android:backgroundTint="#E28532"
+            android:elevation="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp" />
 
         <TextView
             android:id="@+id/tvIniciarSesion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¿Ya tienes una cuenta? Iniciar sesión"
+            android:text="¿Ya tienes una cuenta? Inicia sesión"
             android:textColor="#E28532"
-            android:textStyle="bold"
             android:textSize="14sp"
+            android:textStyle="bold"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true" />
+
     </LinearLayout>
 </ScrollView>

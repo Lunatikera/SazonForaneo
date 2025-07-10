@@ -10,17 +10,20 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.flexbox.FlexboxLayout
 import flores.pablo.sazonforaneo.R
 
-class TagsDialogFragment(
+class TagsDialogExplorarFragment(
     private val initialTags: List<String> = emptyList(),
     private val initialCategories: List<String> = emptyList(),
-    private val onApply: (tags: List<String>, categories: List<String>) -> Unit
+    private val initialFiltro: Int = 0,
+    private val existingTags: List<String> = emptyList(), // <-- Etiquetas para autocomplete
+    private val onApply: (tags: List<String>, categories: List<String>, filtro: Int) -> Unit
 ) : DialogFragment() {
 
-    private lateinit var etNewTag: EditText
+    private lateinit var etNewTag: AutoCompleteTextView
     private lateinit var btnAddTag: Button
     private lateinit var flexTagsContainer: FlexboxLayout
     private lateinit var flexCategoriesContainer: FlexboxLayout
     private lateinit var btnApplyTags: Button
+    private lateinit var spinnerFiltro: Spinner
 
     private val currentTags = mutableListOf<String>()
     private val selectedCategories = mutableListOf<String>()
@@ -35,17 +38,25 @@ class TagsDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.dialog_tags, container, false)
+        val view = inflater.inflate(R.layout.dialog_tags_explorar, container, false)
 
+        // Referencias a vistas
         etNewTag = view.findViewById(R.id.etNewTag)
         btnAddTag = view.findViewById(R.id.btnAddTag)
         flexTagsContainer = view.findViewById(R.id.flexTagsContainer)
         flexCategoriesContainer = view.findViewById(R.id.flexCategoriesContainer)
         btnApplyTags = view.findViewById(R.id.btnApplyTags)
+        spinnerFiltro = view.findViewById(R.id.spinnerFiltroOrigen)
 
         currentTags.addAll(initialTags)
         selectedCategories.addAll(initialCategories)
 
+        // Configuramos autocomplete para el AutoCompleteTextView
+        val adapterAutoComplete = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, existingTags)
+        etNewTag.setAdapter(adapterAutoComplete)
+        etNewTag.threshold = 1 // Comienza a sugerir tras 1 carácter
+
+        configurarSpinnerFiltro()
         cargarCategorias()
         updateTagViews()
 
@@ -59,7 +70,8 @@ class TagsDialogFragment(
         }
 
         btnApplyTags.setOnClickListener {
-            onApply(currentTags.toList(), selectedCategories.toList())
+            val filtroSeleccionado = spinnerFiltro.selectedItemPosition
+            onApply(currentTags.toList(), selectedCategories.toList(), filtroSeleccionado)
             dismiss()
         }
 
@@ -77,6 +89,14 @@ class TagsDialogFragment(
         }
     }
 
+    private fun configurarSpinnerFiltro() {
+        val opciones = listOf("Todas", "Creadas por mí", "Favoritas", "Calificadas por mí")
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opciones)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerFiltro.adapter = spinnerAdapter
+        spinnerFiltro.setSelection(initialFiltro)
+    }
+
     private fun cargarCategorias() {
         flexCategoriesContainer.removeAllViews()
 
@@ -84,7 +104,7 @@ class TagsDialogFragment(
             val chip = TextView(requireContext()).apply {
                 text = categoria
                 setPadding(32, 16, 32, 16)
-                setTextColor(Color.parseColor("#44291D")) // Marrón oscuro
+                setTextColor(Color.parseColor("#44291D"))
                 setBackgroundResource(R.drawable.chip_categoria)
                 textSize = 14f
                 setOnClickListener {
@@ -140,7 +160,6 @@ class TagsDialogFragment(
                     updateTagViews()
                 }
             }
-
             flexTagsContainer.addView(chip)
         }
     }
