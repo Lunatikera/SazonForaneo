@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
@@ -19,12 +21,14 @@ class CategoriasFragment : Fragment() {
     private var _binding: FragmentCategoriasBinding? = null
     private val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoriasBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,20 +47,14 @@ class CategoriasFragment : Fragment() {
             Categoria("Guarniciones", R.drawable.imagen_guarniciones),
             Categoria("Postres", R.drawable.imagen_postres),
             Categoria("Snacks", R.drawable.imagen_snacks),
-            Categoria("Salsas", R.drawable.imagen_salsas),
-            Categoria("Entradas", R.drawable.imagen_entradas),
-            Categoria("Sopas", R.drawable.imagen_sopas),
-            Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
-            Categoria("Ensaladas", R.drawable.imagen_ensaladas),
-            Categoria("Guarniciones", R.drawable.imagen_guarniciones),
-            Categoria("Postres", R.drawable.imagen_postres),
-            Categoria("Snacks", R.drawable.imagen_snacks),
             Categoria("Salsas", R.drawable.imagen_salsas)
         )
 
         val adaptadorCategorias = CategoriaAdapter(categorias) { categoria: Categoria ->
-            Toast.makeText(requireContext(), "Categoría: ${categoria.nombre}", Toast.LENGTH_SHORT).show()
-            // Aquí puedes hacer la navegación a otro fragment o actividad si lo deseas
+            // Navegar usando Safe Args
+            val action = CategoriasFragmentDirections
+                .actionNavCategoriasToRecetasPorCategoriaFragment(categoria.nombre)
+            findNavController().navigate(action)
         }
 
         binding.categoriesGridRecyclerview.apply {
@@ -66,20 +64,16 @@ class CategoriasFragment : Fragment() {
     }
 
     private fun configurarListenersDeClic() {
-        binding.ivPerfil.setOnClickListener {
-            Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
-            val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
-            startActivity(intento)
-        }
+        // Estas líneas ahora son innecesarias porque los elementos fueron eliminados del layout
+        // binding.ivPerfil.setOnClickListener {
+        //     Toast.makeText(requireContext(), "Perfil", Toast.LENGTH_SHORT).show()
+        //     val intento = Intent(requireContext(), PerfilConfigActivity::class.java)
+        //     startActivity(intento)
+        // }
 
-        binding.fabAddRecipe.setOnClickListener {
-            val intent = Intent(requireContext(), AgregarNombreDescripcion::class.java)
-            startActivity(intent)
-        }
-
-        binding.tagsButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Botón Etiquetas (funcionalidad pendiente)", Toast.LENGTH_SHORT).show()
-        }
+        // binding.tagsButton.setOnClickListener {
+        //     Toast.makeText(requireContext(), "Botón Etiquetas (funcionalidad pendiente)", Toast.LENGTH_SHORT).show()
+        // }
     }
 
     override fun onDestroyView() {

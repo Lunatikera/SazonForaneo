@@ -8,61 +8,68 @@
     android:layout_height="match_parent"
     tools:context=".ui.PerfilConfigActivity">
 
+    <!-- Encabezado -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical"
         android:background="@color/baby_orange"
-        android:gravity="center"
-        >
+        android:gravity="center_horizontal">
 
         <FrameLayout
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:background="@drawable/foto_perfil"
-            >
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp">
+
+            <!-- Imagen de perfil -->
+            <ImageView
+                android:id="@+id/ivFotoPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_black"
+                android:padding="1dp"
+                android:src="@drawable/imagen_predeterminada" />
 
             <FrameLayout
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="4dp"
                 android:background="@drawable/circulo_blanco"
-                android:elevation="5dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="bottom|right"
-                >
+                android:elevation="5dp">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:id="@+id/ivEditarFoto"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/lapiz_editar"/>
-
+                    android:src="@drawable/lapiz_editar" />
             </FrameLayout>
-
         </FrameLayout>
 
         <TextView
-            android:textStyle="bold"
-            android:layout_marginTop="5dp"
+            android:id="@+id/nombreTextView"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Juana Maria Perez Lopez"
+            android:text="Nombre del usuario"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            />
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
         <TextView
-            android:textStyle="bold"
-            android:layout_marginTop="5dp"
+            android:id="@+id/correoTextView"
+            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="juana.lopez234465@gmail.com"
+            android:text="correo@usuario.com"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            />
+            android:textStyle="bold"
+            android:textSize="15sp" />
 
         <LinearLayout
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -72,31 +79,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/numeroR"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/recetasCreadasTextView"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                />
-            <TextView
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" 20"
-                android:textColor="@color/white"
-                android:textSize="15sp"/>
-
+                android:textStyle="bold" />
         </LinearLayout>
-
     </LinearLayout>
 
-
+    <!-- Menú inferior -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        android:layout_margin="20dp"
-        android:gravity="center_vertical"
+        android:padding="20dp"
         android:background="@drawable/cuadro_redondo_gris"
-        android:elevation="5dp"
-        >
+        android:elevation="8dp">
 
         <TextView
             android:id="@+id/infoPersonal"
@@ -105,17 +114,16 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:layout_marginLeft="30dp"
-            android:text="@string/editarIP"/>
+            android:layout_marginStart="10dp"
+            android:text="@string/editarIP" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/medium_gray"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
         <TextView
             android:id="@+id/misRecetas"
             android:layout_width="wrap_content"
@@ -123,17 +131,16 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:layout_marginLeft="30dp"
-            android:text="@string/misR"/>
+            android:layout_marginStart="10dp"
+            android:text="@string/misR" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/medium_gray"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
         <TextView
             android:id="@+id/recetasGuardadas"
             android:layout_width="wrap_content"
@@ -141,32 +148,30 @@
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:layout_marginLeft="30dp"
-            android:text="@string/saveR"/>
+            android:layout_marginStart="10dp"
+            android:text="@string/saveR" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/medium_gray"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="164dp"
                 android:layout_height="wrap_content"
+                android:text="@string/modeNoche"
                 android:textColor="@color/black"
                 android:textSize="25sp"
-                android:textStyle="bold"
-                android:text="@string/modeNoche" />
+                android:layout_marginStart="10dp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="0dp"
@@ -177,21 +182,23 @@
                 android:id="@+id/modoNoche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/medium_gray"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
 
-
+        <TextView
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp" />
     </LinearLayout>
-
-
-
 </LinearLayout>

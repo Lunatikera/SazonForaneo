@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
+    android:background="#F7F4ED">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,67 +13,81 @@
 
         <ImageView
             android:id="@+id/logoImageView"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:src="@drawable/sazon_logo"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="20dp"
+            android:contentDescription="Logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inicia sesión"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textColor="#5D2A1C"
+            android:layout_marginBottom="24dp" />
 
         <EditText
             android:id="@+id/etCorreo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/StyledEditText"
             android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
-            android:backgroundTint="#AAAAAA"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/etPassword"
+            style="@style/StyledEditText"
+            android:hint="Contraseña"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/tvOlvidaste"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:backgroundTint="#AAAAAA"
-            android:padding="12dp"
-            android:layout_marginBottom="20dp" />
+            android:text="¿Olvidaste tu contraseña?"
+            android:textSize="14sp"
+            android:textColor="#EF7520"
+            android:gravity="start"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:focusable="true" />
 
         <Button
             android:id="@+id/btnEntrar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:text="Entrar"
-            android:backgroundTint="#5D2A1C"
+            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:layout_marginBottom="20dp" />
+            android:backgroundTint="#EF7520"
+            android:elevation="4dp"
+            android:layout_marginBottom="32dp" />
 
-        <Button
-            android:id="@+id/btnRegistrarme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Registrarme"
-            android:backgroundTint="#5D2A1C"
-            android:textColor="#FFFFFF" />
-        <TextView
-            android:id="@+id/tvOlvidaste"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¿Olvidaste tu contraseña? Haz click aquí"
-            android:textColor="#5D2A1C"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            android:focusable="true" />
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
+            <TextView
+                android:id="@+id/tvNoCuentaParte1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿No tienes una cuenta? "
+                android:textColor="#5D2A1C"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvNoCuentaParte2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regístrate aquí"
+                android:textColor="#EF7520"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

@@ -48,8 +48,10 @@
                     android:layout_height="110dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/pizza"
-                    android:background="#F0F0F0"
+                    android:background="@drawable/rounded_corners"
                     android:layout_marginBottom="16dp"/>
+
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,17 +62,17 @@
 
                     <ImageView
                         android:id="@+id/ivPerfil"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/perfil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:padding="1dp"
+                        android:background="@drawable/circle_black"
                         android:scaleType="centerCrop"
-                        android:background="@drawable/circle_mask"
-                        android:layout_marginEnd="8dp"/>
+                        android:src="@drawable/perfil" />
 
                     <LinearLayout
-                        android:layout_width="1dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -89,26 +91,19 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/star_outline" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/star_outline" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/star_outline" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/star_outline" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/star_outline" />
+                            <RatingBar
+                                android:id="@+id/ratingBar"
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="3.2"
+                                android:stepSize="0.5"
+                                android:progressTint="#FF6F00"
+                                android:progressBackgroundTint="#CCCCCC"
+                                android:secondaryProgressTint="#FFB74D"
+                                android:theme="@style/ThemeOverlay.AppCompat.Light" />
 
                             <TextView
                                 android:id="@+id/tvCalificacion"
@@ -118,16 +113,34 @@
                                 android:text="3.2"
                                 android:textColor="#333333"
                                 android:textSize="14sp" />
+
+                            <Button
+                                android:id="@+id/btnCalificar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Calificar"
+                                android:textAllCaps="false"
+                                android:layout_marginStart="12dp"
+                                android:backgroundTint="#FF6F00"
+                                android:textColor="#FFFFFF"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp"
+                                android:minHeight="36dp"
+                                android:minWidth="72dp"/>
+
+                            <ImageView
+                                android:id="@+id/ivFav"
+                                android:layout_width="wrap_content"
+                                android:layout_height="38dp"
+                                android:layout_marginStart="24dp"
+                                android:contentDescription="Favorito"
+                                android:src="@drawable/favheart" />
                         </LinearLayout>
+
+
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/ivFav"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="4dp"
-                        android:contentDescription="Favorito"
-                        android:src="@drawable/favheart" />
+
                 </LinearLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -234,7 +247,7 @@
                         android:text="Instrucciones"
                         android:textAlignment="center"
                         android:padding="12dp"
-                        android:textColor="#333333"
+                        android:textColor="@color/medium_gray"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
                 </LinearLayout>

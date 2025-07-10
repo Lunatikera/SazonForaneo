@@ -1,5 +1,6 @@
-package flores.pablo.sazonforaneo.ui
+package flores.pablo.sazonforaneo.ui.explorar
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,16 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.ui.Receta
+import flores.pablo.sazonforaneo.Receta
+import flores.pablo.sazonforaneo.UsuarioRepository
 
 class ExplorarAdapter(
-    private val recetas: List<Receta>,
+    recetasIniciales: List<Receta>,
+    private val usuarioRepo: UsuarioRepository,
     private val onItemClick: (Receta) -> Unit
 ) : RecyclerView.Adapter<ExplorarAdapter.RecetaViewHolder>() {
+
+    private var recetas = recetasIniciales.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecetaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_receta, parent, false)
@@ -26,6 +31,12 @@ class ExplorarAdapter(
 
     override fun getItemCount(): Int = recetas.size
 
+    fun actualizarLista(nuevaLista: List<Receta>) {
+        recetas.clear()
+        recetas.addAll(nuevaLista)
+        notifyDataSetChanged()
+    }
+
     inner class RecetaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivReceta: ImageView = itemView.findViewById(R.id.ivReceta)
         private val tvNombre: TextView = itemView.findViewById(R.id.tvNombreReceta)
@@ -36,51 +47,74 @@ class ExplorarAdapter(
 
         fun bind(receta: Receta) {
             tvNombre.text = receta.nombre
-            tvAutor.text = "Autor: ${receta.autor}"
 
-            val imagenUrl = receta.imagenUriString
-
-            if (imagenUrl != null && (imagenUrl.startsWith("http://") || imagenUrl.startsWith("https://"))) {
-                Glide.with(itemView.context)
-                    .load(imagenUrl)
-                    .placeholder(R.drawable.pizza)
-                    .into(ivReceta)
+            // Carga dinámica del nombre del autor por autorId
+            if (receta.autorId.isNullOrEmpty()) {
+                tvAutor.text = ""
             } else {
-                val uri = imagenUrl?.let { Uri.parse(it) }
-                if (uri != null) {
-                    Glide.with(itemView.context)
-                        .load(uri)
-                        .placeholder(R.drawable.pizza)
-                        .into(ivReceta)
-                } else {
-                    ivReceta.setImageResource(R.drawable.pizza)
-                }
+                usuarioRepo.obtenerNombrePorId(
+                    receta.autorId,
+                    onSuccess = { nombreActualizado ->
+                        tvAutor.text = "Autor: $nombreActualizado"
+                    },
+                    onError = {
+                        tvAutor.text = "Autor: Desconocido"
+                    }
+                )
             }
-            ratingBar.rating = receta.rating.coerceIn(0f, 5f)  // Asegura que esté entre 0 y 5
+
+            cargarImagenReceta(receta.imagenUriString)
+
+            ratingBar.rating = receta.rating.coerceIn(0f, 5f)
             tvRating.text = String.format("%.1f", receta.rating)
+
             tagsLayout.removeAllViews()
-            val allTags = receta.categorias + receta.etiquetas
-            for (tag in allTags) {
+            receta.etiquetas.forEach { tag ->
                 val tagView = TextView(itemView.context).apply {
                     text = tag
                     setPadding(16, 4, 16, 4)
-                    setTextSize(12f)
+                    textSize = 12f
                     setTextColor(android.graphics.Color.WHITE)
                     setBackgroundResource(R.drawable.tag_green_background)
-                    val params = LinearLayout.LayoutParams(
+                    layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    params.setMargins(8, 0, 0, 0)
-                    layoutParams = params
+                    ).apply { setMargins(8, 0, 0, 0) }
                 }
                 tagsLayout.addView(tagView)
             }
 
-            itemView.setOnClickListener {
-                onItemClick(receta)
-            }
+            itemView.setOnClickListener { onItemClick(receta) }
         }
 
+        private fun cargarImagenReceta(uriString: String?) {
+            val placeholder = R.drawable.pizza
+            val context = itemView.context
+
+            if (uriString.isNullOrEmpty()) {
+                ivReceta.setImageResource(placeholder)
+                return
+            }
+
+            if (uriString.startsWith("http://") || uriString.startsWith("https://")) {
+                Glide.with(context).load(uriString).placeholder(placeholder).into(ivReceta)
+                return
+            }
+
+            val uri = Uri.parse(uriString)
+
+            try {
+                Glide.with(context).load(uri).placeholder(placeholder).into(ivReceta)
+            } catch (e: Exception) {
+                try {
+                    context.contentResolver.openInputStream(uri)?.use { stream ->
+                        val bmp = BitmapFactory.decodeStream(stream)
+                        Glide.with(context).load(bmp).placeholder(placeholder).into(ivReceta)
+                    } ?: ivReceta.setImageResource(placeholder)
+                } catch (e2: Exception) {
+                    ivReceta.setImageResource(placeholder)
+                }
+            }
+        }
     }
 }
