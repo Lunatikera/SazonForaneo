@@ -95,7 +95,16 @@ class RegistroActivity : AppCompatActivity() {
             },
             year, month, day
         )
-        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+        // Aseguramos que el usuario tenga almenos 12 años de edad.
+        // Calculamos la fecha de hace 12 años a partir de hoy.
+        val minAgeCalendar = Calendar.getInstance()
+        minAgeCalendar.add(Calendar.YEAR, -12) // Restamos 12 años al año actual
+
+        datePickerDialog.datePicker.maxDate = minAgeCalendar.timeInMillis
+
+        //Ponemos de limite 100 años
+         datePickerDialog.datePicker.minDate = System.currentTimeMillis() - (1000L * 60 * 60 * 24 * 365 * 100L)
+
         datePickerDialog.show()
     }
 }
