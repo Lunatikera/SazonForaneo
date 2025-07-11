@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bottomNavigation"> #535353</color>
+
     <color name="searchBarZone">#535353</color>
 
     <color name="baby_orange">#A96843</color>
@@ -15,6 +16,9 @@
     <color name="wine">#44291D</color>
     <color name="baby_green">#6FE04D</color>
     <color name="gris_oscuro">#333333</color>
+
+
+    <color name="nombreReceta">#FFFFFF</color>
 
 
 </resources>

@@ -82,7 +82,7 @@
                 android:text="Nombre de la receta"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/nombreReceta" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Autor: Ana Pérez"
-                    android:textColor="#666666"
+                    android:textColor="@color/nombreReceta"
                     android:textSize="14sp" />
 
                 <RatingBar
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="3.5"
-                    android:textColor="#666666"
+                    android:textColor="@color/nombreReceta"
                     android:textSize="14sp" />
             </LinearLayout>
 

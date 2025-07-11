@@ -44,6 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:backgroundTint="@color/searchBarZone"
                 android:background="@drawable/search_background"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:hint="Buscar receta"
