@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,8 +59,7 @@ class ExplorarFragment : Fragment() {
         binding.recipesRecyclerview.adapter = adapter
 
         configurarSpinnerFiltros()
-        cargarTodas() // carga inicial, incluirá la receta nueva si viene
-
+        cargarTodas()
         binding.recipesRecyclerview.scrollToPosition(0)
 
         binding.ivPerfil.setOnClickListener {
@@ -89,7 +89,7 @@ class ExplorarFragment : Fragment() {
                         selectedCategories = categorias.toMutableList()
                         filtroSeleccionado = filtro
                         configurarFiltroDesdeDialog(filtroSeleccionado)
-                        filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                        filtrarRecetas()
                     }.show(childFragmentManager, "TagsDialogExplorar")
                 },
                 onFailure = {
@@ -103,23 +103,20 @@ class ExplorarFragment : Fragment() {
                         selectedCategories = categorias.toMutableList()
                         filtroSeleccionado = filtro
                         configurarFiltroDesdeDialog(filtroSeleccionado)
-                        filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                        filtrarRecetas()
                     }.show(childFragmentManager, "TagsDialogExplorar")
                 }
             )
         }
-    }
 
-    private fun agregarRecetaNuevaSiExiste() {
-        val nuevaReceta = arguments?.getSerializable("nuevaReceta") as? Receta
-        nuevaReceta?.let {
-            if (allRecetas.none { r -> r.id == it.id }) {
-                allRecetas.add(0, it)
-            }
+        // Buscador en vivo
+        binding.etBuscar.addTextChangedListener {
+            filtrarRecetas()
         }
     }
 
     private fun configurarFiltroDesdeDialog(position: Int) {
+        filtroSeleccionado = position
         when (position) {
             0 -> cargarTodas()
             1 -> cargarCreadasPorMi()
@@ -140,7 +137,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                filtrarRecetas()
             },
             onFailure = {
                 mostrarError(it.message ?: "Error al obtener recetas")
@@ -153,7 +150,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                filtrarRecetas()
             },
             onError = { mostrarError(it) }
         )
@@ -164,7 +161,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                filtrarRecetas()
             },
             onError = { mostrarError(it) }
         )
@@ -175,51 +172,55 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
+                filtrarRecetas()
             },
             onError = { mostrarError(it) }
         )
     }
 
-    private fun filtrarRecetasPorTagsOCategorias(tags: List<String>, categorias: List<String>) {
-        val listaFiltrada = if (tags.isEmpty() && categorias.isEmpty()) {
-            allRecetas
-        } else {
-            allRecetas.filter { receta ->
-                val coincideTag = tags.isEmpty() || tags.any { it in receta.etiquetas }
-                val coincideCategoria = categorias.isEmpty() || categorias.any { it in receta.categorias }
-
-                if (tags.isNotEmpty() && categorias.isNotEmpty()) {
-                    coincideTag && coincideCategoria
-                } else {
-                    (tags.isNotEmpty() && coincideTag) || (categorias.isNotEmpty() && coincideCategoria)
-                }
+    private fun agregarRecetaNuevaSiExiste() {
+        val nuevaReceta = arguments?.getSerializable("nuevaReceta") as? Receta
+        nuevaReceta?.let {
+            if (allRecetas.none { r -> r.id == it.id }) {
+                allRecetas.add(0, it)
             }
         }
-        adapter.actualizarLista(listaFiltrada)
     }
 
+    private fun filtrarRecetas() {
+        val texto = binding.etBuscar.text.toString().lowercase().trim()
 
+        val recetasFiltradas = allRecetas.filter { receta ->
+            val coincideTexto = texto.isEmpty() || receta.nombre.lowercase().contains(texto) ||
+                    receta.descripcion.lowercase().contains(texto) ||
+                    receta.etiquetas.any { it.lowercase().contains(texto) } ||
+                    receta.categorias.any { it.lowercase().contains(texto) }
+
+            val coincideTag = selectedTags.isEmpty() || selectedTags.any { it in receta.etiquetas }
+            val coincideCategoria = selectedCategories.isEmpty() || selectedCategories.any { it in receta.categorias }
+
+            coincideTexto && (
+                    selectedTags.isEmpty() && selectedCategories.isEmpty() ||
+                            selectedTags.isNotEmpty() && selectedCategories.isNotEmpty() && coincideTag && coincideCategoria ||
+                            selectedTags.isNotEmpty() && selectedCategories.isEmpty() && coincideTag ||
+                            selectedTags.isEmpty() && selectedCategories.isNotEmpty() && coincideCategoria
+                    )
+        }
+
+        adapter.actualizarLista(recetasFiltradas)
+    }
 
     private fun mostrarError(mensaje: String) {
         Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        configurarFiltroDesdeDialog(filtroSeleccionado)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    override fun onResume() {
-        super.onResume()
-        // Aquí recargas desde la base
-        when (filtroSeleccionado) {
-            0 -> cargarTodas()
-            1 -> cargarCreadasPorMi()
-            2 -> cargarFavoritas()
-            3 -> cargarCalificadasPorMi()
-            else -> cargarTodas()
-        }
-    }
-
 }

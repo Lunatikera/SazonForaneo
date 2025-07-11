@@ -45,9 +45,11 @@ class MainActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             val intent = Intent(this, ExplorarActivity::class.java)
+                            intent.putExtra("fragment_to_show", "explorar")
                             startActivity(intent)
                             finish()
-                        } else {
+                        }
+                        else {
                             val errorMessage = when (val errorCode = (task.exception as? FirebaseAuthException)?.errorCode) {
                                 "ERROR_INVALID_EMAIL" -> "Correo electrónico no válido"
                                 "ERROR_WRONG_PASSWORD" -> "Contraseña incorrecta"
