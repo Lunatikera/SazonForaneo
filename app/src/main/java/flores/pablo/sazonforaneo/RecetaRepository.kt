@@ -1,7 +1,10 @@
 package flores.pablo.sazonforaneo
 
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.firestore
 
 class RecetaRepository {
 
@@ -188,6 +191,28 @@ class RecetaRepository {
         recetaRef.update("visibilidad", nuevaVisibilidad)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun obtenerRecetasDestacadas(
+        onSuccess: (List<Receta>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val db = Firebase.firestore
+        db.collection("recetas")
+            .whereEqualTo("visibilidad", "publico")
+            .whereGreaterThanOrEqualTo("rating", 4.0)
+            .orderBy("rating", Query.Direction.DESCENDING)
+            .limit(10)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val recetas = querySnapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Receta::class.java)?.apply { id = doc.id }
+                }
+                onSuccess(recetas)
+            }
+            .addOnFailureListener { e ->
+                onError(e.message ?: "Error desconocido")
+            }
     }
 
 

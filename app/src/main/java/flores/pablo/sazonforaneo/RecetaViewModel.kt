@@ -41,6 +41,8 @@ class RecetaViewModel : ViewModel() {
                 _error.postValue(e)
             }
         )
+
+
     }
 
 
@@ -132,6 +134,20 @@ class RecetaViewModel : ViewModel() {
             }
         )
     }
+
+
+    fun cargarRecetasDestacadas() {
+        repository.obtenerRecetasDestacadas(
+            onSuccess = { lista ->
+                _recetas.postValue(lista)
+                _error.postValue(null)
+            },
+            onError = { errorMsg ->
+                _error.postValue(Exception(errorMsg))
+            }
+        )
+    }
+
 
 
 }
