@@ -25,6 +25,7 @@ class MisRecetasFragment : Fragment() {
 
     private lateinit var adapter: MisRecetasAdapter
     private val usuarioRepo = UsuarioRepository()
+    private val etiquetasRepo = EtiquetasRepository()
 
     private lateinit var usuarioViewModel: UsuarioViewModel
     private lateinit var recetaViewModel: RecetaViewModel
@@ -57,7 +58,6 @@ class MisRecetasFragment : Fragment() {
             if (!url.isNullOrEmpty()) {
                 Glide.with(this)
                     .load(url)
-                    .placeholder(R.drawable.imagen_predeterminada)
                     .circleCrop()
                     .error(R.drawable.imagen_predeterminada)
                     .into(binding.ivPerfil)
@@ -72,15 +72,32 @@ class MisRecetasFragment : Fragment() {
         }
 
         binding.tagsButton.setOnClickListener {
-            TagsDialogFragment(
-                initialTags = selectedTags,
-                initialCategories = selectedCategories
-            ) { tags, categorias ->
-                selectedTags = tags.toMutableList()
-                selectedCategories = categorias.toMutableList()
-                aplicarFiltrosEnMisRecetas() // ← Aplica los filtros localmente
-            }.show(childFragmentManager, "TagsDialogMisRecetas")
+            etiquetasRepo.obtenerEtiquetas(
+                onSuccess = { etiquetasExistentes ->
+                    TagsDialogFragment(
+                        initialTags = selectedTags,
+                        initialCategories = selectedCategories,
+                        existingTags = etiquetasExistentes
+                    ) { tags, categorias ->
+                        selectedTags = tags.toMutableList()
+                        selectedCategories = categorias.toMutableList()
+                        aplicarFiltrosEnMisRecetas()
+                    }.show(childFragmentManager, "TagsDialogMisRecetas")
+                },
+                onFailure = {
+                    TagsDialogFragment(
+                        initialTags = selectedTags,
+                        initialCategories = selectedCategories,
+                        existingTags = emptyList()
+                    ) { tags, categorias ->
+                        selectedTags = tags.toMutableList()
+                        selectedCategories = categorias.toMutableList()
+                        aplicarFiltrosEnMisRecetas()
+                    }.show(childFragmentManager, "TagsDialogMisRecetas")
+                }
+            )
         }
+
 
 
         val whereFrom = arguments?.getBoolean("where_from") ?: true
@@ -138,7 +155,6 @@ class MisRecetasFragment : Fragment() {
 
     private fun editarReceta(receta: Receta) {
         Toast.makeText(requireContext(), "Editar receta: ${receta.nombre}", Toast.LENGTH_SHORT).show()
-        // TODO: Navegar a la pantalla de edición con la receta
     }
 
     private fun cambiarVisibilidad(receta: Receta) {
@@ -168,15 +184,27 @@ class MisRecetasFragment : Fragment() {
     private fun aplicarFiltrosEnMisRecetas() {
         val recetasOriginales = recetaViewModel.recetas.value ?: return
 
+        if (selectedTags.isEmpty() && selectedCategories.isEmpty()) {
+            adapter.recetas = recetasOriginales
+            adapter.notifyDataSetChanged()
+            return
+        }
+
         val filtradas = recetasOriginales.filter { receta ->
-            val coincideTag = selectedTags.isEmpty() || selectedTags.any { receta.etiquetas.contains(it) }
-            val coincideCategoria = selectedCategories.isEmpty() || selectedCategories.any { receta.categorias.contains(it) }
-            coincideTag || coincideCategoria
+            val coincideTag = selectedTags.isEmpty() || selectedTags.any { it in receta.etiquetas }
+            val coincideCategoria = selectedCategories.isEmpty() || selectedCategories.any { it in receta.categorias }
+
+            if (selectedTags.isNotEmpty() && selectedCategories.isNotEmpty()) {
+                coincideTag && coincideCategoria
+            } else {
+                (selectedTags.isNotEmpty() && coincideTag) || (selectedCategories.isNotEmpty() && coincideCategoria)
+            }
         }
 
         adapter.recetas = filtradas
         adapter.notifyDataSetChanged()
     }
+
 
     private fun mostrarDialogoConfirmacionEliminar(receta: Receta) {
         val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())

@@ -13,10 +13,11 @@ import flores.pablo.sazonforaneo.R
 class TagsDialogFragment(
     private val initialTags: List<String> = emptyList(),
     private val initialCategories: List<String> = emptyList(),
+    private val existingTags: List<String> = emptyList(),
     private val onApply: (tags: List<String>, categories: List<String>) -> Unit
 ) : DialogFragment() {
 
-    private lateinit var etNewTag: EditText
+    private lateinit var etNewTag: AutoCompleteTextView
     private lateinit var btnAddTag: Button
     private lateinit var flexTagsContainer: FlexboxLayout
     private lateinit var flexCategoriesContainer: FlexboxLayout
@@ -43,11 +44,8 @@ class TagsDialogFragment(
         "Rápidas y Fáciles",
         "Antojitos Mexicanos"
     )
-
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.dialog_tags, container, false)
@@ -60,6 +58,11 @@ class TagsDialogFragment(
 
         currentTags.addAll(initialTags)
         selectedCategories.addAll(initialCategories)
+
+        // Setup autocomplete
+        val adapterAutoComplete = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, existingTags)
+        etNewTag.setAdapter(adapterAutoComplete)
+        etNewTag.threshold = 1
 
         cargarCategorias()
         updateTagViews()
@@ -99,7 +102,7 @@ class TagsDialogFragment(
             val chip = TextView(requireContext()).apply {
                 text = categoria
                 setPadding(32, 16, 32, 16)
-                setTextColor(Color.parseColor("#44291D")) // Marrón oscuro
+                setTextColor(Color.parseColor("#44291D"))
                 setBackgroundResource(R.drawable.chip_categoria)
                 textSize = 14f
                 setOnClickListener {
@@ -149,13 +152,11 @@ class TagsDialogFragment(
                 ).apply {
                     setMargins(0, 0, 16, 16)
                 }
-
                 setOnClickListener {
                     currentTags.remove(tag)
                     updateTagViews()
                 }
             }
-
             flexTagsContainer.addView(chip)
         }
     }

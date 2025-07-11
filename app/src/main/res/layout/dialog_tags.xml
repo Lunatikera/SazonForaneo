@@ -24,13 +24,21 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_start" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Etiquetas:"
+        android:textSize="16sp"
+        android:textColor="#444444"
+        android:layout_marginBottom="8dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etNewTag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,6 +46,7 @@
             android:hint="Agregar etiqueta"
             android:inputType="text"
             android:background="@drawable/rounded_edittext" />
+
 
         <Button
             android:id="@+id/btnAddTag"
@@ -56,6 +65,8 @@
         android:layout_marginTop="16dp"
         app:flexWrap="wrap"
         app:justifyContent="flex_start" />
+
+
 
     <Button
         android:id="@+id/btnApplyTags"

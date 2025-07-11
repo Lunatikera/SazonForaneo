@@ -14,7 +14,7 @@ class TagsDialogExplorarFragment(
     private val initialTags: List<String> = emptyList(),
     private val initialCategories: List<String> = emptyList(),
     private val initialFiltro: Int = 0,
-    private val existingTags: List<String> = emptyList(), // <-- Etiquetas para autocomplete
+    private val existingTags: List<String> = emptyList(),
     private val onApply: (tags: List<String>, categories: List<String>, filtro: Int) -> Unit
 ) : DialogFragment() {
 
