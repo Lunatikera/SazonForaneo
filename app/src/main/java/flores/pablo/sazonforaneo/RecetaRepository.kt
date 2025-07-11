@@ -67,7 +67,6 @@ class RecetaRepository {
                 for (chunk in listasChunk) {
                     val task = firestore.collection("recetas")
                         .whereIn(FieldPath.documentId(), chunk)
-                        .whereEqualTo("visibilidad", "publico")
                         .get()
                     tareas.add(task)
                 }
@@ -75,7 +74,10 @@ class RecetaRepository {
                 com.google.android.gms.tasks.Tasks.whenAllSuccess<com.google.firebase.firestore.QuerySnapshot>(tareas)
                     .addOnSuccessListener { resultados ->
                         for (resultado in resultados) {
-                            recetasAcumuladas.addAll(resultado.toObjects(Receta::class.java))
+                            val recetas = resultado.toObjects(Receta::class.java)
+                            recetasAcumuladas.addAll(
+                                recetas.filter { it.visibilidad == "publico" || it.autorId == userId }
+                            )
                         }
                         onSuccess(recetasAcumuladas)
                     }
@@ -88,13 +90,13 @@ class RecetaRepository {
 
 
 
+
     fun obtenerRecetasCalificadasPor(
         userId: String,
         onSuccess: (List<Receta>) -> Unit,
         onError: (String) -> Unit
     ) {
         firestore.collection("recetas")
-            .whereEqualTo("visibilidad", "publico")
             .get()
             .addOnSuccessListener { snapshot ->
                 val recetas = mutableListOf<Receta>()
@@ -109,7 +111,9 @@ class RecetaRepository {
                             .document(userId)
                             .get()
                             .addOnSuccessListener { calificacionDoc ->
-                                if (calificacionDoc.exists()) {
+                                if (calificacionDoc.exists() &&
+                                    (receta.visibilidad == "publico" || receta.autorId == userId)
+                                ) {
                                     recetas.add(receta)
                                 }
                             }
@@ -127,6 +131,7 @@ class RecetaRepository {
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener recetas") }
     }
+
 
 
     fun obtenerRecetasCreadasYFavoritasPor(
