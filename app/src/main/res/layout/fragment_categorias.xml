@@ -71,6 +71,7 @@
             android:overScrollMode="always"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            android:paddingBottom="80dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +81,7 @@
             app:layout_constraintVertical_bias="1.0"
             app:spanCount="2"
             tools:listitem="@layout/item_categoria" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

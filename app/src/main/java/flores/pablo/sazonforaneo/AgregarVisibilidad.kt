@@ -109,7 +109,24 @@ class AgregarVisibilidad : AppCompatActivity() {
     }
 
     private fun cargarCategorias() {
-        val categorias = listOf("Entradas", "Sopas", "Ensaladas", "Postres", "Snacks", "Picante", "Dulce", "Salado")
+        val categorias = listOf(
+            "Entradas",
+            "Sopas",
+            "Platos Fuertes",
+            "Ensaladas",
+            "Guarniciones",
+            "Postres",
+            "Mariscos",
+            "Desayunos",
+            "Bebidas",
+            "Salsas y Aderezos",
+            "Panadería",
+            "Pastas",
+            "Comida Internacional",
+            "Vegetariana/Vegana",
+            "Rápidas y Fáciles",
+            "Antojitos Mexicanos"
+        )
 
         layoutCategorias.removeAllViews()
 

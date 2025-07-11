@@ -26,9 +26,24 @@ class TagsDialogFragment(
     private val selectedCategories = mutableListOf<String>()
 
     private val allCategories = listOf(
-        "Entradas", "Sopas", "Ensaladas", "Postres",
-        "Snacks", "Picante", "Dulce", "Salado"
+        "Entradas",
+        "Sopas",
+        "Platos Fuertes",
+        "Ensaladas",
+        "Guarniciones",
+        "Postres",
+        "Mariscos",
+        "Desayunos",
+        "Bebidas",
+        "Salsas y Aderezos",
+        "Panadería",
+        "Pastas",
+        "Comida Internacional",
+        "Vegetariana/Vegana",
+        "Rápidas y Fáciles",
+        "Antojitos Mexicanos"
     )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -89,9 +89,19 @@ class CategoriasFragment : Fragment() {
             Categoria("Ensaladas", R.drawable.imagen_ensaladas),
             Categoria("Guarniciones", R.drawable.imagen_guarniciones),
             Categoria("Postres", R.drawable.imagen_postres),
-            Categoria("Snacks", R.drawable.imagen_snacks),
-            Categoria("Salsas", R.drawable.imagen_salsas)
+            Categoria("Mariscos", R.drawable.imagen_mariscos),
+            Categoria("Desayunos", R.drawable.imagen_desayunos),
+            Categoria("Bebidas", R.drawable.imagen_bebidas),
+            Categoria("Salsas y Aderezos", R.drawable.imagen_salsas),
+            Categoria("Panadería", R.drawable.imagen_panes),
+            Categoria("Pastas", R.drawable.imagen_pastas),
+            Categoria("Comida Internacional", R.drawable.imagen_internacional),
+            Categoria("Vegetariana/Vegana", R.drawable.imagen_vegetarianos),
+            Categoria("Rápidas y Fáciles", R.drawable.imagen_facil),
+            Categoria("Antojitos Mexicanos", R.drawable.imagen_mexicana)
         )
+
+
 
         val adaptadorCategorias = CategoriaAdapter(categorias) { categoria ->
             val action = CategoriasFragmentDirections
