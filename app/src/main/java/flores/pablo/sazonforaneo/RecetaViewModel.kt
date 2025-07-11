@@ -30,6 +30,20 @@ class RecetaViewModel : ViewModel() {
         )
     }
 
+    fun cargarRecetasPorCategoria(nombreCategoria: String) {
+        repository.obtenerRecetas(
+            onSuccess = { lista ->
+                val filtradas = lista.filter { it.categorias.contains(nombreCategoria) }
+                _recetas.postValue(filtradas)
+                _error.postValue(null)
+            },
+            onFailure = { e ->
+                _error.postValue(e)
+            }
+        )
+    }
+
+
     fun guardarReceta(receta: Receta) {
         repository.guardarReceta(
             receta,

@@ -10,7 +10,7 @@ import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
 
 class CategoriaAdapter(
-    private val categorias: List<Categoria>,
+    private var categorias: List<Categoria>,  // Cambiado a var para actualizar
     private val clickListener: (Categoria) -> Unit
 ) : RecyclerView.Adapter<CategoriaAdapter.CategoriaViewHolder>() {
 
@@ -34,4 +34,10 @@ class CategoriaAdapter(
     }
 
     override fun getItemCount(): Int = categorias.size
+
+    // Método para actualizar la lista y refrescar el RecyclerView
+    fun actualizarLista(nuevaLista: List<Categoria>) {
+        categorias = nuevaLista
+        notifyDataSetChanged()
+    }
 }

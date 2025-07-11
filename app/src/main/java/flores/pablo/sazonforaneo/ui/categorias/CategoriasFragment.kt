@@ -2,25 +2,20 @@ package flores.pablo.sazonforaneo.ui.categorias
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import flores.pablo.sazonforaneo.AgregarNombreDescripcion
-import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.Receta
-import flores.pablo.sazonforaneo.UsuarioRepository
 import flores.pablo.sazonforaneo.databinding.FragmentCategoriasBinding
+import flores.pablo.sazonforaneo.ui.Categoria
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
-import flores.pablo.sazonforaneo.ui.TagsDialogFragment
-import java.util.ArrayList
 import flores.pablo.sazonforaneo.ui.UsuarioViewModel
 
 class CategoriasFragment : Fragment() {
@@ -29,9 +24,8 @@ class CategoriasFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var usuarioViewModel: UsuarioViewModel
-
-    private var allRecetas = listOf<Receta>()
-    private var selectedTags = mutableListOf<String>()
+    private lateinit var adaptadorCategorias: CategoriaAdapter
+    private lateinit var listaCompleta: List<Categoria>  // ← Guardamos todas las categorías
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,12 +40,10 @@ class CategoriasFragment : Fragment() {
 
         usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
 
-        // Avatar
         usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
             if (!url.isNullOrEmpty()) {
                 Glide.with(this)
                     .load(url)
-                    .placeholder(R.drawable.imagen_predeterminada)
                     .circleCrop()
                     .error(R.drawable.imagen_predeterminada)
                     .into(binding.ivPerfil)
@@ -59,30 +51,19 @@ class CategoriasFragment : Fragment() {
                 binding.ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
             }
         }
+
         usuarioViewModel.cargarDatosUsuario()
 
         binding.ivPerfil.setOnClickListener {
             startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
         }
 
-        binding.tagsButton.setOnClickListener {
-            TagsDialogFragment(
-                initialTags = selectedTags,
-                initialCategories = emptyList()
-            ) { tags, _ ->
-                selectedTags = tags.toMutableList()
-                val bundle = Bundle().apply {
-                    putStringArrayList("filtro", ArrayList(selectedTags))
-                }
-                findNavController().navigate(R.id.nav_explorar, bundle)
-            }.show(childFragmentManager, "TagsDialogExplorar")
-        }
-
         configurarRecyclerView()
+        configurarBusqueda()  // ← Activamos la búsqueda
     }
 
     private fun configurarRecyclerView() {
-        val categorias = listOf(
+        listaCompleta = listOf(
             Categoria("Entradas", R.drawable.imagen_entradas),
             Categoria("Sopas", R.drawable.imagen_sopas),
             Categoria("Platos Fuertes", R.drawable.imagen_platos_fuertes),
@@ -101,9 +82,7 @@ class CategoriasFragment : Fragment() {
             Categoria("Antojitos Mexicanos", R.drawable.imagen_mexicana)
         )
 
-
-
-        val adaptadorCategorias = CategoriaAdapter(categorias) { categoria ->
+        adaptadorCategorias = CategoriaAdapter(listaCompleta) { categoria ->
             val action = CategoriasFragmentDirections
                 .actionNavCategoriasToRecetasPorCategoriaFragment(categoria.nombre)
             findNavController().navigate(action)
@@ -113,6 +92,25 @@ class CategoriasFragment : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             adapter = adaptadorCategorias
         }
+    }
+
+    private fun configurarBusqueda() {
+        binding.etBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val texto = s.toString().lowercase().trim()
+                val filtradas = if (texto.isEmpty()) {
+                    listaCompleta
+                } else {
+                    listaCompleta.filter {
+                        it.nombre.lowercase().contains(texto)
+                    }
+                }
+                adaptadorCategorias.actualizarLista(filtradas)
+            }
+        })
     }
 
     override fun onDestroyView() {

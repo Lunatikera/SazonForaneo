@@ -2,6 +2,8 @@ package flores.pablo.sazonforaneo.ui.categorias
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,32 +11,39 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import flores.pablo.sazonforaneo.DetalleReceta
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
-import flores.pablo.sazonforaneo.UsuarioRepository
-import flores.pablo.sazonforaneo.ui.explorar.ExplorarAdapter
-import androidx.navigation.fragment.navArgs
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.ui.TagsDialogFragment
+import flores.pablo.sazonforaneo.ui.UsuarioViewModel
+import flores.pablo.sazonforaneo.ui.explorar.ExplorarAdapter
+import flores.pablo.sazonforaneo.RecetaViewModel
+import flores.pablo.sazonforaneo.UsuarioRepository
 
 class RecetasPorCategoriaFragment : Fragment() {
 
     private lateinit var tvTituloCategoria: TextView
     private lateinit var etBuscar: EditText
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     private lateinit var adapter: ExplorarAdapter
     private lateinit var ivPerfil: ImageView
     private lateinit var tagsButton: Button
 
     private val args: RecetasPorCategoriaFragmentArgs by navArgs()
-    private var allRecetasForCategory: List<Receta> = emptyList()
-    private var selectedTags = mutableListOf<String>()
+    private val usuarioRepo = UsuarioRepository()
 
-    private val usuarioRepo = UsuarioRepository() // Instancia de UsuarioRepository
+    private lateinit var usuarioViewModel: UsuarioViewModel
+    private lateinit var recetaViewModel: RecetaViewModel
+
+    private var allRecetasForCategory = listOf<Receta>()
+    private var selectedTags = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,24 +57,57 @@ class RecetasPorCategoriaFragment : Fragment() {
         ivPerfil = view.findViewById(R.id.ivPerfil)
         tagsButton = view.findViewById(R.id.tags_button)
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
+        recetaViewModel = ViewModelProvider(requireActivity())[RecetaViewModel::class.java]
+
         val nombreCategoria = args.categoriaNombre
         tvTituloCategoria.text = "Recetas de $nombreCategoria"
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val allMockRecetas = getMockRecetas()
-        allRecetasForCategory = allMockRecetas.filter { receta -> receta.categorias.contains(nombreCategoria) }
-
-        adapter = ExplorarAdapter(allRecetasForCategory, usuarioRepo) { receta ->
+        adapter = ExplorarAdapter(emptyList(), usuarioRepo) { receta ->
             val intent = Intent(requireContext(), DetalleReceta::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)
         }
+
         recyclerView.adapter = adapter
 
+        recetaViewModel.recetas.observe(viewLifecycleOwner) { recetas ->
+            allRecetasForCategory = recetas
+            filtrarRecetasPorTagsYBusqueda(selectedTags, etBuscar.text.toString())
+        }
+
+        recetaViewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), "Error al cargar recetas: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        // 🔄 ¡Usamos el nuevo método específico por categoría!
+        recetaViewModel.cargarRecetasPorCategoria(nombreCategoria)
+
+        usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
+            if (!url.isNullOrEmpty()) {
+                Glide.with(this)
+                    .load(url)
+                    .circleCrop()
+                    .error(R.drawable.imagen_predeterminada)
+                    .into(ivPerfil)
+            } else {
+                ivPerfil.setImageResource(R.drawable.imagen_predeterminada)
+            }
+        }
+        usuarioViewModel.cargarDatosUsuario()
+
         ivPerfil.setOnClickListener {
-            val intent = Intent(requireContext(), PerfilConfigActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
         }
 
         tagsButton.setOnClickListener {
@@ -74,76 +116,39 @@ class RecetasPorCategoriaFragment : Fragment() {
                 initialCategories = emptyList()
             ) { tags, _ ->
                 selectedTags = tags.toMutableList()
-                filtrarRecetasPorTags(selectedTags)
+                filtrarRecetasPorTagsYBusqueda(tags, etBuscar.text.toString())
             }
             dialog.show(childFragmentManager, "TagsDialogRecetasCategoria")
         }
 
-        return view
-    }
-
-    // Filtrar recetas según tags seleccionados
-    private fun filtrarRecetasPorTags(tags: List<String>) {
-        if (tags.isEmpty()) {
-            adapter.actualizarLista(allRecetasForCategory)
-        } else {
-            val filtradas = allRecetasForCategory.filter { receta ->
-                tags.all { tag -> receta.etiquetas.contains(tag) }
+        etBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filtrarRecetasPorTagsYBusqueda(selectedTags, s.toString())
             }
-            adapter.actualizarLista(filtradas)
-        }
+        })
     }
 
-    // Datos de ejemplo
-    private fun getMockRecetas(): List<Receta> {
-        return listOf(
-            Receta(
-                nombre = "Pizza Margherita",
-                descripcion = "Pizza clásica italiana con salsa de tomate, mozzarella y albahaca fresca.",
-                categorias = listOf("Platos Fuertes", "Entradas"),
-                etiquetas = listOf("Pizza", "Margherita", "Vegetariana"),
-                visibilidad = "Pública",
-                ingredientes = listOf("Masa para pizza", "Salsa de tomate", "Mozzarella", "Albahaca fresca", "Aceite de oliva", "Sal"),
-                instrucciones = "Extender la masa, cubrir con salsa, mozzarella y albahaca. Hornear a 250°C por 10-12 minutos.",
-                fuente = "Recetas Clásicas",
-                rating = 4.7f,
-            ),
-            Receta(
-                nombre = "Tacos al Pastor",
-                descripcion = "Tacos tradicionales mexicanos con carne marinada y piña.",
-                categorias = listOf("Salsas", "Entradas", "Platos Fuertes"),
-                etiquetas = listOf("Tacos", "Pastor", "Cena"),
-                visibilidad = "Pública",
-                ingredientes = listOf("Carne de cerdo", "Piña", "Tortillas", "Achiote", "Cebolla", "Cilantro"),
-                instrucciones = "Marinar la carne, cocinar en trompo, servir en tortilla con piña, cebolla y cilantro.",
-                fuente = "Recetario Popular",
-                rating = 4.5f,
-                imagenUriString = "https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/C07AE049-11C3-4672-A96A-A547C15F0116/Derivates/FE1D05A4-0A44-4007-9A42-5CAFD9F8F798.jpg"
-            ),
-            Receta(
-                nombre = "Spaghetti Carbonara",
-                descripcion = "Receta italiana cremosa con tocino y queso.",
-                categorias = listOf("Salsas", "Platos Fuertes", "Guarniciones"),
-                etiquetas = listOf("Spaghetti", "Carbonara", "Cena"),
-                visibilidad = "Pública",
-                ingredientes = listOf("Pasta", "Huevo", "Queso parmesano", "Pimienta", "Tocino"),
-                instrucciones = "Cocer la pasta, mezclar con huevos y queso, añadir el tocino dorado.",
-                fuente = "Cocina Italiana",
-                rating = 4.8f,
-                imagenUriString = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTocnT-UeCFm5CnI92RPn7zFsCJMH2AEW60vA&s"
-            ),
-            Receta(
-                nombre = "Ensalada César",
-                descripcion = "Clásica ensalada con lechuga romana, aderezo césar y crutones.",
-                categorias = listOf("Guarniciones", "Snacks", "Ensaladas"),
-                etiquetas = listOf("Ensalada", "César", "Lechuga"),
-                visibilidad = "Privada",
-                ingredientes = listOf("Lechuga", "Pollo", "Crutones", "Aderezo César", "Queso parmesano"),
-                instrucciones = "Mezclar ingredientes frescos y servir con aderezo.",
-                fuente = "Blog de Cocina Saludable",
-                rating = 3.9f,
-                imagenUriString = "https://www.gourmet.cl/wp-content/uploads/2016/09/EnsaladaCesar2.webp"
-            )
-        )
+    private fun filtrarRecetasPorTagsYBusqueda(tags: List<String>, textoBusqueda: String) {
+        val texto = textoBusqueda.lowercase().trim()
+
+        var filtradas = if (tags.isEmpty()) allRecetasForCategory
+        else allRecetasForCategory.filter { receta ->
+            tags.all { tag -> receta.etiquetas.contains(tag) }
+        }
+
+        if (texto.isNotEmpty()) {
+            filtradas = filtradas.filter {
+                it.nombre.lowercase().contains(texto) || it.descripcion.lowercase().contains(texto)
+            }
+        }
+
+        adapter.actualizarLista(filtradas)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recetaViewModel.cargarRecetasPorCategoria(args.categoriaNombre)
     }
 }
