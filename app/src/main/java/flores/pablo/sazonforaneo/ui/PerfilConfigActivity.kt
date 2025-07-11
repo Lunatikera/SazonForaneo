@@ -75,7 +75,6 @@ class PerfilConfigActivity : AppCompatActivity() {
             if (!url.isNullOrEmpty()) {
                 Glide.with(this)
                     .load(url)
-                    .placeholder(R.drawable.imagen_predeterminada)
                     .circleCrop()
                     .into(ivFotoPerfil)
                 imagenUriOriginal = null
