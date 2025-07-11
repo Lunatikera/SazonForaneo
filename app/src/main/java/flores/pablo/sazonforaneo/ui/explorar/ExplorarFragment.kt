@@ -1,10 +1,7 @@
 package flores.pablo.sazonforaneo.ui.explorar
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -12,11 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import flores.pablo.sazonforaneo.DetalleReceta
-import flores.pablo.sazonforaneo.Receta
-import flores.pablo.sazonforaneo.RecetaRepository
-import flores.pablo.sazonforaneo.UsuarioRepository
-import flores.pablo.sazonforaneo.EtiquetasRepository // <-- Importa el repo
+import flores.pablo.sazonforaneo.*
 import flores.pablo.sazonforaneo.databinding.FragmentExplorarBinding
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.ui.TagsDialogExplorarFragment
@@ -30,12 +23,12 @@ class ExplorarFragment : Fragment() {
     private lateinit var adapter: ExplorarAdapter
     private val recetaRepo = RecetaRepository()
     private val usuarioRepo = UsuarioRepository()
-    private val etiquetasRepo = EtiquetasRepository()  // <-- nuevo repo para etiquetas
+    private val etiquetasRepo = EtiquetasRepository()
 
     private lateinit var usuarioId: String
     private lateinit var usuarioViewModel: UsuarioViewModel
 
-    private var allRecetas = listOf<Receta>()
+    private var allRecetas = mutableListOf<Receta>()
     private var selectedTags = mutableListOf<String>()
     private var selectedCategories = mutableListOf<String>()
     private var filtroSeleccionado = 0
@@ -55,7 +48,7 @@ class ExplorarFragment : Fragment() {
         usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
 
         adapter = ExplorarAdapter(emptyList(), usuarioRepo) { receta ->
-            val intent = Intent(requireContext(), DetalleReceta::class.java)
+            val intent = android.content.Intent(requireContext(), DetalleReceta::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)
         }
@@ -66,30 +59,36 @@ class ExplorarFragment : Fragment() {
         configurarSpinnerFiltros()
         cargarTodas()
 
+        val nuevaReceta = arguments?.getSerializable("nuevaReceta") as? Receta
+        nuevaReceta?.let {
+            allRecetas.add(0, it)
+            filtrarRecetasPorTags(selectedTags)
+            binding.recipesRecyclerview.scrollToPosition(0)
+        }
+
+
         binding.ivPerfil.setOnClickListener {
-            startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
+            startActivity(android.content.Intent(requireContext(), PerfilConfigActivity::class.java))
         }
 
         usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
             Glide.with(this)
                 .load(url)
-                .placeholder(flores.pablo.sazonforaneo.R.drawable.imagen_predeterminada)
                 .circleCrop()
-                .error(flores.pablo.sazonforaneo.R.drawable.imagen_predeterminada)
+                .error(R.drawable.imagen_predeterminada)
                 .into(binding.ivPerfil)
         }
 
         usuarioViewModel.cargarDatosUsuario()
 
         binding.tagsButton.setOnClickListener {
-            // Cargar etiquetas desde Firestore antes de abrir diálogo
             etiquetasRepo.obtenerEtiquetas(
                 onSuccess = { etiquetasExistentes ->
                     TagsDialogExplorarFragment(
                         initialTags = selectedTags,
                         initialCategories = selectedCategories,
                         initialFiltro = filtroSeleccionado,
-                        existingTags = etiquetasExistentes  // <- pasar lista al diálogo
+                        existingTags = etiquetasExistentes
                     ) { tags, categorias, filtro ->
                         selectedTags = tags.toMutableList()
                         selectedCategories = categorias.toMutableList()
@@ -99,7 +98,6 @@ class ExplorarFragment : Fragment() {
                     }.show(childFragmentManager, "TagsDialogExplorar")
                 },
                 onFailure = {
-                    // En caso de error, abrir diálogo con lista vacía
                     TagsDialogExplorarFragment(
                         initialTags = selectedTags,
                         initialCategories = selectedCategories,
@@ -130,13 +128,13 @@ class ExplorarFragment : Fragment() {
         val opciones = listOf("Todas", "Creadas por mí", "Favoritas", "Calificadas por mí")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opciones)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // Ya no se usa directamente el spinner en este fragmento
+        // El spinner está en el diálogo, aquí sólo preparas el adaptador
     }
 
     private fun cargarTodas() {
         recetaRepo.obtenerRecetas(
             onSuccess = { recetas ->
-                allRecetas = recetas
+                allRecetas = recetas.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             },
             onFailure = {
@@ -148,7 +146,7 @@ class ExplorarFragment : Fragment() {
     private fun cargarCreadasPorMi() {
         recetaRepo.obtenerRecetasPorAutor(usuarioId,
             onSuccess = { recetas ->
-                allRecetas = recetas
+                allRecetas = recetas.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }
@@ -158,7 +156,7 @@ class ExplorarFragment : Fragment() {
     private fun cargarFavoritas() {
         recetaRepo.obtenerRecetasFavoritasPor(usuarioId,
             onSuccess = { recetas ->
-                allRecetas = recetas
+                allRecetas = recetas.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }
@@ -168,7 +166,7 @@ class ExplorarFragment : Fragment() {
     private fun cargarCalificadasPorMi() {
         recetaRepo.obtenerRecetasCalificadasPor(usuarioId,
             onSuccess = { recetas ->
-                allRecetas = recetas
+                allRecetas = recetas.toMutableList()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }

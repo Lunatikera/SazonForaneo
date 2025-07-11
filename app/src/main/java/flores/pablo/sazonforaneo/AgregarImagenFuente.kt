@@ -15,7 +15,6 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import flores.pablo.sazonforaneo.ui.ExplorarActivity
-import java.util.*
 
 class AgregarImagenFuente : AppCompatActivity() {
 
@@ -43,11 +42,11 @@ class AgregarImagenFuente : AppCompatActivity() {
         etFuente = findViewById(R.id.etFuente)
         btnFinalizar = findViewById(R.id.btnFinalizar)
 
+        // Configuración Cloudinary
         try {
             val config = hashMapOf("cloud_name" to CLOUD_NAME)
             MediaManager.init(this, config)
-        } catch (_: IllegalStateException) {
-        }
+        } catch (_: IllegalStateException) { }
 
         imageView.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -69,6 +68,7 @@ class AgregarImagenFuente : AppCompatActivity() {
 
             btnFinalizar.isEnabled = false
 
+            // Subir imagen a Cloudinary
             MediaManager.get().upload(imagenUri)
                 .unsigned(UPLOAD_PRESET)
                 .callback(object : UploadCallback {
@@ -78,7 +78,15 @@ class AgregarImagenFuente : AppCompatActivity() {
                         val url = resultData?.get("secure_url") as? String
                         receta.fuente = fuente
                         receta.imagenUriString = url
+
                         recetaViewModel.guardarReceta(receta)
+
+                        // Después de guardar, redirigir a ExplorarActivity enviando la receta
+                        val intent = Intent(this@AgregarImagenFuente, ExplorarActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        intent.putExtra("nuevaReceta", receta)
+                        startActivity(intent)
+                        finish()
                     }
 
                     override fun onError(requestId: String?, error: ErrorInfo?) {
@@ -93,12 +101,6 @@ class AgregarImagenFuente : AppCompatActivity() {
         recetaViewModel.guardadoExitoso.observe(this) { exito ->
             if (exito) {
                 Toast.makeText(this, "Receta guardada con éxito", Toast.LENGTH_LONG).show()
-                val intent = Intent(this, ExplorarActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    putExtra("mostrarFragmento", "explorar")
-                }
-                startActivity(intent)
-                finish()
             }
         }
 

@@ -12,7 +12,9 @@ class RecetaRepository {
         onSuccess: (List<Receta>) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        collection.get()
+        collection
+            .whereEqualTo("visibilidad", "publico")
+            .get()
             .addOnSuccessListener { snapshot ->
                 val recetas = snapshot.toObjects(Receta::class.java)
                 onSuccess(recetas)
@@ -21,6 +23,7 @@ class RecetaRepository {
                 onFailure(e)
             }
     }
+
 
     fun guardarReceta(
         receta: Receta,
@@ -52,25 +55,38 @@ class RecetaRepository {
             .get()
             .addOnSuccessListener { favoritosSnapshot ->
                 val recetaIds = favoritosSnapshot.documents.mapNotNull { it.getString("recetaId") }
-
                 if (recetaIds.isEmpty()) {
                     onSuccess(emptyList())
                     return@addOnSuccessListener
                 }
 
-                firestore.collection("recetas")
-                    .whereIn(FieldPath.documentId(), recetaIds)
-                    .get()
-                    .addOnSuccessListener { recetasSnapshot ->
-                        val recetas = recetasSnapshot.toObjects(Receta::class.java)
-                        onSuccess(recetas)
+                val listasChunk = recetaIds.chunked(10)
+                val tareas = mutableListOf<com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot>>()
+                val recetasAcumuladas = mutableListOf<Receta>()
+
+                for (chunk in listasChunk) {
+                    val task = firestore.collection("recetas")
+                        .whereIn(FieldPath.documentId(), chunk)
+                        .whereEqualTo("visibilidad", "publico")
+                        .get()
+                    tareas.add(task)
+                }
+
+                com.google.android.gms.tasks.Tasks.whenAllSuccess<com.google.firebase.firestore.QuerySnapshot>(tareas)
+                    .addOnSuccessListener { resultados ->
+                        for (resultado in resultados) {
+                            recetasAcumuladas.addAll(resultado.toObjects(Receta::class.java))
+                        }
+                        onSuccess(recetasAcumuladas)
                     }
-                    .addOnFailureListener { e ->
-                        onError(e.message ?: "Error al obtener recetas favoritas")
+                    .addOnFailureListener {
+                        onError(it.message ?: "Error al obtener recetas favoritas")
                     }
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener favoritas") }
     }
+
+
 
     fun obtenerRecetasCalificadasPor(
         userId: String,
@@ -78,6 +94,7 @@ class RecetaRepository {
         onError: (String) -> Unit
     ) {
         firestore.collection("recetas")
+            .whereEqualTo("visibilidad", "publico")
             .get()
             .addOnSuccessListener { snapshot ->
                 val recetas = mutableListOf<Receta>()
@@ -100,7 +117,6 @@ class RecetaRepository {
                     }
                 }
 
-                // Esperamos a que todas las tareas terminen
                 com.google.android.gms.tasks.Tasks.whenAllComplete(tareasPendientes)
                     .addOnSuccessListener {
                         onSuccess(recetas)
@@ -111,6 +127,7 @@ class RecetaRepository {
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener recetas") }
     }
+
 
     fun obtenerRecetasCreadasYFavoritasPor(
         userId: String,

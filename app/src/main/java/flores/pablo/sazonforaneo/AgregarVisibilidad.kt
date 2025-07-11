@@ -62,9 +62,9 @@ class AgregarVisibilidad : AppCompatActivity() {
 
         btnContinuar.setOnClickListener {
             val visibilidad = when (radioGroupPrivacidad.checkedRadioButtonId) {
-                R.id.rbPublica -> "publica"
+                R.id.rbPublica -> "publico"
                 R.id.rbPrivada -> "privada"
-                else -> "publica"
+                else -> "publico"
             }
 
             receta.visibilidad = visibilidad
