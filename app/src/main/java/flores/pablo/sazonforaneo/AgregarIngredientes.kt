@@ -24,7 +24,8 @@ class AgregarIngredientes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_ingredientes)
 
-        receta = intent.getSerializableExtra("receta") as Receta
+        // recuperar la receta (que puede ser nueva o para editar)
+        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta() // se asegura de tener un objeto Receta
 
         etIngrediente = findViewById(R.id.etIngrediente)
         btnAgregar = findViewById(R.id.btnAgregarIngrediente)
@@ -33,6 +34,12 @@ class AgregarIngredientes : AppCompatActivity() {
 
         adapter = IngredientesAdapter(this, ingredientes)
         listView.adapter = adapter
+
+        // precargar datos si estamos editando
+        if (receta.id.isNotEmpty()) {  // si la receta ya tiene un ID, estamos editando
+            ingredientes.addAll(receta.ingredientes)
+            adapter.notifyDataSetChanged()
+        }
 
         btnAgregar.setOnClickListener {
             val texto = etIngrediente.text.toString().trim()
@@ -44,7 +51,7 @@ class AgregarIngredientes : AppCompatActivity() {
         }
 
         btnContinuar.setOnClickListener {
-            receta.ingredientes = ingredientes
+            receta.ingredientes = ingredientes // actualizar ingredientes en el objeto
             val intent = Intent(this, AgregarInstrucciones::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)

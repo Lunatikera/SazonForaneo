@@ -1,5 +1,6 @@
 package flores.pablo.sazonforaneo.ui.recetas
 
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import flores.pablo.sazonforaneo.AgregarNombreDescripcion
 import flores.pablo.sazonforaneo.R
 import flores.pablo.sazonforaneo.Receta
 import flores.pablo.sazonforaneo.UsuarioRepository
@@ -50,9 +52,9 @@ class MisRecetasAdapter(
 
         fun bind(receta: Receta) {
             if (!where_from) {
-                btnEliminar.visibility = View.INVISIBLE
-                btnEditar.visibility = View.INVISIBLE
-                btnVisibility.visibility = View.INVISIBLE
+                btnEliminar.visibility = View.GONE
+                btnEditar.visibility = View.GONE
+                btnVisibility.visibility = View.GONE
             } else {
                 btnEliminar.visibility = View.VISIBLE
                 btnEditar.visibility = View.VISIBLE
@@ -126,14 +128,17 @@ class MisRecetasAdapter(
             }
 
             btnEditar.setOnClickListener {
-                onEditarClick(receta)
+                //aqui empieza el show para editar
+                val intent = Intent(itemView.context, AgregarNombreDescripcion::class.java)
+                intent.putExtra("receta_para_editar", receta) // se pasa la receta completa
+                itemView.context.startActivity(intent)
             }
 
-            // Ícono de visibilidad basado en String
+            // icono de visibilidad basado en String
             actualizarIconoVisibilidad(receta.visibilidad)
 
             btnVisibility.setOnClickListener {
-                // Aquí NO cambiamos visibilidad localmente, solo avisamos al fragmento
+                // aqui NO cambiamos visibilidad localmente, solo avisamos al fragmento
                 onCambiarVisibilidadClick(receta)
             }
         }
