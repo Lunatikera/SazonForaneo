@@ -27,6 +27,8 @@ class DetalleReceta : AppCompatActivity() {
     private lateinit var tvContenidoReceta: TextView
     private lateinit var ratingBar: RatingBar
     private lateinit var btnCalificar: Button
+    private lateinit var layoutCategorias: FlexboxLayout
+
 
     private lateinit var receta: Receta
     private var isFavorite = false
@@ -53,6 +55,8 @@ class DetalleReceta : AppCompatActivity() {
         tvContenidoReceta = findViewById(R.id.tvContenidoReceta)
         ratingBar = findViewById(R.id.ratingBar)
         btnCalificar = findViewById(R.id.btnCalificar)
+        layoutCategorias = findViewById(R.id.layoutCategorias)
+
 
         receta = intent.getSerializableExtra("receta") as Receta
 
@@ -112,6 +116,24 @@ class DetalleReceta : AppCompatActivity() {
         }
 
         ratingBar.rating = receta.rating
+
+
+        layoutCategorias.removeAllViews()
+        for (categoria in receta.categorias) {
+            val categoriaView = TextView(this).apply {
+                text = categoria
+                setPadding(24, 12, 24, 12)
+                setTextColor(android.graphics.Color.WHITE)
+                setBackgroundResource(R.drawable.chip_categoria_selected)
+                layoutParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 16, 16)
+                }
+            }
+            layoutCategorias.addView(categoriaView)
+        }
 
         layoutTags.removeAllViews()
         for (tag in receta.etiquetas) {
