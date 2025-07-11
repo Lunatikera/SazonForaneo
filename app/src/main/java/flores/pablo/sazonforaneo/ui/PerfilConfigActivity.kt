@@ -3,21 +3,21 @@ package flores.pablo.sazonforaneo.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import flores.pablo.sazonforaneo.MainActivity
 import flores.pablo.sazonforaneo.R
-import androidx.activity.viewModels
 
 class PerfilConfigActivity : AppCompatActivity() {
 
@@ -32,6 +32,8 @@ class PerfilConfigActivity : AppCompatActivity() {
     private lateinit var tvRecetasCreadas: TextView
     private lateinit var ivFotoPerfil: ImageView
     private lateinit var ivEditarFoto: ImageView
+    private lateinit var switchModoNoche: Switch
+    private lateinit var prefs: SharedPreferences
 
     private val viewModel: UsuarioViewModel by viewModels()
 
@@ -39,6 +41,16 @@ class PerfilConfigActivity : AppCompatActivity() {
     private var imagenUriOriginal: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // ✅ Aplicar modo noche desde las preferencias
+        prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        val modoOscuroActivado = prefs.getBoolean("modo_oscuro", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (modoOscuroActivado)
+                AppCompatDelegate.MODE_NIGHT_YES
+            else
+                AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_perfil_config)
@@ -46,14 +58,29 @@ class PerfilConfigActivity : AppCompatActivity() {
         try {
             val config = hashMapOf("cloud_name" to CLOUD_NAME)
             MediaManager.init(this, config)
-        } catch (e: IllegalStateException) {
-        }
+        } catch (e: IllegalStateException) {}
 
+        // Asignar vistas
         tvNombre = findViewById(R.id.nombreTextView)
         tvCorreo = findViewById(R.id.correoTextView)
         tvRecetasCreadas = findViewById(R.id.recetasCreadasTextView)
         ivFotoPerfil = findViewById(R.id.ivFotoPerfil)
         ivEditarFoto = findViewById(R.id.ivEditarFoto)
+        switchModoNoche = findViewById(R.id.modoNoche)
+
+        // Aplicar estado al switch
+        switchModoNoche.isChecked = modoOscuroActivado
+
+        // Listener para cambiar el modo noche
+        switchModoNoche.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("modo_oscuro", isChecked).apply()
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked)
+                    AppCompatDelegate.MODE_NIGHT_YES
+                else
+                    AppCompatDelegate.MODE_NIGHT_NO
+            )
+        }
 
         observarViewModel()
         configurarListeners()
@@ -127,13 +154,10 @@ class PerfilConfigActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
             val uriSeleccionada = data?.data ?: return
 
-            // Guardamos URI original por si cancela
             imagenUriTemporal = uriSeleccionada
 
-            // Mostrar preview temporal
             ivFotoPerfil.setImageURI(imagenUriTemporal)
 
-            // Preguntar si confirma
             mostrarDialogoConfirmacion()
         }
     }
@@ -144,7 +168,6 @@ class PerfilConfigActivity : AppCompatActivity() {
             .setMessage("¿Quieres cambiar la foto de perfil?")
             .setPositiveButton("Sí") { _, _ -> subirImagenCloudinary() }
             .setNegativeButton("No") { _, _ ->
-                // Volver a la imagen original
                 if (viewModel.imagenPerfilUrl.value.isNullOrEmpty()) {
                     ivFotoPerfil.setImageResource(R.drawable.imagen_predeterminada)
                 } else {
@@ -175,9 +198,9 @@ class PerfilConfigActivity : AppCompatActivity() {
                     }
                     imagenUriTemporal = null
                 }
+
                 override fun onError(requestId: String?, error: ErrorInfo?) {
                     Toast.makeText(this@PerfilConfigActivity, "Error al subir imagen: ${error?.description}", Toast.LENGTH_LONG).show()
-                    // Revertir imagen a original
                     if (viewModel.imagenPerfilUrl.value.isNullOrEmpty()) {
                         ivFotoPerfil.setImageResource(R.drawable.imagen_predeterminada)
                     } else {
@@ -188,6 +211,7 @@ class PerfilConfigActivity : AppCompatActivity() {
                     }
                     imagenUriTemporal = null
                 }
+
                 override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
             }).dispatch()
     }

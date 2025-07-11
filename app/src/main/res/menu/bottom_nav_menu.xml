@@ -3,6 +3,7 @@
 
     <item
         android:id="@+id/nav_categorias"
+
         android:title="Categorías" />
 
     <item
