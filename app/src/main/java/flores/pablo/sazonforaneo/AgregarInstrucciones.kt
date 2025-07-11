@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,6 +14,7 @@ class AgregarInstrucciones : AppCompatActivity() {
     private lateinit var receta: Receta
     private lateinit var etInstrucciones: EditText
     private lateinit var btnContinuar: Button
+    private lateinit var tvTitulo: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +25,15 @@ class AgregarInstrucciones : AppCompatActivity() {
 
         etInstrucciones = findViewById(R.id.etInstrucciones)
         btnContinuar = findViewById(R.id.btnContinuar)
+        tvTitulo = findViewById(R.id.tvTitulo)
+
+        // cambia titulo si estamos en modo edicion
+        if (receta.id.isNotEmpty()) {
+            tvTitulo.text = "Editar Receta"
+        } else {
+            tvTitulo.text = "Nueva Receta"
+        }
+
 
         // precargar datos si estamos editando
         if (receta.id.isNotEmpty()) { // si la receta ya tiene un ID, estamos editando

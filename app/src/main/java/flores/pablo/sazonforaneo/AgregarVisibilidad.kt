@@ -24,6 +24,7 @@ class AgregarVisibilidad : AppCompatActivity() {
     private lateinit var radioGroupPrivacidad: RadioGroup
     private lateinit var recyclerEtiquetas: RecyclerView
     private lateinit var etiquetaAdapter: EtiquetaAdapter
+    private lateinit var tvTitulo: TextView
 
     private val etiquetas = mutableListOf<String>()
     private val categoriasSeleccionadas = mutableSetOf<String>()
@@ -39,6 +40,8 @@ class AgregarVisibilidad : AppCompatActivity() {
         etEtiqueta = findViewById(R.id.etEtiqueta)
         radioGroupPrivacidad = findViewById(R.id.radioGroupPrivacidad)
         recyclerEtiquetas = findViewById(R.id.recyclerEtiquetas)
+        tvTitulo = findViewById(R.id.tvTitulo)
+
 
         etiquetaAdapter = EtiquetaAdapter(etiquetas) { etiquetaEliminada ->
             etiquetas.remove(etiquetaEliminada)
@@ -51,6 +54,15 @@ class AgregarVisibilidad : AppCompatActivity() {
         val btnContinuar = findViewById<Button>(R.id.btnContinuar)
 
         cargarCategorias() // llama primero para crear los chips
+
+
+        // cambiar titulo si estamos en modo edicion
+        if (receta.id.isNotEmpty()) {
+            tvTitulo.text = "Editar Receta"
+        } else {
+            tvTitulo.text = "Nueva Receta"
+        }
+
 
         //  precargar los datos si estamos editando
         if (receta.id.isNotEmpty()) { // si la receta ya tiene un ID, estamos editando
