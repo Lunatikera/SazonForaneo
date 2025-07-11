@@ -73,11 +73,6 @@ class AgregarImagenFuente : AppCompatActivity() {
 
         btnFinalizar.setOnClickListener {
             val fuente = etFuente.text.toString().trim()
-            if (fuente.isEmpty()) {
-                etFuente.error = "Por favor indica la fuente"
-                etFuente.requestFocus()
-                return@setOnClickListener
-            }
 
             if (receta.imagenUriString.isNullOrEmpty() && imagenUriLocal == null) {
                 Toast.makeText(this, "Selecciona una imagen para el platillo", Toast.LENGTH_SHORT).show()

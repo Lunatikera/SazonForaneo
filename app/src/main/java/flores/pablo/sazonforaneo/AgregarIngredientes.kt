@@ -62,10 +62,17 @@ class AgregarIngredientes : AppCompatActivity() {
         }
 
         btnContinuar.setOnClickListener {
-            receta.ingredientes = ingredientes // actualizar ingredientes en el objeto
+            if (ingredientes.isEmpty()) {
+                etIngrediente.error = "Agrega al menos un ingrediente"
+                etIngrediente.requestFocus()
+                return@setOnClickListener
+            }
+
+            receta.ingredientes = ingredientes
             val intent = Intent(this, AgregarInstrucciones::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)
         }
+
     }
 }
