@@ -66,6 +66,20 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_start" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filtros:"
+        android:textSize="16sp"
+        android:textColor="#444444"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerFiltroOrigen"
+        android:layout_width="match_parent"
+        android:layout_height="31dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/chip_etiqueta" />
 
 
     <Button

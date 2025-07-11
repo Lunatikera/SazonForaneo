@@ -21,12 +21,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@color/white"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
-        android:background="#F7F4ED"
         app:menu="@menu/menu_bottom_nav" />
 
-    <!-- Floating Action Button anclado sobre la barra inferior -->
+    <!-- FAB de estrella (nuevo) -->
+
+    <!-- FAB de añadir receta -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="132dp"
+        android:contentDescription="Favoritos destacados"
+        android:src="@drawable/ic_star"
+        android:translationY="-60dp"
+        app:backgroundTint="#FFD600"
+        app:layout_anchor="@id/bottom_navigation_view"
+        app:layout_anchorGravity="top|end"
+        app:tint="@color/white" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_recipe"
         android:layout_width="wrap_content"

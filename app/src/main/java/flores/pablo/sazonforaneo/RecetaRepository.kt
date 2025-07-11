@@ -1,7 +1,10 @@
 package flores.pablo.sazonforaneo
 
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.firestore
 
 class RecetaRepository {
 
@@ -12,7 +15,9 @@ class RecetaRepository {
         onSuccess: (List<Receta>) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        collection.get()
+        collection
+            .whereEqualTo("visibilidad", "publico")
+            .get()
             .addOnSuccessListener { snapshot ->
                 val recetas = snapshot.toObjects(Receta::class.java)
                 onSuccess(recetas)
@@ -21,6 +26,7 @@ class RecetaRepository {
                 onFailure(e)
             }
     }
+
 
     fun guardarReceta(
         receta: Receta,
@@ -52,25 +58,41 @@ class RecetaRepository {
             .get()
             .addOnSuccessListener { favoritosSnapshot ->
                 val recetaIds = favoritosSnapshot.documents.mapNotNull { it.getString("recetaId") }
-
                 if (recetaIds.isEmpty()) {
                     onSuccess(emptyList())
                     return@addOnSuccessListener
                 }
 
-                firestore.collection("recetas")
-                    .whereIn(FieldPath.documentId(), recetaIds)
-                    .get()
-                    .addOnSuccessListener { recetasSnapshot ->
-                        val recetas = recetasSnapshot.toObjects(Receta::class.java)
-                        onSuccess(recetas)
+                val listasChunk = recetaIds.chunked(10)
+                val tareas = mutableListOf<com.google.android.gms.tasks.Task<com.google.firebase.firestore.QuerySnapshot>>()
+                val recetasAcumuladas = mutableListOf<Receta>()
+
+                for (chunk in listasChunk) {
+                    val task = firestore.collection("recetas")
+                        .whereIn(FieldPath.documentId(), chunk)
+                        .get()
+                    tareas.add(task)
+                }
+
+                com.google.android.gms.tasks.Tasks.whenAllSuccess<com.google.firebase.firestore.QuerySnapshot>(tareas)
+                    .addOnSuccessListener { resultados ->
+                        for (resultado in resultados) {
+                            val recetas = resultado.toObjects(Receta::class.java)
+                            recetasAcumuladas.addAll(
+                                recetas.filter { it.visibilidad == "publico" || it.autorId == userId }
+                            )
+                        }
+                        onSuccess(recetasAcumuladas)
                     }
-                    .addOnFailureListener { e ->
-                        onError(e.message ?: "Error al obtener recetas favoritas")
+                    .addOnFailureListener {
+                        onError(it.message ?: "Error al obtener recetas favoritas")
                     }
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener favoritas") }
     }
+
+
+
 
     fun obtenerRecetasCalificadasPor(
         userId: String,
@@ -92,7 +114,9 @@ class RecetaRepository {
                             .document(userId)
                             .get()
                             .addOnSuccessListener { calificacionDoc ->
-                                if (calificacionDoc.exists()) {
+                                if (calificacionDoc.exists() &&
+                                    (receta.visibilidad == "publico" || receta.autorId == userId)
+                                ) {
                                     recetas.add(receta)
                                 }
                             }
@@ -100,7 +124,6 @@ class RecetaRepository {
                     }
                 }
 
-                // Esperamos a que todas las tareas terminen
                 com.google.android.gms.tasks.Tasks.whenAllComplete(tareasPendientes)
                     .addOnSuccessListener {
                         onSuccess(recetas)
@@ -111,6 +134,8 @@ class RecetaRepository {
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener recetas") }
     }
+
+
 
     fun obtenerRecetasCreadasYFavoritasPor(
         userId: String,
@@ -139,4 +164,58 @@ class RecetaRepository {
             }
             .addOnFailureListener { onError(it.message ?: "Error al obtener recetas del autor") }
     }
+
+    fun eliminarReceta(
+        recetaId: String?,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        if (recetaId.isNullOrEmpty()) {
+            onFailure(Exception("ID de receta inválido"))
+            return
+        }
+
+        collection.document(recetaId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun actualizarCampoVisibilidad(
+        recetaId: String,
+        nuevaVisibilidad: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val recetaRef = collection.document(recetaId)
+        recetaRef.update("visibilidad", nuevaVisibilidad)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun obtenerRecetasDestacadas(
+        onSuccess: (List<Receta>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val db = Firebase.firestore
+        db.collection("recetas")
+            .whereEqualTo("visibilidad", "publico")
+            .whereGreaterThanOrEqualTo("rating", 4.0)
+            .orderBy("rating", Query.Direction.DESCENDING)
+            .limit(10)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val recetas = querySnapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Receta::class.java)?.apply { id = doc.id }
+                }
+                onSuccess(recetas)
+            }
+            .addOnFailureListener { e ->
+                onError(e.message ?: "Error desconocido")
+            }
+    }
+
+
+
+
 }

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF6F00">
+    android:background="@color/baby_orange">
 
     <TextView
         android:id="@+id/tvTitulo"
@@ -29,7 +29,7 @@
         android:layout_marginTop="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="16dp"
-        app:cardBackgroundColor="#FFFFFF">
+        app:cardBackgroundColor="@color/baby_gray">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -142,6 +142,18 @@
 
 
                 </LinearLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/layoutCategorias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    app:alignItems="center"
+                    android:paddingHorizontal="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"/>
+
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/layoutTags"

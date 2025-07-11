@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -17,6 +18,8 @@ class AgregarIngredientes : AppCompatActivity() {
     private lateinit var btnAgregar: Button
     private lateinit var listView: ListView
     private lateinit var btnContinuar: Button
+    private lateinit var tvTitulo: TextView
+
 
     private lateinit var adapter: IngredientesAdapter
     private val ingredientes = mutableListOf<String>()
@@ -25,15 +28,30 @@ class AgregarIngredientes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_ingredientes)
 
-        receta = intent.getSerializableExtra("receta") as Receta
+        // recuperar la receta (que puede ser nueva o para editar)
+        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta() // se asegura de tener un objeto Receta
 
         etIngrediente = findViewById(R.id.etIngrediente)
         btnAgregar = findViewById(R.id.btnAgregarIngrediente)
         listView = findViewById(R.id.listViewIngredientes)
         btnContinuar = findViewById(R.id.btnContinuar)
+        tvTitulo = findViewById(R.id.tvTitulo)
 
         adapter = IngredientesAdapter(this, ingredientes)
         listView.adapter = adapter
+
+        // cambia titulo si estamos en modo edicion
+        if (receta.id.isNotEmpty()) {
+            tvTitulo.text = "Editar Receta"
+        } else {
+            tvTitulo.text = "Nueva Receta"
+        }
+
+        // precargar datos si estamos editando
+        if (receta.id.isNotEmpty()) {  // si la receta ya tiene un ID, estamos editando
+            ingredientes.addAll(receta.ingredientes)
+            adapter.notifyDataSetChanged()
+        }
 
         btnAgregar.setOnClickListener {
             val texto = etIngrediente.text.toString().trim()
@@ -45,10 +63,17 @@ class AgregarIngredientes : AppCompatActivity() {
         }
 
         btnContinuar.setOnClickListener {
+            if (ingredientes.isEmpty()) {
+                etIngrediente.error = "Agrega al menos un ingrediente"
+                etIngrediente.requestFocus()
+                return@setOnClickListener
+            }
+
             receta.ingredientes = ingredientes
             val intent = Intent(this, AgregarInstrucciones::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)
         }
+
     }
 }
