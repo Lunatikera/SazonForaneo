@@ -16,7 +16,6 @@ import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import flores.pablo.sazonforaneo.ui.ExplorarActivity
-import java.util.*
 
 class AgregarImagenFuente : AppCompatActivity() {
 
@@ -38,8 +37,7 @@ class AgregarImagenFuente : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_imagen_fuente)
 
-        // recuperar la receta (que puede ser nueva o para editar)
-        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta() // se asegura de tener un objeto Receta
+        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta()
 
         imageView = findViewById(R.id.imageViewPlatillo)
         etFuente = findViewById(R.id.etFuente)
@@ -48,23 +46,17 @@ class AgregarImagenFuente : AppCompatActivity() {
         try {
             val config = hashMapOf("cloud_name" to CLOUD_NAME)
             MediaManager.init(this, config)
-        } catch (_: IllegalStateException) {
-            // ya inicializado, o error al inicializar. Se captura la excepcion.
-        }
+        } catch (_: IllegalStateException) {}
 
-        // precargar datos si estamos editando
-        if (receta.id.isNotEmpty()) { // si la receta ya tiene un ID, estamos editando
+        if (receta.id.isNotEmpty()) {
             etFuente.setText(receta.fuente)
             receta.imagenUriString?.let { url ->
-                // cargar imagen de Cloudinary si existe
                 Glide.with(this)
                     .load(url)
                     .placeholder(R.drawable.imagen_platillo_predeterminada)
                     .into(imageView)
-                // importante no establecer imagenUriLocal aqui, ya que es la URL remota
             }
         }
-
 
         imageView.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -79,7 +71,6 @@ class AgregarImagenFuente : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // si es una nueva receta y no se selecciono imagen, o si se esta editando y no hay imagen ni URI local nueva
             if (receta.imagenUriString.isNullOrEmpty() && imagenUriLocal == null) {
                 Toast.makeText(this, "Selecciona una imagen para el platillo", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -88,18 +79,19 @@ class AgregarImagenFuente : AppCompatActivity() {
             btnFinalizar.isEnabled = false
 
             if (imagenUriLocal != null) {
-                // hay una nueva imagen seleccionada (o se selecciono una por primera vez)
                 MediaManager.get().upload(imagenUriLocal)
                     .unsigned(UPLOAD_PRESET)
                     .callback(object : UploadCallback {
                         override fun onStart(requestId: String?) {
                             Toast.makeText(this@AgregarImagenFuente, "Subiendo imagen...", Toast.LENGTH_SHORT).show()
                         }
+
                         override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+
                         override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
                             val url = resultData?.get("secure_url") as? String
                             receta.fuente = fuente
-                            receta.imagenUriString = url // guarda la nueva URL de la imagen
+                            receta.imagenUriString = url
                             recetaViewModel.guardarReceta(receta)
                         }
 
@@ -107,10 +99,10 @@ class AgregarImagenFuente : AppCompatActivity() {
                             Toast.makeText(this@AgregarImagenFuente, "Error al subir imagen: ${error?.description}", Toast.LENGTH_LONG).show()
                             btnFinalizar.isEnabled = true
                         }
+
                         override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
                     }).dispatch()
             } else {
-                // si no se selecciono una nueva imagen, pero ya habia una URL de imagen (modo edicion)
                 receta.fuente = fuente
                 recetaViewModel.guardarReceta(receta)
             }
@@ -121,7 +113,7 @@ class AgregarImagenFuente : AppCompatActivity() {
                 Toast.makeText(this, "Receta guardada con éxito", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, ExplorarActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    putExtra("mostrarFragmento", "explorar")
+                    putExtra("nuevaReceta", receta)
                 }
                 startActivity(intent)
                 finish()
@@ -140,7 +132,7 @@ class AgregarImagenFuente : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
             val selectedUri = data?.data ?: return
-            imagenUriLocal = selectedUri // almacenar la URI local seleccionada
+            imagenUriLocal = selectedUri
             imageView.setImageURI(imagenUriLocal)
         }
     }

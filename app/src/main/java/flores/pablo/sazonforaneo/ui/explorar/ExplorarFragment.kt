@@ -1,5 +1,6 @@
 package flores.pablo.sazonforaneo.ui.explorar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
@@ -48,7 +49,7 @@ class ExplorarFragment : Fragment() {
         usuarioViewModel = ViewModelProvider(requireActivity())[UsuarioViewModel::class.java]
 
         adapter = ExplorarAdapter(emptyList(), usuarioRepo) { receta ->
-            val intent = android.content.Intent(requireContext(), DetalleReceta::class.java)
+            val intent = Intent(requireContext(), DetalleReceta::class.java)
             intent.putExtra("receta", receta)
             startActivity(intent)
         }
@@ -57,18 +58,12 @@ class ExplorarFragment : Fragment() {
         binding.recipesRecyclerview.adapter = adapter
 
         configurarSpinnerFiltros()
-        cargarTodas()
+        cargarTodas() // carga inicial, incluirá la receta nueva si viene
 
-        val nuevaReceta = arguments?.getSerializable("nuevaReceta") as? Receta
-        nuevaReceta?.let {
-            allRecetas.add(0, it)
-            filtrarRecetasPorTags(selectedTags)
-            binding.recipesRecyclerview.scrollToPosition(0)
-        }
-
+        binding.recipesRecyclerview.scrollToPosition(0)
 
         binding.ivPerfil.setOnClickListener {
-            startActivity(android.content.Intent(requireContext(), PerfilConfigActivity::class.java))
+            startActivity(Intent(requireContext(), PerfilConfigActivity::class.java))
         }
 
         usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
@@ -115,6 +110,15 @@ class ExplorarFragment : Fragment() {
         }
     }
 
+    private fun agregarRecetaNuevaSiExiste() {
+        val nuevaReceta = arguments?.getSerializable("nuevaReceta") as? Receta
+        nuevaReceta?.let {
+            if (allRecetas.none { r -> r.id == it.id }) {
+                allRecetas.add(0, it)
+            }
+        }
+    }
+
     private fun configurarFiltroDesdeDialog(position: Int) {
         when (position) {
             0 -> cargarTodas()
@@ -128,13 +132,14 @@ class ExplorarFragment : Fragment() {
         val opciones = listOf("Todas", "Creadas por mí", "Favoritas", "Calificadas por mí")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opciones)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        // El spinner está en el diálogo, aquí sólo preparas el adaptador
+        // El spinner está en el diálogo, aquí no se usa
     }
 
     private fun cargarTodas() {
         recetaRepo.obtenerRecetas(
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
+                agregarRecetaNuevaSiExiste()
                 filtrarRecetasPorTags(selectedTags)
             },
             onFailure = {
@@ -147,6 +152,7 @@ class ExplorarFragment : Fragment() {
         recetaRepo.obtenerRecetasPorAutor(usuarioId,
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
+                agregarRecetaNuevaSiExiste()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }
@@ -157,6 +163,7 @@ class ExplorarFragment : Fragment() {
         recetaRepo.obtenerRecetasFavoritasPor(usuarioId,
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
+                agregarRecetaNuevaSiExiste()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }
@@ -167,6 +174,7 @@ class ExplorarFragment : Fragment() {
         recetaRepo.obtenerRecetasCalificadasPor(usuarioId,
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
+                agregarRecetaNuevaSiExiste()
                 filtrarRecetasPorTags(selectedTags)
             },
             onError = { mostrarError(it) }
@@ -190,4 +198,17 @@ class ExplorarFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        // Aquí recargas desde la base
+        when (filtroSeleccionado) {
+            0 -> cargarTodas()
+            1 -> cargarCreadasPorMi()
+            2 -> cargarFavoritas()
+            3 -> cargarCalificadasPorMi()
+            else -> cargarTodas()
+        }
+    }
+
 }

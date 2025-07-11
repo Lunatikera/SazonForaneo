@@ -191,4 +191,10 @@ class MisRecetasFragment : Fragment() {
         builder.create().show()
     }
 
+    override fun onResume() {
+        super.onResume()
+        cargarRecetasCreadasPorMi()
+
+    }
+
 }
