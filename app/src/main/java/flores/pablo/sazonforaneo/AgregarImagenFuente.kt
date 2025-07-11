@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,7 @@ class AgregarImagenFuente : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var etFuente: EditText
     private lateinit var btnFinalizar: Button
+    private lateinit var tvTitulo: TextView
     private var imagenUriLocal: Uri? = null
 
     private val recetaViewModel: RecetaViewModel by viewModels()
@@ -42,13 +44,19 @@ class AgregarImagenFuente : AppCompatActivity() {
         imageView = findViewById(R.id.imageViewPlatillo)
         etFuente = findViewById(R.id.etFuente)
         btnFinalizar = findViewById(R.id.btnFinalizar)
+        tvTitulo = findViewById(R.id.tvTitulo)
 
         try {
             val config = hashMapOf("cloud_name" to CLOUD_NAME)
             MediaManager.init(this, config)
         } catch (_: IllegalStateException) {}
 
+
+
+
+        // cambia titulo si estamos en modo edicion
         if (receta.id.isNotEmpty()) {
+            tvTitulo.text = "Editar Receta"
             etFuente.setText(receta.fuente)
             receta.imagenUriString?.let { url ->
                 Glide.with(this)
