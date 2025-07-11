@@ -3,9 +3,7 @@ package flores.pablo.sazonforaneo.ui.recetas
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,15 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import flores.pablo.sazonforaneo.DetalleReceta
-import flores.pablo.sazonforaneo.R
-import flores.pablo.sazonforaneo.Receta
-import flores.pablo.sazonforaneo.UsuarioRepository
+import flores.pablo.sazonforaneo.*
 import flores.pablo.sazonforaneo.databinding.FragmentMisrecetasBinding
 import flores.pablo.sazonforaneo.ui.PerfilConfigActivity
 import flores.pablo.sazonforaneo.ui.TagsDialogFragment
 import flores.pablo.sazonforaneo.ui.UsuarioViewModel
-import flores.pablo.sazonforaneo.RecetaViewModel
 import java.util.ArrayList
 
 class MisRecetasFragment : Fragment() {
@@ -37,6 +31,7 @@ class MisRecetasFragment : Fragment() {
     private lateinit var usuarioId: String
 
     private var selectedTags = mutableListOf<String>()
+    private var selectedCategories = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +53,6 @@ class MisRecetasFragment : Fragment() {
             return
         }
 
-        // Avatar
         usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
             if (!url.isNullOrEmpty()) {
                 Glide.with(this)
@@ -80,15 +74,14 @@ class MisRecetasFragment : Fragment() {
         binding.tagsButton.setOnClickListener {
             TagsDialogFragment(
                 initialTags = selectedTags,
-                initialCategories = emptyList()
-            ) { tags, _ ->
+                initialCategories = selectedCategories
+            ) { tags, categorias ->
                 selectedTags = tags.toMutableList()
-                val bundle = Bundle().apply {
-                    putStringArrayList("filtro", ArrayList(selectedTags))
-                }
-                findNavController().navigate(R.id.nav_explorar, bundle)
-            }.show(childFragmentManager, "TagsDialogExplorar")
+                selectedCategories = categorias.toMutableList()
+                aplicarFiltrosEnMisRecetas() // ← Aplica los filtros localmente
+            }.show(childFragmentManager, "TagsDialogMisRecetas")
         }
+
 
         val whereFrom = arguments?.getBoolean("where_from") ?: true
 
@@ -149,13 +142,8 @@ class MisRecetasFragment : Fragment() {
     }
 
     private fun cambiarVisibilidad(receta: Receta) {
-        // Cambiar visibilidad localmente (toggle)
         receta.visibilidad = if (receta.visibilidad == "publico") "privado" else "publico"
-
-        // Actualizar en Firestore vía ViewModel
         recetaViewModel.actualizarReceta(receta)
-
-        // Opcional: para que se vea cambio inmediato
         adapter.notifyDataSetChanged()
     }
 
@@ -177,6 +165,19 @@ class MisRecetasFragment : Fragment() {
         _binding = null
     }
 
+    private fun aplicarFiltrosEnMisRecetas() {
+        val recetasOriginales = recetaViewModel.recetas.value ?: return
+
+        val filtradas = recetasOriginales.filter { receta ->
+            val coincideTag = selectedTags.isEmpty() || selectedTags.any { receta.etiquetas.contains(it) }
+            val coincideCategoria = selectedCategories.isEmpty() || selectedCategories.any { receta.categorias.contains(it) }
+            coincideTag || coincideCategoria
+        }
+
+        adapter.recetas = filtradas
+        adapter.notifyDataSetChanged()
+    }
+
     private fun mostrarDialogoConfirmacionEliminar(receta: Receta) {
         val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
         builder.setTitle("Confirmar eliminación")
@@ -194,7 +195,5 @@ class MisRecetasFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         cargarRecetasCreadasPorMi()
-
     }
-
 }

@@ -89,7 +89,7 @@ class ExplorarFragment : Fragment() {
                         selectedCategories = categorias.toMutableList()
                         filtroSeleccionado = filtro
                         configurarFiltroDesdeDialog(filtroSeleccionado)
-                        filtrarRecetasPorTags(selectedTags)
+                        filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
                     }.show(childFragmentManager, "TagsDialogExplorar")
                 },
                 onFailure = {
@@ -103,7 +103,7 @@ class ExplorarFragment : Fragment() {
                         selectedCategories = categorias.toMutableList()
                         filtroSeleccionado = filtro
                         configurarFiltroDesdeDialog(filtroSeleccionado)
-                        filtrarRecetasPorTags(selectedTags)
+                        filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
                     }.show(childFragmentManager, "TagsDialogExplorar")
                 }
             )
@@ -140,7 +140,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTags(selectedTags)
+                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
             },
             onFailure = {
                 mostrarError(it.message ?: "Error al obtener recetas")
@@ -153,7 +153,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTags(selectedTags)
+                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
             },
             onError = { mostrarError(it) }
         )
@@ -164,7 +164,7 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTags(selectedTags)
+                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
             },
             onError = { mostrarError(it) }
         )
@@ -175,20 +175,31 @@ class ExplorarFragment : Fragment() {
             onSuccess = { recetas ->
                 allRecetas = recetas.toMutableList()
                 agregarRecetaNuevaSiExiste()
-                filtrarRecetasPorTags(selectedTags)
+                filtrarRecetasPorTagsOCategorias(selectedTags, selectedCategories)
             },
             onError = { mostrarError(it) }
         )
     }
 
-    private fun filtrarRecetasPorTags(tags: List<String>) {
-        val listaFiltrada = if (tags.isEmpty()) {
+    private fun filtrarRecetasPorTagsOCategorias(tags: List<String>, categorias: List<String>) {
+        val listaFiltrada = if (tags.isEmpty() && categorias.isEmpty()) {
             allRecetas
         } else {
-            allRecetas.filter { receta -> tags.all { tag -> receta.etiquetas.contains(tag) } }
+            allRecetas.filter { receta ->
+                val coincideTag = tags.isEmpty() || tags.any { it in receta.etiquetas }
+                val coincideCategoria = categorias.isEmpty() || categorias.any { it in receta.categorias }
+
+                if (tags.isNotEmpty() && categorias.isNotEmpty()) {
+                    coincideTag && coincideCategoria
+                } else {
+                    (tags.isNotEmpty() && coincideTag) || (categorias.isNotEmpty() && coincideCategoria)
+                }
+            }
         }
         adapter.actualizarLista(listaFiltrada)
     }
+
+
 
     private fun mostrarError(mensaje: String) {
         Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()

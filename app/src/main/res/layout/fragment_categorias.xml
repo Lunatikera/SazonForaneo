@@ -10,21 +10,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="20dp">
+       >
 
         <LinearLayout
             android:id="@+id/top_search_bar_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:background="@color/searchBarZone"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="12dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -45,9 +46,10 @@
                 android:layout_weight="1"
                 android:background="@drawable/search_background"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:hint="Buscar categoria"
+                android:hint="Buscar receta"
                 android:inputType="text"
                 android:paddingHorizontal="12dp" />
+
 
         </LinearLayout>
 

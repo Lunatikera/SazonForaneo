@@ -26,6 +26,7 @@ import flores.pablo.sazonforaneo.ui.UsuarioViewModel
 import flores.pablo.sazonforaneo.ui.explorar.ExplorarAdapter
 import flores.pablo.sazonforaneo.RecetaViewModel
 import flores.pablo.sazonforaneo.UsuarioRepository
+import flores.pablo.sazonforaneo.ui.TagsDialogCategoriasFragment
 
 class RecetasPorCategoriaFragment : Fragment() {
 
@@ -90,7 +91,6 @@ class RecetasPorCategoriaFragment : Fragment() {
             }
         }
 
-        // 🔄 ¡Usamos el nuevo método específico por categoría!
         recetaViewModel.cargarRecetasPorCategoria(nombreCategoria)
 
         usuarioViewModel.imagenPerfilUrl.observe(viewLifecycleOwner) { url ->
@@ -111,15 +111,17 @@ class RecetasPorCategoriaFragment : Fragment() {
         }
 
         tagsButton.setOnClickListener {
-            val dialog = TagsDialogFragment(
+            val dialog = TagsDialogCategoriasFragment(
                 initialTags = selectedTags,
-                initialCategories = emptyList()
-            ) { tags, _ ->
+                existingTags = allRecetasForCategory.flatMap { it.etiquetas }.distinct()
+            ) { tags ->
                 selectedTags = tags.toMutableList()
                 filtrarRecetasPorTagsYBusqueda(tags, etBuscar.text.toString())
             }
-            dialog.show(childFragmentManager, "TagsDialogRecetasCategoria")
+            dialog.show(childFragmentManager, "TagsDialogCategorias")
         }
+
+
 
         etBuscar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -135,7 +137,7 @@ class RecetasPorCategoriaFragment : Fragment() {
 
         var filtradas = if (tags.isEmpty()) allRecetasForCategory
         else allRecetasForCategory.filter { receta ->
-            tags.all { tag -> receta.etiquetas.contains(tag) }
+            tags.any { tag -> receta.etiquetas.contains(tag) }
         }
 
         if (texto.isNotEmpty()) {
