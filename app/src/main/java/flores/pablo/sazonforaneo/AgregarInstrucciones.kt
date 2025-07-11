@@ -18,10 +18,16 @@ class AgregarInstrucciones : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_instrucciones)
 
-        receta = intent.getSerializableExtra("receta") as Receta
+        // recuperar la receta (que puede ser nueva o para editar)
+        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta() // se asegura de tener un objeto Receta
 
         etInstrucciones = findViewById(R.id.etInstrucciones)
         btnContinuar = findViewById(R.id.btnContinuar)
+
+        // precargar datos si estamos editando
+        if (receta.id.isNotEmpty()) { // si la receta ya tiene un ID, estamos editando
+            etInstrucciones.setText(receta.instrucciones)
+        }
 
         btnContinuar.setOnClickListener {
             val instrucciones = etInstrucciones.text.toString().trim()
@@ -32,7 +38,7 @@ class AgregarInstrucciones : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            receta.instrucciones = instrucciones
+            receta.instrucciones = instrucciones // actualizar instrucciones en el objeto
 
             val intent = Intent(this, AgregarImagenFuente::class.java)
             intent.putExtra("receta", receta)

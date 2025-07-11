@@ -62,6 +62,7 @@ dependencies {
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
     implementation(libs.firebase.auth.ktx)
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

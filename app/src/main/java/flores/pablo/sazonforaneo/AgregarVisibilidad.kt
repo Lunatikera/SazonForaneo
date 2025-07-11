@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -31,17 +32,16 @@ class AgregarVisibilidad : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_visibilidad)
 
-        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta("", "")
+        // recuperar la receta (que puede ser nueva o para editar)
+        receta = intent.getSerializableExtra("receta") as? Receta ?: Receta() // se asegura de tener un objeto Receta
 
         layoutCategorias = findViewById(R.id.layoutCategorias)
         etEtiqueta = findViewById(R.id.etEtiqueta)
         radioGroupPrivacidad = findViewById(R.id.radioGroupPrivacidad)
         recyclerEtiquetas = findViewById(R.id.recyclerEtiquetas)
 
-        // Inicializar adapter con callback para eliminar etiqueta
         etiquetaAdapter = EtiquetaAdapter(etiquetas) { etiquetaEliminada ->
             etiquetas.remove(etiquetaEliminada)
-            etiquetaAdapter.notifyDataSetChanged()
         }
 
         recyclerEtiquetas.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -50,7 +50,26 @@ class AgregarVisibilidad : AppCompatActivity() {
         val btnAgregarEtiqueta = findViewById<Button>(R.id.btnAgregarEtiqueta)
         val btnContinuar = findViewById<Button>(R.id.btnContinuar)
 
-        cargarCategorias()
+        cargarCategorias() // llama primero para crear los chips
+
+        //  precargar los datos si estamos editando
+        if (receta.id.isNotEmpty()) { // si la receta ya tiene un ID, estamos editando
+            // precargar categorias
+            for (categoriaReceta in receta.categorias) {
+                toggleCategoria(categoriaReceta, findChipForCategory(categoriaReceta))
+            }
+
+            // precargar etiquetas
+            etiquetas.addAll(receta.etiquetas)
+            etiquetaAdapter.notifyDataSetChanged()
+
+            // precargar visibilidad
+            when (receta.visibilidad) {
+                "publica" -> findViewById<RadioButton>(R.id.rbPublica).isChecked = true
+                "privada" -> findViewById<RadioButton>(R.id.rbPrivada).isChecked = true
+            }
+        }
+
 
         btnAgregarEtiqueta.setOnClickListener {
             val etiqueta = etEtiqueta.text.toString().trim()
@@ -64,12 +83,12 @@ class AgregarVisibilidad : AppCompatActivity() {
             val visibilidad = when (radioGroupPrivacidad.checkedRadioButtonId) {
                 R.id.rbPublica -> "publica"
                 R.id.rbPrivada -> "privada"
-                else -> "publica"
+                else -> "publica" // Valor por defecto
             }
 
             receta.visibilidad = visibilidad
-            receta.etiquetas = etiquetas.toList()
-            receta.categorias = categoriasSeleccionadas.toList()
+            receta.etiquetas = etiquetas.toList() // actualizar etiquetas en el objeto
+            receta.categorias = categoriasSeleccionadas.toList() // actualizar categorias en el objeto
 
             val intent = Intent(this, AgregarIngredientes::class.java)
             intent.putExtra("receta", receta)
@@ -86,7 +105,7 @@ class AgregarVisibilidad : AppCompatActivity() {
             val chip = TextView(this).apply {
                 text = categoria
                 setPadding(32, 16, 32, 16)
-                setTextColor(Color.parseColor("#44291D")) // Marrón oscuro para no seleccionado
+                setTextColor(Color.parseColor("#44291D"))
                 setBackgroundResource(R.drawable.chip_categoria)
                 textSize = 14f
                 setOnClickListener {
@@ -104,15 +123,28 @@ class AgregarVisibilidad : AppCompatActivity() {
         }
     }
 
-    private fun toggleCategoria(categoria: String, view: TextView) {
+    // para encontrar el chip de una categoria
+    private fun findChipForCategory(categoryName: String): TextView? {
+        for (i in 0 until layoutCategorias.childCount) {
+            val chip = layoutCategorias.getChildAt(i) as? TextView
+            if (chip?.text.toString() == categoryName) {
+                return chip
+            }
+        }
+        return null
+    }
+
+    private fun toggleCategoria(categoria: String, view: TextView?) {
+        if (view == null) return // si no se encuentra la vista, salimos
+
         if (categoriasSeleccionadas.contains(categoria)) {
             categoriasSeleccionadas.remove(categoria)
             view.setBackgroundResource(R.drawable.chip_categoria)
-            view.setTextColor(Color.parseColor("#44291D")) // Marrón oscuro para no seleccionado
+            view.setTextColor(Color.parseColor("#44291D"))
         } else {
             categoriasSeleccionadas.add(categoria)
             view.setBackgroundResource(R.drawable.chip_categoria_selected)
-            view.setTextColor(Color.parseColor("#FFFFFF")) // Blanco para seleccionado
+            view.setTextColor(Color.parseColor("#FFFFFF"))
         }
     }
 

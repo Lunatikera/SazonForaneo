@@ -4,7 +4,7 @@ import android.net.Uri
 import java.io.Serializable
 
 data class Receta(
-    var id: String? = null,
+    var id: String = "",
     var nombre: String = "",
     var descripcion: String = "",
     var categorias: List<String> = emptyList(),
