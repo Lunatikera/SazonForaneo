@@ -53,7 +53,7 @@ class RecetaViewModel : ViewModel() {
                 etiquetaRepository.restarUsoEtiquetas(receta.etiquetas)
                 _guardadoExitoso.postValue(true)  // o un LiveData separado para eliminar si quieres diferenciar
                 _error.postValue(null)
-                cargarRecetas()
+                cargarRecetasPorAutor(receta.autorId)
             },
             onFailure = { e ->
                 _error.postValue(e)
@@ -95,7 +95,7 @@ class RecetaViewModel : ViewModel() {
                 etiquetaRepository.agregarOActualizarEtiquetas(receta.etiquetas) // si quieres manejar etiquetas
                 _guardadoExitoso.postValue(true)
                 _error.postValue(null)
-                cargarRecetasPorAutor(receta.autorId)  // Recarga para actualizar la lista y la UI
+                cargarRecetasPorAutor(receta.autorId)
             },
             onFailure = { e ->
                 _error.postValue(e)

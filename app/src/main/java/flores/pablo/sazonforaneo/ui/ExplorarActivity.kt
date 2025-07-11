@@ -2,6 +2,7 @@ package flores.pablo.sazonforaneo.ui
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -15,6 +16,21 @@ class ExplorarActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
+    // Registrar launcher para recibir resultado de AgregarNombreDescripcion
+    private val agregarRecetaLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val nuevaReceta = result.data?.getSerializableExtra("nuevaReceta") as? Receta
+                nuevaReceta?.let {
+                    // Navegar al fragmento Explorar pasando la receta nueva en bundle
+                    val bundle = Bundle().apply {
+                        putSerializable("nuevaReceta", it)
+                    }
+                    navController.navigate(R.id.nav_explorar, bundle)
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explorar)
@@ -26,10 +42,8 @@ class ExplorarActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
         val fabAddRecipe = findViewById<FloatingActionButton>(R.id.fab_add_recipe)
 
-        // Detectar si viene receta nueva en el intent
+        // Detectar si viene receta nueva directamente en el intent (por ejemplo desde AgregarImagenFuente)
         val nuevaReceta = intent.getSerializableExtra("nuevaReceta") as? Receta
-
-        // Navegar al fragmento Explorar y pasar la receta nueva si existe
         if (nuevaReceta != null) {
             val bundle = Bundle().apply {
                 putSerializable("nuevaReceta", nuevaReceta)
@@ -37,7 +51,6 @@ class ExplorarActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_explorar, bundle)
             bottomNav.selectedItemId = R.id.nav_explorar
         } else {
-            // Navegación inicial según intent o por defecto
             val fragmentToShow = intent.getStringExtra("fragment_to_show")
             when (fragmentToShow) {
                 "mis_recetas" -> {
@@ -55,7 +68,6 @@ class ExplorarActivity : AppCompatActivity() {
             }
         }
 
-        // Escuchar selección del BottomNavigationView
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_categorias -> {
@@ -76,7 +88,7 @@ class ExplorarActivity : AppCompatActivity() {
 
         fabAddRecipe.setOnClickListener {
             val intent = Intent(this, AgregarNombreDescripcion::class.java)
-            startActivity(intent)
+            agregarRecetaLauncher.launch(intent)
         }
     }
 }

@@ -15,6 +15,7 @@
 
         <!-- Título -->
         <TextView
+            android:id="@+id/tvTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nueva Receta"
